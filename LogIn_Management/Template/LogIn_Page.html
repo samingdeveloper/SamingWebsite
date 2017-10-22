@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+{% block content %}
+{%  load static %}
+<head>
+	<meta charset="utf-8"> <!--����ö�ʴ�������������-->
+	<!-- connect saminglogo.png from floder fire -->
+	<link rel="icon" type="png" href="{%  static "saminglogo.png" %}"/>
+	<title>Saming</title> <!-- show name tab title on web-->
+
+	<!-- Google Fonts -->
+	<link href="{% static 'https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' %}" rel='stylesheet' type='text/css'>
+
+	<!--<link rel="stylesheet" href="css/animate.css">--><!--�ٻẺ�������͹��� �� animation �������-->
+	<!-- Custom Stylesheet -->
+	<link rel="stylesheet" href="{% static "style.css" %}"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body>
+	<div class="container">
+	<!--��ǹ���-->
+		<div class="top">
+			<h1 id="title" class="hidden"><span id="logo">SAMING <span>PROGRAMMING</span></span></h1>
+		</div>
+		<!--��� log-in-->
+		<div class="login-box animated fadeInUp">
+			<div class="box-header">
+				<h2>Log In</h2>
+			</div>
+            {% if messages %}
+                <div class="row">
+                    <div class='col-sm-6 col-sm-offset-3'>
+                {% for message in messages %}
+                <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
+                    {{ message }}
+                </p>
+                {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            <form action="/LogIn_Auth/" method="post">
+                {% csrf_token %}
+			<label for="username">User ID</label> <!-- �����Ź�Ҩж١ ��˹����㹵���� username ��� password-->
+			<br/>
+			<input type="text" name="username" value="" id="username">
+			<br/>
+			<label for="password">Password</label>
+			<br/>
+			<input type="password" name="password" value="" id="password">
+			<br/>
+			<button type="submit" value="submit">Sign In</button>
+			<br/>
+            </form>
+			<a href="#"><p class="small">Forgot your password?</p></a>
+		</div>
+	</div>
+		<!--��ǹ��ҧ�ش-->
+		<center>
+			<br><br><br><br><br><br><br><br><br>
+				<p><b>web Application Grading  Platform </b></p>
+				<P><b>For  Programming  System. </b></P>
+		</center>
+</body>
+
+<!-- ���Ը�㹡�ô֧��� js ����Ҫ��� 㹡����� animation -->
+<script>
+	$(document).ready(function () {
+    	$('#logo').addClass('animated fadeInDown');
+    	$("input:text:visible:first").focus();
+	});
+	$('#username').focus(function() {
+		$('label[for="username"]').addClass('selected');
+	});
+	$('#username').blur(function() {
+		$('label[for="username"]').removeClass('selected');
+	});
+	$('#password').focus(function() {
+		$('label[for="password"]').addClass('selected');
+	});
+	$('#password').blur(function() {
+		$('label[for="password"]').removeClass('selected');
+	});
+</script>
+
+</html>
+{% endblock %}
