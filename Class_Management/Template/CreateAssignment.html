@@ -1,0 +1,331 @@
+{% block content %}
+<!DOCTYPE html>
+
+<html>
+<head>
+<link rel="icon" type="png" href="Logo.png" />
+<link rel="stylesheet" media="all" type="text/css" href="jquerydatepicker/jquery-ui.css" />
+<link rel="stylesheet" media="all" type="text/css" href="jquerydatepicker/jquery-ui-timepicker-addon.css" />
+<script type="text/javascript" src="jquerydatepicker/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="jquerydatepicker/jquery-ui.min.js"></script>
+<script type="text/javascript" src="jquerydatepicker/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="jquerydatepicker/jquery-ui-sliderAccess.js"></script>
+<meta charset="iso-8859-1">
+<title>Saming</title>
+</head>
+<style type="text/css">
+    body {
+        background-color: #dcdddc
+    }
+
+    body {
+        margin: 0;
+    }
+
+     .navbar {
+        overflow: hidden;
+        background-color: #e18b26;
+        font-family: Arial;
+    }
+
+        .navbar a {
+            float: left;
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+/*á·çº·Ò§¢ÇÒ*/
+
+    .dropdown {
+        float: relative;
+        overflow: inline-block;
+    }
+
+        .dropdown .dropbtn {
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+        }
+
+    .dropdown-content {
+        display: none;
+        position: fixed;
+        background-color: #f6f6f6;
+        min-width: 200px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        height: 100%;
+    }
+
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #ffc846;
+            }
+
+    .show {
+        display: block;
+    }
+    /*ÊèÇ¹logout*/
+    .dropbtn1 {
+        background-color: #e18b26;
+        color: black;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .dropbtn1:hover, .dropbtn1:focus {
+            background-color: #e18b26;
+        }
+
+    .dropdown1 {
+        float: right;
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content1 {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        right: 0;
+        z-index: 1;
+    }
+
+        .dropdown-content1 a:hover {
+            background-color: #ffc846
+        }
+        .dropdown-content1 a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+        }
+
+    .show1 {
+        display: block;
+    }
+.button {
+    background-color: #c67d26; /* Green */
+    border: none;
+    color: white;
+    padding: 4px 4px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+	height: 30px;
+	width: 100px;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+}
+
+.testcase {
+	font-family: Cloud;
+	font-size: 16px;
+	font-weight: bold;
+}
+</style></head>
+
+<body>
+<div class="navbar">
+        <tr>
+            <td height="54" valign="middle" bgcolor="c67d26">
+                <div class="dropdown">
+                    <button onClick="myFunction()" class="dropbtn"><img src="Tap3.png" width="29" height="24" align="bottom" /></button>
+                    <img src="blan2.png" height="28" width="64">                       
+                     <div id="myDropdown1" class="dropdown-content1">
+                        <a href="#home">Change Password</a>
+                        <a href="#about">Logout</a>
+                   
+                  </div>
+                    <div class="dropdown1">
+                           
+                    <button onClick="myFunction1()" class="dropbtn1">Dropdown</button>
+                           
+                  </div>
+                    <div id="myDropdown" class="dropdown-content">
+
+                        <a href="#home">HOME</a>
+                        
+                  </div>
+                </div>
+              
+    </div>
+<table width="100%" border="0">
+  <tr>
+    <td width="15%" height="577" rowspan="2" valign="top">&nbsp;</td>
+    <td width="60%" rowspan="2" valign="top"><p class="assignment"><strong> Assignment</strong></p>
+    <p>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+      <textarea name="Assignment" cols="80" rows="3"></textarea>
+    </p>
+    <p class="Detail"><strong>Assignment Detail</strong></p>
+    <p>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; 
+      <textarea name="Assignment2" cols="80" rows="5"></textarea>
+    </p>
+    <p class="deadline"><strong>Deadline </strong></p>
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      
+    <script type="text/javascript">
+		$(function(){
+		$("#dateInput").datetimepicker({
+			dateFormat: '   dd-M-yy',
+			timeFormat: "HH:mm",
+			});
+});
+</script>
+    &nbsp; 
+    <input type="text" name="dateInput" id="dateInput" value="                  Click" /> 
+   &nbsp;&nbsp; &nbsp; </p>
+    
+    <p class="code"><strong>Code Templat    </strong></p>
+    <form action="uploadfile.php" 
+              method="post" 
+              enctype="multipart/form-data" 
+              target="ifrm"
+        >
+            <input type="file"
+                   name="upload"
+                   style="display:none"
+            />
+            &nbsp; 
+            &nbsp; 
+            &nbsp; 
+            &nbsp;
+            &nbsp; 
+             
+            <input type="text"
+                   name="uploadtext"
+                   onkeydown="upload.value=uploadtext.value "
+            />
+            <input type="button"
+                   name="uploadbutton" 
+                   value="choose file"
+                   onclick="upload.click()"
+                   onmouseout="uploadtext.value=upload.value"
+            /> 
+            <input type="submit" value="submit"/>
+      </form>
+        <iframe name="ifrm" style="display:none">
+        </iframe>
+    </p>
+    <p><strong>Hint</strong></p>
+    <p>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+      <textarea name="hint" cols="80" rows="5"></textarea>
+      &nbsp; 
+      &nbsp; 
+    &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+    
+    </p>
+    
+    <p><strong class="testcase">Test Case</strong>    
+    <form action="uploadfile.php" 
+              method="post" 
+              enctype="multipart/form-data" 
+              target="ifrm"
+        >
+            <input type="file"
+                   name="upload"
+                   style="display:none"
+            />
+            &nbsp; 
+            &nbsp; 
+            &nbsp; 
+            &nbsp;
+            &nbsp; 
+             
+            <input type="text"
+                   name="uploadtext"
+                   onkeydown="upload.value=uploadtext.value "
+            />
+            <input type="button"
+                   name="uploadbutton" 
+                   value="choose file"
+                   onclick="upload.click()"
+                   onmouseout="uploadtext.value=upload.value"
+            /> 
+            <input type="submit" value="submit"/>
+      </form>
+        <iframe name="ifrm" style="display:none">
+        </iframe>
+    </p>
+    <p>&nbsp;</p>
+    <td width="25%" height="550" align="center" valign="top"><p>&nbsp;</p>  
+    <button class="button button2"><strong>Save</strong></button>  </tr>
+  <tr>
+    <td height="38" valign="top">    
+  </tr>
+</table>
+       
+
+<script>
+/*¿Ñ§ªÑè¹á·çº·Ò§«éÒÂ*/
+        /* When the user clicks on the button,
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        function filterFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+        /*¾Ñ§ªÑè¹ÊèÇ¹logout*/
+        /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+        function myFunction1() {
+            document.getElementById("myDropdown1").classList.toggle("show1");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn1')) {
+
+                var dropdowns = document.getElementsByClassName("dropdown-content1");
+                var n;
+                for (n = 0; n < dropdowns.length; n++) {
+                    var openDropdown = dropdowns[n];
+                    if (openDropdown.classList.contains('show1')) {
+                        openDropdown.classList.remove('show1');
+                    }
+                }
+            }
+        }
+jQuery("#jQueryUICalendar1").datepicker();
+</script>
+</body>
+
+</html>
+{% endblock %}

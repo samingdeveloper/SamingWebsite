@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'LogIn_Management',
     'bootstrap4',
+    'Class_Management',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +57,8 @@ ROOT_URLCONF = 'SamingDev.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['LogIn_Management/Template'],
+        'DIRS': ['LogIn_Management/Template', 'Class_Management/Template'],
+        #'DIRS': [os.path.join(BASE_DIR, "Template")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,6 +124,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "LogIn_Management/static"),
+    os.path.join(BASE_DIR, "Class_Management/static"),
     #'/var/www/static/',
 ]
 

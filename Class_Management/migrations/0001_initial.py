@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quizDetail', models.CharField(max_length=255)),
-                ('classroom', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Class_management.ClassRoom')),
+                ('classroom', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Class_Management.ClassRoom')),
             ],
         ),
     ]

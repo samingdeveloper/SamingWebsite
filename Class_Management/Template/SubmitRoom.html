@@ -1,0 +1,454 @@
+{% block content %}
+<!DOCTYPE html>
+
+<html lang="en">
+    <meta charset="UTF-8">
+<head>
+    <link rel="icon" type="png" href="111.png" />
+    <title>Saming</title>
+
+</head>
+<style type="text/css">
+    body {
+        background-color: #dcdddc
+    }
+
+    body {
+        margin: 0;
+    }
+
+     .navbar {
+        overflow: hidden;
+        background-color: #e18b26;
+        font-family: Arial;
+    }
+
+        .navbar a {
+            float: left;
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+/*�纷ҧ���*/
+
+    .dropdown {
+        float: relative;
+        overflow: inline-block;
+    }
+
+        .dropdown .dropbtn {
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+        }
+
+    .dropdown-content {
+        display: none;
+        position: fixed;
+        background-color: #f6f6f6;
+        min-width: 200px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        height: 100%;
+    }
+
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #ffc846;
+            }
+
+    .show {
+        display: block;
+    }
+    /*��ǹlogout*/
+    .dropbtn1 {
+        background-color: #e18b26;
+        color: black;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .dropbtn1:hover, .dropbtn1:focus {
+            background-color: #e18b26;
+        }
+
+    .dropdown1 {
+        float: right;
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content1 {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        right: 0;
+        z-index: 1;
+    }
+
+        .dropdown-content1 a:hover {
+            background-color: #ffc846
+        }
+        .dropdown-content1 a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+        }
+
+    .show1 {
+        display: block;
+    }
+
+    /*��ǹ���¡������¹
+    .dropbtn2 {
+        background-color: #4CAF50;
+        color: black;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .dropbtn2:hover, .dropbtn2:focus {
+            background-color: #3e8e41;
+        }
+
+    .dropdown2 {
+        float: right;
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content2 {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        right: 0;
+        z-index: 1;
+    }
+
+        .dropdown-content2 a:hover {
+            background-color: #ffc846
+        }
+
+        .dropdown-content2 a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+    .show2 {
+        display: block;
+    }
+        */
+    /*��ͻ�Ѿ���͡���*/
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 2; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 30%;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+        from {
+            top: -300px;
+            opacity: 0
+        }
+
+        to {
+            top: 0;
+            opacity: 1
+        }
+    }
+
+    @keyframes animatetop {
+        from {
+            top: -300px;
+            opacity: 0
+        }
+
+        to {
+            top: 0;
+            opacity: 1
+        }
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+    }
+
+    .modal-body {
+        padding: 2px 16px;
+    }
+
+    .modal-footer {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+    }
+    /*��ǹẺ�����*/
+    input[type=text], select, textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-top: 6px;
+        margin-bottom: 16px;
+        resize: vertical;
+    }
+
+    input[type=submit] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+    .container {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 20px;
+    }
+
+</style></head>
+
+<body>
+    <div class="navbar">
+        <tr>
+            <td height="54" valign="middle" bgcolor="c67d26">
+                <div class="dropdown">
+                    <button onClick="myFunction()" class="dropbtn"><img src="Tap3.png" width="29" height="24" align="bottom" /></button>
+                    <img src="blan2.png" height="28" width="64">                       
+                     <div id="myDropdown1" class="dropdown-content1">
+                        <a href="#home">Change Password</a>
+                        <a href="#about">Logout</a>
+                   
+                  </div>
+                    <div class="dropdown1">
+                           
+                    <button onClick="myFunction1()" class="dropbtn1">Dropdown</button>
+                           
+                  </div>
+                    <div id="myDropdown" class="dropdown-content">
+
+                        <a href="#home">HOME</a>
+                        <a>NEPHEW</a>
+                    </div>
+                </div>
+              
+    </div>
+    
+  
+    <!-- Trigger/Open The Modal -->
+     <P Align=right> <button id="myBtn"><img src="Plus.png" height="25" width="25"></button> </P Align=right>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Classroom</h2>
+            </div>
+            <div class="modal-body">
+
+                <form action="/action_page.php">
+                    <label for="fname">Name's room:</label>
+                    <input type="text" id="fname" name="firstname" placeholder="Name's room..">
+
+                    <label for="country">Year's student:</label>
+                    <select id="country" name="country">
+                        <option value="australia">1</option>
+                        <option value="canada">2</option>
+                        <option value="usa">3</option>
+                        <option value="usa1">4</option>
+                    </select>
+
+                    <label for="subject">Suggestion:</label>
+                    <textarea id="subject" name="subject" placeholder="Write something.." style="height:200px"></textarea>
+
+                    <input type="submit" value="Create">
+                </form>
+            </div>
+        </div>
+       
+    </div>
+
+  
+
+
+               
+    <script>
+        /* When the user clicks on the button,
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        function filterFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+        /*�ѧ�����ǹlogout*/
+        /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+        function myFunction1() {
+            document.getElementById("myDropdown1").classList.toggle("show1");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn1')) {
+
+                var dropdowns = document.getElementsByClassName("dropdown-content1");
+                var n;
+                for (n = 0; n < dropdowns.length; n++) {
+                    var openDropdown = dropdowns[n];
+                    if (openDropdown.classList.contains('show1')) {
+                        openDropdown.classList.remove('show1');
+                    }
+                }
+            }
+        }
+        /*�ѧ�����ǹ���͡��鹻�*/
+        /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+       /* function myFunction2() {
+            document.getElementById("myDropdown2").classList.toggle("show2");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn2')) {
+
+                var dropdowns = document.getElementsByClassName("dropdown-content2");
+                var m;
+                for (m = 0; m < dropdowns.length; m++) {
+                    var openDropdown = dropdowns[m];
+                    if (openDropdown.classList.contains('show2')) {
+                        openDropdown.classList.remove('show2');
+                    }
+                }
+            }
+        }
+        */
+        /*��駪�蹻�ͺ�Ѿ���ҧ��ͧ*/
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+ 
+
+</body>
+
+</html>
+{% endblock %}

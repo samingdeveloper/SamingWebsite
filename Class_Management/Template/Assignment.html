@@ -1,0 +1,288 @@
+{% block content %}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="icon" type="png" href="Logo.png" />
+    <title>Saming</title>
+<meta charset="iso-8859-1">
+</head>
+<style type="text/css">
+    body {
+        background-color: #dcdddc
+    }
+
+    body {
+        margin: 0;
+    }
+
+     .navbar {
+        overflow: hidden;
+        background-color: #e18b26;
+        font-family: Arial;
+    }
+
+        .navbar a {
+            float: left;
+            font-size: 16px;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+/*á·çº·Ò§¢ÇÒ*/
+
+    .dropdown {
+        float: relative;
+        overflow: inline-block;
+    }
+
+        .dropdown .dropbtn {
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: inherit;
+        }
+
+    .dropdown-content {
+        display: none;
+        position: fixed;
+        background-color: #f6f6f6;
+        min-width: 200px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        height: 100%;
+    }
+
+        .dropdown-content a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #ffc846;
+            }
+
+    .show {
+        display: block;
+    }
+    /*ÊèÇ¹logout*/
+    .dropbtn1 {
+        background-color: #e18b26;
+        color: black;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .dropbtn1:hover, .dropbtn1:focus {
+            background-color: #e18b26;
+        }
+
+    .dropdown1 {
+        float: right;
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content1 {
+        display: none;
+        position: absolute;
+        background-color: white;
+        min-width: 160px;
+        overflow: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        right: 0;
+        z-index: 1;
+    }
+
+        .dropdown-content1 a:hover {
+            background-color: #ffc846
+        }
+        .dropdown-content1 a {
+            float: none;
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: right;
+        }
+
+    .show1 {
+        display: block;
+    }
+
+
+.teacher1 {
+	font-family: Cloud;
+}
+.teacher1 {
+	font-size: 18px;
+}
+.teacher1 {
+	font-size: 16px;
+}
+.teacher2 {
+	font-weight: bold;
+}
+.teacher2 {
+	font-family: Cloud;
+}
+.button {
+	background-color: #fff;
+	border: none;
+	color: #000;
+	text-align: left;
+	text-decoration: none;
+	display: block;
+	font-size: 16px;
+	cursor: pointer;
+	height: 80px;
+	width: 600px;
+	margin-top: 4px;
+	margin-right: 2px;
+	margin-bottom: 4px;
+	margin-left: 2px;
+	padding-top: 15px;
+	padding-right: 32px;
+	padding-bottom: 15px;
+	padding-left: 32px;
+}
+.button strong {
+	font-family: Cloud;
+}
+</style></head>
+
+<body>
+<div class="navbar">
+        <tr>
+            <td height="54" valign="middle" bgcolor="c67d26">
+                <div class="dropdown">
+                    <button onClick="myFunction()" class="dropbtn"><img src="Tap3.png" width="29" height="24" align="bottom" /></button>
+                    <img src="blan2.png" height="28" width="64">                       
+                     <div id="myDropdown1" class="dropdown-content1">
+                        <a href="#home">Change Password</a>
+                        <a href="#about">Logout</a>
+                   
+                  </div>
+                    <div class="dropdown1">
+                           
+                    <button onClick="myFunction1()" class="dropbtn1">Dropdown</button>
+                           
+                  </div>
+                    <div id="myDropdown" class="dropdown-content">
+
+                        <a href="#home">HOME</a>
+                        
+                    </div>
+                </div>
+              
+    </div>
+<table width="100%" border="0">
+  <tr>
+    <td height="137" colspan="4" valign="top"><p>&nbsp;</p>
+      <p><center> <img src="person.png" width="90" height="90">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <img src="person.png" width="90" height="90"></center></p>      </td>
+    </tr>
+  <tr>
+    <td width="15%" height="67" valign="top">&nbsp;</td>
+    <td width="12%" valign="top">    
+    <td width="28%" valign="top"><p class="teacher1"><span class="teacher1"><span class="teacher1"><strong>Teacher : Admin 1</strong></span></span></p>
+    <p class="teacher1"><span class="teacher1"><span class="teacher1"><strong>Email : admin1@mail.kmutt.ac.th </strong></span></span></p>            
+    <td width="45%" valign="top"><p class="teacher2"><strong><span class="teacher2">Teacher : Admin 2</span></strong></p>
+    <p class="teacher2"><strong><span class="teacher2">Email : admin2@mail.kmutt.ac.th </span></strong></p>        
+  </tr>
+  <tr>
+    <td height="465" colspan="4" valign="top"><center> 
+        <p><a href="#assignment" class="button" >
+          <strong>Assignment : <br>
+          Detail :          <br><br>
+          Deadline : 
+          
+        </strong></a>    </p>
+    </center>    </td>
+  </tr>
+</table>
+       
+
+<script>
+/*¿Ñ§ªÑè¹á·çº·Ò§«éÒÂ*/
+        /* When the user clicks on the button,
+        toggle between hiding and showing the dropdown content */
+        function myFunction() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        function filterFunction() {
+            var input, filter, ul, li, a, i;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown");
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+        /*¾Ñ§ªÑè¹ÊèÇ¹logout*/
+        /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+        function myFunction1() {
+            document.getElementById("myDropdown1").classList.toggle("show1");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn1')) {
+
+                var dropdowns = document.getElementsByClassName("dropdown-content1");
+                var n;
+                for (n = 0; n < dropdowns.length; n++) {
+                    var openDropdown = dropdowns[n];
+                    if (openDropdown.classList.contains('show1')) {
+                        openDropdown.classList.remove('show1');
+                    }
+                }
+            }
+        }
+        /*¾Ñ§ªÑè¹ÊèÇ¹àÅ×Í¡ªÑé¹»Õ*/
+        /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+        /*
+        function myFunction2() {
+            document.getElementById("myDropdown2").classList.toggle("show2");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches('.dropbtn2')) {
+
+                var dropdowns = document.getElementsByClassName("dropdown-content2");
+                var m;
+                for (m = 0; m < dropdowns.length; m++) {
+                    var openDropdown = dropdowns[m];
+                    if (openDropdown.classList.contains('show2')) {
+                        openDropdown.classList.remove('show2');
+                    }
+                }
+            }
+        }
+        */
+jQuery("#jQueryUICalendar1").datepicker();
+</script>
+</body>
+
+</html>
+{% endblock %}

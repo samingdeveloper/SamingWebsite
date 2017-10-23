@@ -1,0 +1,12 @@
+{% block content %}
+    <!DOCTYPE html>
+    <html>
+        <h1>Welcome to the Classroom selection.</h1>
+        Select your classroom.
+        <ul>
+            {% for i in list_classroom %}
+                <li><a href="/ClassRoom/{{i.id}}/">{{i.className}}</a></li>
+            {% endfor %}
+        </ul>
+    </html>
+{% endblock %}

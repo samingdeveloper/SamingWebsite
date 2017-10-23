@@ -4,12 +4,14 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib import messages
 from django.contrib.auth import (authenticate,login,logout,get_user_model)
+from django.middleware.csrf import CsrfViewMiddleware
+from Class_Management import Template
 from .models import user
 
-
 # Create your views here.
-def LogIn_Page(request):
 
+def LogIn_Page(request):
+    #check_csrf(request)
     return render(request, 'LogIn_Page.html')
 
 def LogOut_Page(request):
@@ -34,7 +36,7 @@ def LogIn_Auth(request):
             return HttpResponse(template.render(context,request))'''
         if user.objects.filter(userId=username) or user.objects.filter(studentId=username) and user.objects.filter(userPassWord=password):
             #login(request, user)
-            return render(request, 'index.html', context)
+            return render(request, 'SelectClassroom.html', context)
         else:
             messages.error(request, 'Sorry, userId or password is not valid.')
             return HttpResponse(template.render(context, request))
@@ -48,3 +50,9 @@ def LogIn_Auth(request):
    # }'''
     #return HttpResponse(template.render(context,request))
     #return render(request,'LogIn_Page.html',context)
+
+        #def check_csrf(request):
+         # reason = CsrfViewMiddleware().process_view(request, None, (), {})
+         # if reason:
+            # CSRF failed
+           # raise PermissionException() # do what you need to do here'''

@@ -15,7 +15,7 @@ Including another URLconf
 """
 
 from django.conf import settings
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^LogIn_Page/', views.LogIn_Page),
     url(r'^LogIn_Auth/', views.LogIn_Auth),
+    url(r'^ClassRoom/', include('Class_Management.urls')),
+
     #logout default function
     url(r'^LogOut/', auth_views.logout, {'next_page': '/'}, name='logout'),
 ]
