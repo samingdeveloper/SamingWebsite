@@ -6,8 +6,13 @@ from django.contrib import messages
 from django.contrib.auth import (authenticate,login,logout,get_user_model)
 from .models import user
 
+
 # Create your views here.
 def LogIn_Page(request):
+
+    return render(request, 'LogIn_Page.html')
+
+def LogOut_Page(request):
 
     return render(request, 'LogIn_Page.html')
 
@@ -33,7 +38,6 @@ def LogIn_Auth(request):
         else:
             messages.error(request, 'Sorry, userId or password is not valid.')
             return HttpResponse(template.render(context, request))
-
 
 
 

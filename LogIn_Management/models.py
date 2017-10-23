@@ -8,3 +8,9 @@ class user(models.Model):
     #Show object when transform to string.
     def __str__(self):
         return self.userId + ' - ' + self.userPassWord + ' - ' + self.studentId
+
+class user_year(models.Model):
+    user_year1 = models.CharField(max_length = 1000)
+    user_year2 = models.CharField(max_length = 1000)
+    user_year3 = models.CharField(max_length = 1000)
+    user_year4 = models.CharField(max_length = 1000)

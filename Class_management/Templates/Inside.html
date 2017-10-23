@@ -1,0 +1,7 @@
+<h1>Welcome to {{quiz}}</h1>
+Select Quiz
+<ul>
+    {% for q in quiz.quiz_set.all %}
+    <li>{{q.quizDetail}}</li>
+    {% endfor %}
+</ul>
