@@ -1,0 +1,346 @@
+<html>
+<body>
+	<head>
+		<link rel="icon" type="png" href="22768404_1115864718548999_771463919_o.png" />
+		<title>Saming</title>
+	<style type='text/css'>
+	<body> {
+					background-color: #dcdcdc
+			}
+				<style type="text/css">
+		    <body> {
+		        background-color: #dcdddc
+		    }
+
+		    <body> {
+		        margin: 0;
+		    }
+
+		     .navbar {
+		        overflow: hidden;
+		        background-color: #e18b26;
+		        font-family: Arial;
+		    }
+
+		        .navbar a {
+		            float: left;
+		            font-size: 16px;
+		            color: white;
+		            text-align: center;
+		            padding: 14px 16px;
+		            text-decoration: none;
+		        }
+		</style>
+	</style>
+		<title></title>
+</script>
+	</head>
+
+</html>
+<link rel="icon" type="png" href="22768404_1115864718548999_771463919_o.png" />
+<title>Saming</title>
+
+</head>
+<style type="text/css">
+
+body {
+		margin: 0;
+}
+
+ .navbar {
+		overflow: hidden;
+		background-color: #e18b26;
+		font-family: Arial;
+}
+
+		.navbar a {
+				float: left;
+				font-size: 16px;
+				color: white;
+				text-align: center;
+				padding: 14px 16px;
+				text-decoration: none;
+		}
+
+/*á·çº·Ò§¢ÇÒ*/
+
+.dropdown {
+		float: relative;
+		overflow: inline-block;
+}
+
+		.dropdown .dropbtn {
+				cursor: pointer;
+				font-size: 16px;
+				border: none;
+				outline: none;
+				color: white;
+				padding: 14px 16px;
+				background-color: inherit;
+		}
+
+.dropdown-content {
+		display: none;
+		position: fixed;
+		background-color: #f6f6f6;
+		min-width: 200px;
+		overflow: auto;
+		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		z-index: 1;
+		height: 100%;
+}
+
+		.dropdown-content a {
+				float: none;
+				color: black;
+				padding: 12px 16px;
+				text-decoration: none;
+				display: block;
+				text-align: right;
+		}
+
+				.dropdown-content a:hover {
+						background-color: #ffc846;
+				}
+
+.show {
+		display: block;
+}
+/*ÊèÇ¹logout*/
+.dropbtn1 {
+		background-color: #e18b26;
+		color: black;
+		padding: 16px;
+		font-size: 16px;
+		border: none;
+		cursor: pointer;
+}
+
+		.dropbtn1:hover, .dropbtn1:focus {
+				background-color: #e18b26;
+		}
+
+.dropdown1 {
+		float: right;
+		position: relative;
+		display: inline-block;
+}
+
+.dropdown-content1 {
+		display: none;
+		position: absolute;
+		background-color: white;
+		min-width: 160px;
+		overflow: auto;
+		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		right: 0;
+		z-index: 1;
+}
+
+		.dropdown-content1 a:hover {
+				background-color: #ffc846
+		}
+		.dropdown-content1 a {
+				float: none;
+				color: black;
+				padding: 12px 16px;
+				text-decoration: none;
+				display: block;
+				text-align: right;
+		}
+
+.show1 {
+		display: block;
+}
+
+/*ÊèÇ¹àÃÕÂ¡ªÑé¹àÃÕÂ¹*/
+/*
+.dropbtn2 {
+		background-color: #4CAF50;
+		color: black;
+		padding: 16px;
+		font-size: 16px;
+		border: none;
+		cursor: pointer;
+}
+
+		.dropbtn2:hover, .dropbtn2:focus {
+				background-color: #3e8e41;
+		}
+
+.dropdown2 {
+		float: right;
+		position: relative;
+		display: inline-block;
+}
+
+.dropdown-content2 {
+		display: none;
+		position: absolute;
+		background-color: #f9f9f9;
+		min-width: 160px;
+		overflow: auto;
+		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		right: 0;
+		z-index: 1;
+}
+
+		.dropdown-content2 a:hover {
+				background-color: #ffc846
+		}
+
+		.dropdown-content2 a {
+				color: black;
+				padding: 12px 16px;
+				text-decoration: none;
+				display: block;
+		}
+
+.show2 {
+		display: block;
+}
+		*/
+
+
+</style></head>
+<body bgcolor = #d3d3d3> </body>
+<body>
+<div class="navbar">
+		<tr>
+				<td height="54" valign="middle" bgcolor="c67d26">
+						<div class="dropdown">
+								<button onClick="myFunction()" class="dropbtn"><img src="22752582_1115864708549000_1685351972_n.png" width="29" height="24" align="bottom" /></button>
+								<img src="22833276_1115864711882333_369740879_o.png" height="28" width="64">
+								 <div id="myDropdown1" class="dropdown-content1">
+										<a href="#home">Change Password</a>
+										<a href="#about">Logout</a>
+
+							</div>
+								<div class="dropdown1">
+
+								<button onClick="myFunction1()" class="dropbtn1">Dropdown</button>
+
+							</div>
+								<div id="myDropdown" class="dropdown-content">
+
+										<a href="#home">HOME</a>
+										<a>NEPHEW</a>
+								</div>
+						</div>
+
+</div>
+
+
+
+
+
+
+<script>
+		/*¿Ñ§ªÑè¹á·çº·Ò§«éÒÂ*/
+		/* When the user clicks on the button,
+		toggle between hiding and showing the dropdown content */
+		function myFunction() {
+				document.getElementById("myDropdown").classList.toggle("show");
+		}
+
+		function filterFunction() {
+				var input, filter, ul, li, a, i;
+				input = document.getElementById("myInput");
+				filter = input.value.toUpperCase();
+				div = document.getElementById("myDropdown");
+				a = div.getElementsByTagName("a");
+				for (i = 0; i < a.length; i++) {
+						if (a[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+								a[i].style.display = "";
+						} else {
+								a[i].style.display = "none";
+						}
+				}
+		}
+		/*¾Ñ§ªÑè¹ÊèÇ¹logout*/
+		/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+		function myFunction1() {
+				document.getElementById("myDropdown1").classList.toggle("show1");
+		}
+
+		// Close the dropdown if the user clicks outside of it
+		window.onclick = function (event) {
+				if (!event.target.matches('.dropbtn1')) {
+
+						var dropdowns = document.getElementsByClassName("dropdown-content1");
+						var n;
+						for (n = 0; n < dropdowns.length; n++) {
+								var openDropdown = dropdowns[n];
+								if (openDropdown.classList.contains('show1')) {
+										openDropdown.classList.remove('show1');
+								}
+						}
+				}
+		}
+		/*¾Ñ§ªÑè¹ÊèÇ¹àÅ×Í¡ªÑé¹»Õ*/
+		/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+		/*
+		function myFunction2() {
+				document.getElementById("myDropdown2").classList.toggle("show2");
+		}
+
+		// Close the dropdown if the user clicks outside of it
+		window.onclick = function (event) {
+				if (!event.target.matches('.dropbtn2')) {
+
+						var dropdowns = document.getElementsByClassName("dropdown-content2");
+						var m;
+						for (m = 0; m < dropdowns.length; m++) {
+								var openDropdown = dropdowns[m];
+								if (openDropdown.classList.contains('show2')) {
+										openDropdown.classList.remove('show2');
+								}
+						}
+				}
+		}
+		*/
+</script>
+
+
+</body>
+<body>
+<center>
+
+<h1>
+				<legend>Change Password</legend><br />
+			<table>
+			<tr>
+<td>Change Password</td>
+<td><input id="Email" name="Email"/></td>
+</td>
+</tr>
+<tr>
+<td>Password</td>
+<td><input id="Password" name="Password"/></td>
+</tr>
+<tr>
+<td>New Password</td>
+<td><input id="New Password" name="New Password"/></td>
+</tr>
+<tr>
+<td colspan=”2″>
+<center>
+<input type=submit value=Save />
+<input type=reset value=Cancel /></center>
+</center>
+</td>
+</tr>
+</table>
+</fieldset>
+</form>
+</h1>
+</center>
+<script>
+function open_popup(url){
+window.open(url,null,"height=200,width=400,status=yes,toolbar=no,menubar=no,location=no");
+}
+</script>
+</body>
+</html>
