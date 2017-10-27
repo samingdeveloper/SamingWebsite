@@ -7,7 +7,7 @@ class ClassRoom(models.Model):
         return self.className
 
 class Quiz(models.Model):
-    quizDetail = models.CharField(max_length=255)
+    quizDetail = models.CharField(max_length=1024)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
         return self.quizDetail
