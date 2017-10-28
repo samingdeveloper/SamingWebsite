@@ -1,33 +1,30 @@
 {% block content %}
 <!DOCTYPE html>
-
+{% load static %}
 <html>
 <head>
-<link rel="icon" type="png" href="Logo.png" />
-<link rel="stylesheet" media="all" type="text/css" href="jquerydatepicker/jquery-ui.css" />
-<link rel="stylesheet" media="all" type="text/css" href="jquerydatepicker/jquery-ui-timepicker-addon.css" />
-<script type="text/javascript" src="jquerydatepicker/jquery-1.10.2.min.js"></script>
-<script type="text/javascript" src="jquerydatepicker/jquery-ui.min.js"></script>
-<script type="text/javascript" src="jquerydatepicker/jquery-ui-timepicker-addon.js"></script>
-<script type="text/javascript" src="jquerydatepicker/jquery-ui-sliderAccess.js"></script>
-<meta charset="iso-8859-1">
+<link rel="icon" type="png" href="png/Logo.png" />
+<link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui.css" %}"/>
+<link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.css" %}"/>
+<script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-1.10.2.min.js" %}"></script>
+<script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui.min.js" %}"></script>
+<script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.js" %}"></script>
+<script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-sliderAccess.js" %}"></script>
+<meta charset="utf-8">
 <title>Saming</title>
 </head>
 <style type="text/css">
     body {
         background-color: #dcdddc
     }
-
     body {
         margin: 0;
     }
-
      .navbar {
         overflow: hidden;
         background-color: #e18b26;
         font-family: Arial;
     }
-
         .navbar a {
             float: left;
             font-size: 16px;
@@ -36,14 +33,11 @@
             padding: 14px 16px;
             text-decoration: none;
         }
-
-/*á·çº·Ò§¢ÇÒ*/
-
+/*æŽƒç€›ë¡¬ãŽ–í• */
     .dropdown {
         float: relative;
         overflow: inline-block;
     }
-
         .dropdown .dropbtn {
             cursor: pointer;
             font-size: 16px;
@@ -53,7 +47,6 @@
             padding: 14px 16px;
             background-color: inherit;
         }
-
     .dropdown-content {
         display: none;
         position: fixed;
@@ -64,7 +57,6 @@
         z-index: 1;
         height: 100%;
     }
-
         .dropdown-content a {
             float: none;
             color: black;
@@ -73,15 +65,13 @@
             display: block;
             text-align: right;
         }
-
             .dropdown-content a:hover {
                 background-color: #ffc846;
             }
-
     .show {
         display: block;
     }
-    /*ÊèÇ¹logout*/
+    /*è¤í“œlogout*/
     .dropbtn1 {
         background-color: #e18b26;
         color: black;
@@ -90,17 +80,14 @@
         border: none;
         cursor: pointer;
     }
-
         .dropbtn1:hover, .dropbtn1:focus {
             background-color: #e18b26;
         }
-
     .dropdown1 {
         float: right;
         position: relative;
         display: inline-block;
     }
-
     .dropdown-content1 {
         display: none;
         position: absolute;
@@ -111,7 +98,6 @@
         right: 0;
         z-index: 1;
     }
-
         .dropdown-content1 a:hover {
             background-color: #ffc846
         }
@@ -123,7 +109,6 @@
             display: block;
             text-align: right;
         }
-
     .show1 {
         display: block;
     }
@@ -142,7 +127,6 @@
     cursor: pointer;
 }
 }
-
 .testcase {
 	font-family: Cloud;
 	font-size: 16px;
@@ -155,11 +139,11 @@
         <tr>
             <td height="54" valign="middle" bgcolor="c67d26">
                 <div class="dropdown">
-                    <button onClick="myFunction()" class="dropbtn"><img src="Tap3.png" width="29" height="24" align="bottom" /></button>
-                    <img src="blan2.png" height="28" width="64">                       
+                    <button onClick="myFunction()" class="dropbtn"><img src="{% static "png/Tap3.png" %}" width="29" height="24" align="bottom" /></button>
+                    <img src="{% static "png/blan2.png" %}" height="28" width="64">
                      <div id="myDropdown1" class="dropdown-content1">
-                        <a href="#home">Change Password</a>
-                        <a href="#about">Logout</a>
+                        <a href="/ClassRoom/Home">Change Password</a>
+                        <a href="/LogOut">Logout</a>
                    
                   </div>
                     <div class="dropdown1">
@@ -169,7 +153,7 @@
                   </div>
                     <div id="myDropdown" class="dropdown-content">
 
-                        <a href="#home">HOME</a>
+                        <a href="/ClassRoom/Home">HOME</a>
                         
                   </div>
                 </div>
@@ -281,13 +265,12 @@
        
 
 <script>
-/*¿Ñ§ªÑè¹á·çº·Ò§«éÒÂ*/
+/*ì™ãŽ¦ï¤™ë°žë£¨ë³œï¤¨ãƒ©ï¤°*/
         /* When the user clicks on the button,
         toggle between hiding and showing the dropdown content */
         function myFunction() {
             document.getElementById("myDropdown").classList.toggle("show");
         }
-
         function filterFunction() {
             var input, filter, ul, li, a, i;
             input = document.getElementById("myInput");
@@ -302,17 +285,15 @@
                 }
             }
         }
-        /*¾Ñ§ªÑè¹ÊèÇ¹logout*/
+        /*ì•—ãŽ¦ï¤™ë¯å®Œlogout*/
         /* When the user clicks on the button, 
     toggle between hiding and showing the dropdown content */
         function myFunction1() {
             document.getElementById("myDropdown1").classList.toggle("show1");
         }
-
         // Close the dropdown if the user clicks outside of it
         window.onclick = function (event) {
             if (!event.target.matches('.dropbtn1')) {
-
                 var dropdowns = document.getElementsByClassName("dropdown-content1");
                 var n;
                 for (n = 0; n < dropdowns.length; n++) {
@@ -326,6 +307,4 @@
 jQuery("#jQueryUICalendar1").datepicker();
 </script>
 </body>
-
-</html>
 {% endblock %}

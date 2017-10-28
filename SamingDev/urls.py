@@ -22,10 +22,13 @@ from django.contrib.auth import views as auth_views
 from LogIn_Management import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^LogIn_Page/', views.LogIn_Page),
-    url(r'^LogIn_Auth/', views.LogIn_Auth),
+    url(r'^LogIn_Page/$', views.LogIn_Page),
+    url(r'^LogIn_Auth/$', views.LogIn_Auth),
     url(r'^ClassRoom/', include('Class_Management.urls')),
+    url(r'^Change_Password/$', views.Change_Password),
+    url(r'^ClassRoom/Assignment/', include('Assign_Management.urls')),
+
 
     #logout default function
-    url(r'^LogOut/', auth_views.logout, {'next_page': '/'}, name='logout'),
+    url(r'^LogOut/$', auth_views.logout, {'next_page': '/'}, name='logout'),
 ]

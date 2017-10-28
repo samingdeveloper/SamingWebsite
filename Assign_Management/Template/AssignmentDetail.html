@@ -1,27 +1,24 @@
-{% block content %}
 <!DOCTYPE html>
-
+{% block content %}
+    {% load static %}
 <html>
 <head>
-    <link rel="icon" type="png" href="Logo.png" />
+    <link rel="icon" type="png" href="{% static "png/Logo.png" %}"/>
     <title>Saming</title>
-<meta charset="iso-8859-1">
+<meta charset="utf-8">
 </head>
 <style type="text/css">
     body {
         background-color: #dcdddc
     }
-
     body {
         margin: 0;
     }
-
      .navbar {
         overflow: hidden;
         background-color: #e18b26;
         font-family: Arial;
     }
-
         .navbar a {
             float: left;
             font-size: 16px;
@@ -30,14 +27,11 @@
             padding: 14px 16px;
             text-decoration: none;
         }
-
-/*�纷ҧ���*/
-
+/*á·çº·Ò§¢ÇÒ*/
     .dropdown {
         float: relative;
         overflow: inline-block;
     }
-
         .dropdown .dropbtn {
             cursor: pointer;
             font-size: 16px;
@@ -47,7 +41,6 @@
             padding: 14px 16px;
             background-color: inherit;
         }
-
     .dropdown-content {
         display: none;
         position: fixed;
@@ -58,7 +51,6 @@
         z-index: 1;
         height: 100%;
     }
-
         .dropdown-content a {
             float: none;
             color: black;
@@ -67,15 +59,13 @@
             display: block;
             text-align: right;
         }
-
             .dropdown-content a:hover {
                 background-color: #ffc846;
             }
-
     .show {
         display: block;
     }
-    /*��ǹlogout*/
+    /*ÊèÇ¹logout*/
     .dropbtn1 {
         background-color: #e18b26;
         color: black;
@@ -84,17 +74,14 @@
         border: none;
         cursor: pointer;
     }
-
         .dropbtn1:hover, .dropbtn1:focus {
             background-color: #e18b26;
         }
-
     .dropdown1 {
         float: right;
         position: relative;
         display: inline-block;
     }
-
     .dropdown-content1 {
         display: none;
         position: absolute;
@@ -105,7 +92,6 @@
         right: 0;
         z-index: 1;
     }
-
         .dropdown-content1 a:hover {
             background-color: #ffc846
         }
@@ -117,12 +103,9 @@
             display: block;
             text-align: right;
         }
-
     .show1 {
         display: block;
     }
-
-
 .teacher1 {
 	font-family: Cloud;
 }
@@ -168,11 +151,11 @@
         <tr>
             <td height="54" valign="middle" bgcolor="c67d26">
                 <div class="dropdown">
-                    <button onClick="myFunction()" class="dropbtn"><img src="Tap3.png" width="29" height="24" align="bottom" /></button>
-                    <img src="blan2.png" height="28" width="64">                       
+                    <button onClick="myFunction()" class="dropbtn"><img src="{% static "png/Tap3.png" %}" width="29" height="24" align="bottom" /></button>
+                    <img src="{% static "png/blan2.png" %}" height="28" width="64">
                      <div id="myDropdown1" class="dropdown-content1">
-                        <a href="#home">Change Password</a>
-                        <a href="#about">Logout</a>
+                        <a href="/Change_Password">Change Password</a>
+                        <a href="/LogOut">Logout</a>
                    
                   </div>
                     <div class="dropdown1">
@@ -182,7 +165,7 @@
                   </div>
                     <div id="myDropdown" class="dropdown-content">
 
-                        <a href="#home">HOME</a>
+                        <a href="/ClassRoom/Home">HOME</a>
                         
                     </div>
                 </div>
@@ -191,7 +174,7 @@
 <table width="100%" border="0">
   <tr>
     <td height="137" colspan="4" valign="top"><p>&nbsp;</p>
-      <p><center> <img src="person.png" width="90" height="90">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <img src="person.png" width="90" height="90"></center></p>      </td>
+      <p><center> <img src="{% static "png/person.png" %}" width="90" height="90">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <img src="{% static "png/person.png" %}" width="90" height="90"></center></p>      </td>
     </tr>
   <tr>
     <td width="15%" height="67" valign="top">&nbsp;</td>
@@ -215,13 +198,12 @@
        
 
 <script>
-/*�ѧ����纷ҧ����*/
+/*¿Ñ§ªÑè¹á·çº·Ò§«éÒÂ*/
         /* When the user clicks on the button,
         toggle between hiding and showing the dropdown content */
         function myFunction() {
             document.getElementById("myDropdown").classList.toggle("show");
         }
-
         function filterFunction() {
             var input, filter, ul, li, a, i;
             input = document.getElementById("myInput");
@@ -236,17 +218,15 @@
                 }
             }
         }
-        /*�ѧ�����ǹlogout*/
+        /*¾Ñ§ªÑè¹ÊèÇ¹logout*/
         /* When the user clicks on the button, 
     toggle between hiding and showing the dropdown content */
         function myFunction1() {
             document.getElementById("myDropdown1").classList.toggle("show1");
         }
-
         // Close the dropdown if the user clicks outside of it
         window.onclick = function (event) {
             if (!event.target.matches('.dropbtn1')) {
-
                 var dropdowns = document.getElementsByClassName("dropdown-content1");
                 var n;
                 for (n = 0; n < dropdowns.length; n++) {
@@ -257,18 +237,16 @@
                 }
             }
         }
-        /*�ѧ�����ǹ���͡��鹻�*/
+        /*¾Ñ§ªÑè¹ÊèÇ¹àÅ×Í¡ªÑé¹»Õ*/
         /* When the user clicks on the button, 
     toggle between hiding and showing the dropdown content */
         /*
         function myFunction2() {
             document.getElementById("myDropdown2").classList.toggle("show2");
         }
-
         // Close the dropdown if the user clicks outside of it
         window.onclick = function (event) {
             if (!event.target.matches('.dropbtn2')) {
-
                 var dropdowns = document.getElementsByClassName("dropdown-content2");
                 var m;
                 for (m = 0; m < dropdowns.length; m++) {

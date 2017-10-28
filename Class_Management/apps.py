@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class QuitManagementConfig(AppConfig):
-    name = 'quit_management'
+class ClassManagementConfig(AppConfig):
+    name = 'Class_Management'

@@ -1,10 +1,10 @@
 {% block content %}
 <!DOCTYPE html>
-
+{% load static %}
 <html lang="en">
     <meta charset="UTF-8">
 <head>
-    <link rel="icon" type="png" href="111.png" />
+    <link rel="icon" type="png" href="png/Logo.png" />
     <title>Saming</title>
 
 </head>
@@ -293,11 +293,11 @@
         <tr>
             <td height="54" valign="middle" bgcolor="c67d26">
                 <div class="dropdown">
-                    <button onClick="myFunction()" class="dropbtn"><img src="Tap3.png" width="29" height="24" align="bottom" /></button>
-                    <img src="blan2.png" height="28" width="64">                       
+                    <button onClick="myFunction()" class="dropbtn"><img src="{% static "png/Tap3.png" %}" width="29" height="24" align="bottom" /></button>
+                    <img src="{% static "png/blan2.png" %}" height="28" width="64">
                      <div id="myDropdown1" class="dropdown-content1">
-                        <a href="#home">Change Password</a>
-                        <a href="#about">Logout</a>
+                        <a href="/Change_Password">Change Password</a>
+                        <a href="/LogOut">Logout</a>
                    
                   </div>
                     <div class="dropdown1">
@@ -307,7 +307,7 @@
                   </div>
                     <div id="myDropdown" class="dropdown-content">
 
-                        <a href="#home">HOME</a>
+                        <a href="/ClassRoom/Home">HOME</a>
                         <a>NEPHEW</a>
                     </div>
                 </div>
@@ -316,7 +316,7 @@
     
   
     <!-- Trigger/Open The Modal -->
-     <P Align=right> <button id="myBtn"><img src="Plus.png" height="25" width="25"></button> </P Align=right>
+     <P Align=right> <button id="myBtn"><img src="{% static "png/Plus.png" %}" height="25" width="25"></button> </P Align=right>
 
     <!-- The Modal -->
     <div id="myModal" class="modal">
