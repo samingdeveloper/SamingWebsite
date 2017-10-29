@@ -11,6 +11,7 @@ class Quiz(models.Model):
     quizTitle = models.CharField(max_length=255)
     quizDetail = models.CharField(max_length=1024)
     deadline = models.DateTimeField(blank=True, null=True)
+    hint = models.CharField(max_length=1024, blank=True, null=True)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
         return self.quizTitle

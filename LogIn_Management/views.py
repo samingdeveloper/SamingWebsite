@@ -40,6 +40,7 @@ def LogIn_Auth(request):
         #if user.objects.filter(userId=username) or user.objects.filter(studentId=username) and user.objects.filter(userPassWord=password):
         if user_a is not None:
             login(request, user_a)
+            #if request.user_a.is_superuser:
             request.session['var'] = username
             #return render(request, 'SelectClassroom.html', context)
             return HttpResponseRedirect("/ClassRoom/Home")

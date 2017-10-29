@@ -19,8 +19,18 @@ def GenerateAssign(request):
         Assignment = request.POST.get('Assignment', '')
         Assignment_Detail = request.POST.get('Assignment2', '')
         Deadline = request.POST.get('dateInput','')
-        GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline, classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
+        Hint = request.POST.get('hint','')
+        GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline, hint=Hint,classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
         #GenerateAssign_instance.save()
         return HttpResponseRedirect('/ClassRoom/Home')
+
+def DeleteAssign(request, quiz_id):
+    quiz = Quiz.objects.get(pk=quiz_id)
+    quiz.delete()
+    return HttpResponseRedirect('/ClassRoom/Home')
+
+def upload(request):
+    return render(request, 'Upload.html')
+
 
 
