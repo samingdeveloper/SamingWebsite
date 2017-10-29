@@ -1,0 +1,77 @@
+{% extends 'grading_code/base.html' %}
+{% block title %}{{ classroom }}{% endblock %}
+{% block classrooms_active %}active{% endblock %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container-fluid songs-container">
+
+    <div class="row">
+
+        <!-- Left Classroom Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <a href="{% url 'grading_code:detail' classroom.id %}">
+                        <img src="{% static 's2.png' %}" class="img-responsive" >
+                    </a>
+                    <h1>{{ classroom.name }}</h1>
+                    <h2>{{ classroom.year }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Song Info -->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" class="active"><a href="{% url 'grading_code:detail' classroom.id %}">View All</a></li>
+                <li role="presentation"><a href="{% url 'grading_code:create_quiz' classroom.id %}">Add New Quiz</a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    <h3>All Quiz</h3>
+
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for quiz in classroom.quiz_set.all %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'grading_code:grading' classroom.id quiz.id %}">{{quiz.quiz_title }}</a>
+                                </td>
+                                <td>
+                                    <form action="{% url 'grading_code:delete_quiz' classroom.id quiz.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quiz_id" value="{{ quiz.id }}" />
+                                        <button type="submit" class="btn btn-danger btn-xs">
+                                            <span class="glyphicon glyphicon-remove"></span>&nbsp; Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

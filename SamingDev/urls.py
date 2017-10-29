@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from LogIn_Management import views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^LogIn_Page/$', views.LogIn_Page),

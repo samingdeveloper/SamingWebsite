@@ -1,0 +1,51 @@
+{% extends 'grading_code/base.html' %}
+{% block title %}All Quizs{% endblock %}
+{% block quizs_active %}active{% endblock %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container-fluid quizs-container">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation" {% if filter_by == 'all' %}class="active"{% endif %}><a href="{% url 'grading_code:quizs' 'all' %}">View All</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-12">
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Quiz Title</th>
+                                <th>Year</th>
+                                <th>Classroom</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for quiz in quiz_list %}
+                                <tr>
+                                    <td>{{ quiz.quiz_title }}</td>
+                                    <td>{{ quiz.classroom.year }}</td>
+                                    <td>
+                                        <a href="{% url 'grading_code:detail' quiz.classroom.id %}">{{ quiz.classroom.name }}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

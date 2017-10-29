@@ -1,0 +1,26 @@
+{% extends 'grading_code/base.html' %}
+{% block title %}{{ quiz }}{% endblock %}
+{% block quizs_active %}active{% endblock %}
+{% load staticfiles %}
+
+{% block body %}
+<div class="container-fluid">
+
+    <div class="container">
+        <!--Left Quiz Info-->
+        <div class="panel-body">
+            <h2>{{classroom}}</h2>
+            <p>{{quiz.quiz_title}}</p>
+        </div>
+        <form action="{% url 'grading_code:grade' classroom.id quiz.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea class="form-control" row="5" id="code" name="code">{{code}}</textarea>
+                <br>
+                <button type="submit" class="btn btn-success">Submit</button>
+                <p>{{display}}</p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

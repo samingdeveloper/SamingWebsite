@@ -173,6 +173,7 @@
     </div>
 <table width="100%" border="0">
   <tr>
+      <center><H1><u>{{ classname }}</u></H1></center>
     <td height="137" colspan="4" valign="top"><p>&nbsp;</p>
       <p><center> <img src="{% static "png/person.png" %}" width="90" height="90">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <img src="{% static "png/person.png" %}" width="90" height="90"></center></p>      </td>
     </tr>
@@ -184,18 +185,19 @@
     <td width="45%" valign="top"><p class="teacher2"><strong><span class="teacher2">Teacher : Admin 2</span></strong></p>
     <p class="teacher2"><strong><span class="teacher2">Email : admin2@mail.kmutt.ac.th </span></strong></p>        
   </tr>
+</table>
+{%  for i in quiz %}
   <tr>
-    <td height="465" colspan="4" valign="top"><center> 
+          <script>console.log(i)</script>
+    <td height="465" colspan="4" valign="top"><center>
         <p><a href="#assignment" class="button" >
-          <strong>Assignment : <br>
-          Detail :          <br><br>
-          Deadline : 
-          
+          <strong>Assignment : {{ i.quizTitle }}<br>
+          Detail : {{ i.quizDetail }} <br>
+          Deadline : {{ i.deadline }} <br>
         </strong></a>    </p>
     </center>    </td>
   </tr>
-</table>
-       
+    {% endfor %}
 
 <script>
 /*¿Ñ§ªÑè¹á·çº·Ò§«éÒÂ*/

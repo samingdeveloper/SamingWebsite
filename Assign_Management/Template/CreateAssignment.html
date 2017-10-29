@@ -142,7 +142,7 @@
                     <button onClick="myFunction()" class="dropbtn"><img src="{% static "png/Tap3.png" %}" width="29" height="24" align="bottom" /></button>
                     <img src="{% static "png/blan2.png" %}" height="28" width="64">
                      <div id="myDropdown1" class="dropdown-content1">
-                        <a href="/ClassRoom/Home">Change Password</a>
+                        <a href="/Change_Password">Change Password</a>
                         <a href="/LogOut">Logout</a>
                    
                   </div>
@@ -153,12 +153,12 @@
                   </div>
                     <div id="myDropdown" class="dropdown-content">
 
-                        <a href="/ClassRoom/Home">HOME</a>
-                        
+                        <a href="{% url 'Class_Management:Home' %}">HOME</a>
                   </div>
                 </div>
               
     </div>
+<form action="generate_assign/" method="post"> {% csrf_token %}
 <table width="100%" border="0">
   <tr>
     <td width="15%" height="577" rowspan="2" valign="top">&nbsp;</td>
@@ -171,20 +171,20 @@
       <textarea name="Assignment2" cols="80" rows="5"></textarea>
     </p>
     <p class="deadline"><strong>Deadline </strong></p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      
+    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <script type="text/javascript">
 		$(function(){
 		$("#dateInput").datetimepicker({
-			dateFormat: '   dd-M-yy',
-			timeFormat: "HH:mm",
+			dateFormat: 'yy-mm-dd',
+			timeFormat: 'HH:mm:ss',
 			});
 });
 </script>
-    &nbsp; 
-    <input type="text" name="dateInput" id="dateInput" value="                  Click" /> 
+    &nbsp;
+    <input type="text" name="dateInput" id="dateInput" />
    &nbsp;&nbsp; &nbsp; </p>
     
-    <p class="code"><strong>Code Templat    </strong></p>
+    <p class="code"><strong>Code Template   </strong></p>
     <form action="uploadfile.php" 
               method="post" 
               enctype="multipart/form-data" 
@@ -262,8 +262,7 @@
     <td height="38" valign="top">    
   </tr>
 </table>
-       
-
+</form>
 <script>
 /*왐㎦酪밞루볜廊ラ擄*/
         /* When the user clicks on the button,

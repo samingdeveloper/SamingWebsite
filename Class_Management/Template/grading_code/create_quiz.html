@@ -1,0 +1,57 @@
+{% extends 'grading_code/base.html' %}
+{% block title %}Add a New Quiz{% endblock %}
+{% block classrooms_active %}active{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+
+    <div class="row">
+
+        <!-- Left Album Info -->
+        <div class="col-sm-4 col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                        <a href="{% url 'grading_code:detail' classroom.id %}">
+                            desete
+                        </a>
+                    <h1>{{ classroom.name }} </h1>
+                    <h2>{{ classroom.year }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Song Info -->
+        <div class="col-sm-8 col-md-9">
+
+            <ul class="nav nav-pills" style="margin-bottom: 10px;">
+                <li role="presentation"><a href="{% url 'grading_code:detail' classroom.id %}">View All</a></li>
+                <li role="presentation" class="active"><a href="{% url 'grading_code:create_quiz' classroom.id %}">Add New Quiz</a></li>
+            </ul>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3>Add a New Quiz</h3>
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+                    <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="classroom" value="{{ classroom }}">
+                        {% include 'grading_code/form_template.html' %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
