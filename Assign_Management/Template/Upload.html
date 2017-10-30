@@ -1,6 +1,11 @@
 {% extends "NavBar.html" %}
 {% block content %}
     {% load static %}
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
 
 <table width="99%" border="0">
   <tr>
@@ -20,34 +25,15 @@
   </tr>
   <tr>
     <td width="41%" height="109" valign="top" bgcolor="#DCDDDC">&nbsp;</td>
-    <td align="left" valign="middle"><form action="uploadfile.php" 
-              method="post" 
-              enctype="multipart/form-data" 
-              target="ifrm"
-        >
+    <td align="left" valign="middle">
+        <form method="post" enctype="multipart/form-data" target="ifrm">
+        {% csrf_token %}
       <p>
-        <input type="file"
-                   name="upload"
-                   style="display:none"
-            />
-        &nbsp;
-        <input type="text"
-                   name="uploadtext"
-                   onKeyDown="upload.value=uploadtext.value "
-            />
-      </p>
-      <p>
-         &nbsp;
-         <input type="button"
-                   name="uploadbutton" 
-                   value="choose file"
-                   onclick="upload.click()"
-                   onmouseout="uploadtext.value=upload.value"
-            />
-        &nbsp; 
-         <input type="submit" value="submit"/>
+        <input type="file" name="upload">
+         <input type="submit"  class="btn btn-warning" value="submit"/>{{display}}
       </p>
     </form></td>
+
   </tr>
 </table>
        
