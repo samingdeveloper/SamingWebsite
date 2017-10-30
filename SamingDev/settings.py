@@ -130,6 +130,8 @@ STATICFILES_DIRS = [
     #'/var/www/static/',
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 '''if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)'''

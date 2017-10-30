@@ -21,6 +21,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from LogIn_Management import views
 
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^LogIn_Page/$', views.LogIn_Page),
@@ -28,8 +29,12 @@ urlpatterns = [
     url(r'^ClassRoom/', include('Class_Management.urls')),
     url(r'^Change_Password/$', views.Change_Password),
     url(r'^ClassRoom/Assignment/', include('Assign_Management.urls')),
+    url(r'^', include('Assign_Management.urls')),
 
 
     #logout default function
     url(r'^LogOut/$', auth_views.logout, {'next_page': '/'}, name='logout'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
