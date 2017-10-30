@@ -13,25 +13,25 @@
   </tr>
   <tr>
     <td height="465" colspan="2" rowspan="4" valign="top">&nbsp;</td>
-    <td width="18%" height="75" valign="top" class="assignment"><strong>Assignment 1</strong></td>
+    <td width="18%" height="75" valign="top" class="assignment"><strong>Deadline:{{ Deadline }}<br><br>Assignment:{{ quizTitle }}</strong></td>
     <td width="41%" height="465" rowspan="3" valign="top" bgcolor="#000000">&nbsp;</td>
-    <td width="25%" rowspan="3" valign="top" bgcolor="#000000">&nbsp;</td>
+    <td width="25%" rowspan="3" valign="top" bgcolor="#000000"><p style="color:white;">{{display}}
+      </p></td>
   </tr>
   <tr>
-    <td height="215" valign="top" class="pro"><p><strong>Proposition</strong></p></td>
+    <td height="215" valign="top" class="pro"><p><strong>Detail:{{ quizDetail }}</strong></p></td>
   </tr>
   <tr>
-    <td rowspan="2" valign="top" class="pro"><p><strong class="hint">Hint</strong></p></td>
+    <td rowspan="2" valign="top" class="pro"><p><strong class="hint">Hint:{{ Hint }}</strong></p></td>
   </tr>
   <tr>
-    <td width="41%" height="109" valign="top" bgcolor="#DCDDDC">&nbsp;</td>
+    <td width="41%" height="109" valign="top" bgcolor="#DCDDDC">&nbsp</td>
     <td align="left" valign="middle">
         <form method="post" enctype="multipart/form-data" target="ifrm">
         {% csrf_token %}
       <p>
         <input type="file" name="upload">
-         <input type="submit"  class="btn btn-warning" value="submit"/>{{display}}
-      </p>
+         <input type="submit"  class="btn btn-warning" value="submit"/>
     </form></td>
 
   </tr>

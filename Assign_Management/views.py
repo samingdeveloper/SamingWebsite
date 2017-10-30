@@ -37,7 +37,8 @@ def DeleteAssign(request, quiz_id):
     return HttpResponseRedirect('/ClassRoom/Home')
 
 
-def upload(request):
+def upload(request, quiz_id):
+    quiz = Quiz.objects.get(pk=quiz_id)
     if request.method == 'POST' and request.FILES['upload']:
         myfile = request.FILES['upload']
         fs = FileSystemStorage()
@@ -45,7 +46,7 @@ def upload(request):
         uploaded_file_url = fs.url(filename)
 
         #open file .txt. Address  file ???????? Now! change follow your PC
-        f = open('/Users/Phurin/Desktop/SamingWebsite-test_branch'+str(uploaded_file_url), 'r')
+        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev'+str(uploaded_file_url), 'r')
         code = f.read()
         code = code.lower()
 
@@ -72,7 +73,11 @@ def upload(request):
             'uploaded_file_url': uploaded_file_url,
             'display': result
         })
-    return render(request, 'Upload.html')
+    return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
+                                           'quizDetail':quiz.quizDetail,
+                                           'Deadline':quiz.deadline,
+                                           'Hint':quiz.hint,
+    })
 
 
 

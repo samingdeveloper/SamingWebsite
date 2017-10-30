@@ -21,13 +21,14 @@
   <tr>
           <script>console.log(i)</script>
     <td height="465" colspan="4" valign="top"><center>
-        <p><a href={% url 'Class_Management:Assign_Management:Upload' %} class="button" >
+        <p><a href={% url 'Class_Management:Assign_Management:Upload' i.id %} class="button" >
           <strong>Assignment : {{ i.quizTitle }}<br>
           Detail : {{ i.quizDetail }} <br>
           Deadline : {{ i.deadline }} <br>
         </strong></a>    </p>
     </center>
     </td>
+      {%  if request.user.is_superuser %}
   <td height="465" colspan="4" valign="top">
       <form action="{% url 'Class_Management:Assign_Management:DeleteAssign' i.id %}" method="post" style="display: inline;">
           {% csrf_token %}
@@ -37,6 +38,7 @@
           </button></center>
       </form>
   </td>
+  {% endif %}
   </tr>
     {% endfor %}
 
