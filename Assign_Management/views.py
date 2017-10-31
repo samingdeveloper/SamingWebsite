@@ -12,15 +12,22 @@ from django.core.files.storage import FileSystemStorage
 # Create your views here.
 
 def CreateAssignment(request):
-    return render(request,'CreateAssignment.html')
+    if not request.user.is_authenticated or not request.user.is_superuser:
+        return HttpResponseRedirect('/LogOut')
+    else:
+        return render(request,'CreateAssignment.html')
 
 
 def AssignmentDetail(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
     return render(request, 'Home.html')
 
 
 def GenerateAssign(request):
-    if request.method == "POST":
+    if not request.user.is_authenticated or not request.user.is_superuser:
+        return HttpResponseRedirect('/LogOut')
+    elif request.method == "POST":
         var = request.session['var']
         Assignment = request.POST.get('Assignment', '')
         Assignment_Detail = request.POST.get('Assignment2', '')
@@ -32,6 +39,8 @@ def GenerateAssign(request):
 
 
 def DeleteAssign(request, quiz_id):
+    if not request.user.is_authenticated or not request.user.is_superuser:
+        return HttpResponseRedirect('/LogOut')
     quiz = Quiz.objects.get(pk=quiz_id)
     quiz.delete()
     return HttpResponseRedirect('/ClassRoom/Home')
@@ -39,7 +48,9 @@ def DeleteAssign(request, quiz_id):
 
 def upload(request, quiz_id):
     quiz = Quiz.objects.get(pk=quiz_id)
-    if request.method == 'POST' and request.FILES['upload']:
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    elif request.method == 'POST' and request.FILES['upload']:
         myfile = request.FILES['upload']
         fs = FileSystemStorage()
         filename = fs.save(myfile.name, myfile)

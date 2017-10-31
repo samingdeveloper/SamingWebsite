@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponseRedirect
 from .models import ClassRoom,Quiz
 from django.http import Http404
 from django.contrib.auth.models import User
@@ -19,13 +19,18 @@ def inside(request,className):
 
 def Home(request):
     var = request.session['var']
-    if User.objects.get(username=var).extraauth.year:
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    elif User.objects.get(username=var).extraauth.year:
         context = {
             'var':User.objects.get(username=var).extraauth.year,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
             'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
         }
-    return render(request,'Home.html',context)
+        return render(request,'Home.html',context)
 
 def Submit(request):
-    return render(request,'SubmitRoom.html')
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    else:
+        return render(request,'SubmitRoom.html')
