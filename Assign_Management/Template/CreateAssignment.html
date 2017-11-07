@@ -9,7 +9,8 @@
     <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.js" %}"></script>
     <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-sliderAccess.js" %}"></script>
 
-<form action="generate_assign/" method="post"> {% csrf_token %}
+<form action="{% url 'Class_Management:Assign_Management:GenerateAssign' %}" method="post" enctype="multipart/form-data"
+              > {% csrf_token %}
 <table width="100%" border="0">
   <tr>
     <td width="15%" height="577" rowspan="2" valign="top">&nbsp;</td>
@@ -34,81 +35,46 @@
     &nbsp;
     <input type="text" name="dateInput" id="dateInput" />
    &nbsp;&nbsp; &nbsp; </p>
-    
+
     <p class="code"><strong>Code Template   </strong></p>
-    <form action="uploadfile.php" 
-              method="post" 
-              enctype="multipart/form-data" 
-              target="ifrm"
-        >
-            <input type="file"
-                   name="upload"
-                   style="display:none"
-            />
-            &nbsp; 
-            &nbsp; 
-            &nbsp; 
-            &nbsp;
-            &nbsp; 
-             
-            <input type="text"
-                   name="uploadtext"
-                   onkeydown="upload.value=uploadtext.value "
+            <input type="file" name="upload_template" style="display:none"/>
+         <input type="text"
+                   name="uploadtext_template"
+                   onkeydown="upload_template.value=uploadtext_template.value "
             />
             <input type="button"
-                   name="uploadbutton" 
-                   value="choose file"
-                   onclick="upload.click()"
-                   onmouseout="uploadtext.value=upload.value"
-            /> 
-            <input type="submit" value="submit"/>
-      </form>
-        <iframe name="ifrm" style="display:none">
-        </iframe>
-    </p>
+                   name="uploadbutton"
+                   value="Choose File"
+                   onclick="upload_template.click()"
+                   onmouseout="uploadtext_template.value=upload_template.value"
+            />
     <p><strong>Hint</strong></p>
     <p>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
       <textarea name="hint" cols="80" rows="5"></textarea>
-      &nbsp; 
-      &nbsp; 
+      &nbsp;
+      &nbsp;
     &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-    
+
     </p>
-    
-    <p><strong class="testcase">Test Case</strong>    
-    <form action="uploadfile.php" 
-              method="post" 
-              enctype="multipart/form-data" 
-              target="ifrm"
-        >
-            <input type="file"
-                   name="upload"
-                   style="display:none"
-            />
-            &nbsp; 
-            &nbsp; 
-            &nbsp; 
-            &nbsp;
-            &nbsp; 
-             
-            <input type="text"
-                   name="uploadtext"
-                   onkeydown="upload.value=uploadtext.value "
+
+        <p><strong class="testcase">Test Case</strong></p>
+            <input type="file" name="upload_testcase" style="display:none"/>
+         <input type="text"
+                   name="uploadtext_testcase"
+                    id="uploadtext_testcase"
+                   onkeydown="upload_testcase.value=uploadtext_testcase.value "
+                    onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()"
             />
             <input type="button"
-                   name="uploadbutton" 
-                   value="choose file"
-                   onclick="upload.click()"
-                   onmouseout="uploadtext.value=upload.value"
-            /> 
-            <input type="submit" value="submit"/>
-      </form>
-        <iframe name="ifrm" style="display:none">
-        </iframe>
-    </p>
+                   name="uploadbutton"
+                   value="Choose File"
+                   onclick="upload_testcase.click()"
+                   onmouseout="uploadtext_testcase.value=upload_testcase.value"
+            />
     <p>&nbsp;</p>
     <td width="25%" height="550" align="center" valign="top"><p>&nbsp;</p>  
     <button class="genquizbutton"><strong>Save</strong></button>  </tr>
+
   <tr>
     <td height="38" valign="top">    
   </tr>

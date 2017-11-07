@@ -27,10 +27,22 @@
   <tr>
     <td width="41%" height="109" valign="top" bgcolor="#DCDDDC">&nbsp</td>
     <td align="left" valign="middle">
-        <form method="post" enctype="multipart/form-data" target="ifrm">
+        <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
       <p>
-        <input type="file" name="upload">
+        <input type="file" name="upload" style="display:none"/>
+           <input type="text"
+                   name="uploadtext"
+                   onkeydown="upload.value=uploadtext.value "
+                   onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()"
+
+            />
+            <input type="button"
+                   name="uploadbutton"
+                   value="Choose File"
+                   onclick="upload.click()"
+                   onmouseout="uploadtext.value=upload.value"
+            />
          <input type="submit"  class="btn btn-warning" value="submit"/>
     </form></td>
 

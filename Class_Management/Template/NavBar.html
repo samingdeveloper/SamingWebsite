@@ -212,7 +212,7 @@
                     <div id="myDropdown" class="dropdown-content">
                         <a href="/ClassRoom/Home">HOME</a>
                         {% if request.user.is_superuser %}
-                        <a href="/ClassRoom/Assignment">Assignment</a>
+                        <a href={% url 'Class_Management:Assign_Management:GenerateAssign' %}>Assignment</a>
                         {% endif %}
                     </div>
                 </div>
