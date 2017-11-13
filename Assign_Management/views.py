@@ -5,6 +5,7 @@ from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management.models import ClassRoom, Quiz
 from django.contrib.auth.models import User
 import unittest
+import importlib
 from unittest import TextTestRunner
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -67,27 +68,72 @@ def upload(request, quiz_id):
         uploaded_file_url = fs.url(filename)
 
         #open file .txt. Address  file ???????? Now! change follow your PC
-        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev'+str(uploaded_file_url), 'r')
+        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev'+str(uploaded_file_url)+".py", 'r+')
+        case = quiz.text_testcase_content
+        for case_line in case.splitlines():
+            if (case_line=="# Test case"):
+                test_case_count += 1
+                Out_count += 1
+            f.write(case_line+"\n")
+        for i in range(test_case_count):
+            i += 1
+            globals()['test_case_out_%s' % i] = ""
+            globals()['out_%s' % i] = ""
         code = f.read()
         code = code.lower()
-        case = quiz.text_testcase_content
-        print(code)
+        prob = importlib.import_module(uploaded_file_url)
+        for line in f:
+            # print(line)
+            if "# Stop" in line:
+                for i in range(test_case_count):
+                    i+=1
+                    globals()['test_case_out_%s' % i] = ""
+                    globals()['out_%s' % i] = ""
+                test_case_count = 0
+                Out_count = 0
+                write_mode = False
+
+            if write_mode:
+                if "# Out" in line:
+                    globals()['out_%s' % test_case_num] = eval(line[7:-1])
+                elif "# Break" in line:
+                    write_mode = False
+                command = line.replace('print(', 'prob.')
+                #print(command)
+                try:
+                    globals()['test_case_out_%s' % test_case_num] = eval(command[:-2])
+                    globals()['test_case_out_%s' % test_case_num] = str(globals()['test_case_out_%s' % test_case_num]) + "\n"
+
+                except:
+                    # print("Error Occur")
+                    continue
+
+            if "# Test case" in line:
+                test_case_num = str(line[11])
+                write_mode = True
+
         #unittest process.
         class MyTestCase(unittest.TestCase):
-            def test_text(self):
-                text = code
-                mt = case
-                #self.assertEquals(text, "print('hello world')")
-                self.assertEquals(text, mt)
-            def test_text_two(self):
-                text = code
-                mt = case
-                #self.assertEqual(text, 'print("hello world")')
-                self.assertEqual(text,  mt)
+            if (test_case_count > 0):
+                def test_text(self):
+                    text_1 = test_case_out_1
+                    mt_1 = out_1
+                    self.assertEquals(text_1, mt_1)
+            if (test_case_count > 1):
+                def test_text_two(self):
+                    text_2 = test_case_out_2
+                    mt_2 = out_2
+                    self.assertEqual(text_2,  mt_2)
+            if (test_case_count > 2):
+                def test_text_three(self):
+                    text_3 = test_case_out_3
+                    mt_3 = out_3
+                    self.assertEqual(text_3,  mt_3)
+
         test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
         test_result = TextTestRunner().run(test_suite)
         x = len(test_result.failures)
-        if x==0:
+        if x==3:
             result = "PASS"
         else:
             result = "FAIL"
