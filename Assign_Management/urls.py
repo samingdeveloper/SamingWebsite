@@ -6,7 +6,7 @@ app_name = 'Assign_Management'
 urlpatterns = [
     url(r'^$', views.CreateAssignment, name='CreateAssignment'),
     url(r'^(?P<quiz_id>[0-9]+)/', views.DeleteAssign, name='DeleteAssign'),
-    url(r'^Upload/(?P<quiz_id>[0-9]+)/', views.upload, name='Upload'),
+    url(r'^Upload/(?P<quiz_id>[0-9]+)/', views.code, name='Uploadfile'),
     url(r'^AssignmentDetail/', views.AssignmentDetail, name='AssignmentDetail'),
     url(r'generate_assign/$', views.GenerateAssign, name='GenerateAssign')
 ]

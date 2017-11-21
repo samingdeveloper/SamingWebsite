@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management.models import ClassRoom, Quiz
+from Assign_Management.models import Upload
 from django.contrib.auth.models import User
 import unittest
 import importlib
@@ -11,6 +12,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
+
 
 def CreateAssignment(request):
     var = request.session['var']
@@ -24,6 +26,7 @@ def AssignmentDetail(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     return render(request, 'Home.html')
+
 
 
 def GenerateAssign(request):
@@ -49,6 +52,7 @@ def GenerateAssign(request):
     else:
         return render(request, 'CreateAssignment.html')
 
+
 def DeleteAssign(request, quiz_id):
     if not request.user.is_authenticated or not request.user.is_superuser:
         return HttpResponseRedirect('/LogOut')
@@ -57,7 +61,7 @@ def DeleteAssign(request, quiz_id):
     return HttpResponseRedirect('/ClassRoom/Home')
 
 
-def upload(request, quiz_id):
+def uploadgrading(request, quiz_id):
     quiz = Quiz.objects.get(pk=quiz_id)
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -67,8 +71,7 @@ def upload(request, quiz_id):
         filename = fs.save(myfile.name, myfile)
         uploaded_file_url = fs.url(filename)
 
-        #open file .txt. Address  file ???????? Now! change follow your PC
-        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev'+str(uploaded_file_url)+".py", 'r+')
+        f = open('.'+str(uploaded_file_url)+".py", 'r+')
         case = quiz.text_testcase_content
         for case_line in case.splitlines():
             if (case_line=="# Test case"):
@@ -155,5 +158,32 @@ def upload(request, quiz_id):
         })
 
 
+def code(request, quiz_id):
+    quiz = Quiz.objects.get(pk=quiz_id)
+    if request.method == 'POST':
+        code = request.POST['code-form-comment']
+        if code == '':
+            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                   'quizDetail': quiz.quizDetail,
+                                                   'Deadline': quiz.deadline,
+                                                   'Hint': quiz.hint,
+                                                   'code': code,})
+        else:
+            fileName = str(request.user)+'_'+str(quiz)+'_'+'scrip.py'
+            myfile = open('./media/'+fileName, 'w')
+            myfile.write(code)
+            myfile.close()
+            Upload.objects.get_or_create(title=fileName, fileUpload='./media/'+fileName, user=request.user, quiz=quiz)
 
-
+        return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
+                                           'quizDetail':quiz.quizDetail,
+                                           'Deadline':quiz.deadline,
+                                           'Hint':quiz.hint,
+                                        'code' : code,
+        })
+    else:
+        return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
+                                           'quizDetail':quiz.quizDetail,
+                                           'Deadline':quiz.deadline,
+                                           'Hint':quiz.hint,
+        })
