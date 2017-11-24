@@ -30,7 +30,7 @@
             {% csrf_token %}
             <textarea  class="codemirror-textarea"  name="code-form-comment"  id="code-form-comment" >{{code}}</textarea>
             <br>
-            <input type="submit" name="code-form-submit" id=code-form-submit" value="Submit"></input>
+            <input type="submit" name="code-form-submit" id="code-form-submit" value="Submit"></input>
             <p>{{display}}</p>
         </form>
     </td>
@@ -62,7 +62,7 @@
                    onclick="upload.click()"
                    onmouseout="uploadtext.value=upload.value"
             />
-         <input type="submit"  class="btn btn-warning" value="submit"/>
+         <input type="submit"  name="upload_submit" class="btn btn-warning" value="submit"/>
     </form></td>
 
   </tr>

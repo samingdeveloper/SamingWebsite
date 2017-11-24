@@ -4,16 +4,18 @@ from django.template import loader
 from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management.models import ClassRoom, Quiz
 from Assign_Management.models import Upload
+from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth.models import User
 import unittest
 import importlib
+import sys
 from unittest import TextTestRunner
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
-
+sys.path.append('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media')
 def CreateAssignment(request):
     var = request.session['var']
     if not request.user.is_authenticated or not request.user.is_superuser:
@@ -65,92 +67,246 @@ def uploadgrading(request, quiz_id):
     quiz = Quiz.objects.get(pk=quiz_id)
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
-    elif request.method == 'POST' and request.FILES['upload']:
-        myfile = request.FILES['upload']
-        fs = FileSystemStorage()
-        filename = fs.save(myfile.name, myfile)
-        uploaded_file_url = fs.url(filename)
-
-        f = open('.'+str(uploaded_file_url)+".py", 'r+')
-        case = quiz.text_testcase_content
-        for case_line in case.splitlines():
-            if (case_line=="# Test case"):
-                test_case_count += 1
-                Out_count += 1
-            f.write(case_line+"\n")
-        for i in range(test_case_count):
-            i += 1
-            globals()['test_case_out_%s' % i] = ""
-            globals()['out_%s' % i] = ""
-        code = f.read()
-        code = code.lower()
-        prob = importlib.import_module(uploaded_file_url)
-        for line in f:
-            # print(line)
-            if "# Stop" in line:
-                for i in range(test_case_count):
-                    i+=1
-                    globals()['test_case_out_%s' % i] = ""
-                    globals()['out_%s' % i] = ""
-                test_case_count = 0
-                Out_count = 0
-                write_mode = False
-
-            if write_mode:
-                if "# Out" in line:
-                    globals()['out_%s' % test_case_num] = eval(line[7:-1])
-                elif "# Break" in line:
+    elif request.method == 'POST' and 'upload_submit' in request.POST:
+        if request.FILES['upload']:
+            print("in_upload_submit")
+            uploaded_to_file = request.FILES['upload']
+            #fileName = str(request.user) + '_uploaded_' + uploaded_to_file.name + '_' + str(quiz) + '_' + 'script.py'
+            fileName = uploaded_to_file.name
+            OSS = OverwriteStorage()
+            in_sys_file = OSS.save(fileName, uploaded_to_file)
+            #myfile = open('./media/' + fileName, 'w')f
+            Upload.objects.get_or_create(title=fileName, Uploadfile=in_sys_file ,user=request.user, quiz=quiz)
+            #myfile.close()
+            write_mode = False
+            test_case_count = 0
+            Out_count = 0
+            # open file .txt. Address  file ???????? Now! change follow your PC
+            f = open('./media/' + fileName, 'a')
+            case = quiz.text_testcase_content
+            f.write("\n\n")
+            for case_line in case.splitlines():
+                if (case_line[:11] == "# Test case"):
+                    test_case_count += 1
+                    Out_count += 1
+                f.write(case_line + "\n")
+            for i in range(test_case_count):
+                i += 1
+                globals()['test_case_out_%s' % i] = ""
+                globals()['out_%s' % i] = ""
+            f = open('./media/' + fileName, 'r')
+            code = f.read()
+            f.close()
+            # code = code.lower()
+            prob = importlib.import_module(fileName[:-3])
+            for line in code.splitlines():
+                print(line)
+                if "# Stop" in line:
+                    print("stop")
                     write_mode = False
-                command = line.replace('print(', 'prob.')
-                #print(command)
-                try:
-                    globals()['test_case_out_%s' % test_case_num] = eval(command[:-2])
-                    globals()['test_case_out_%s' % test_case_num] = str(globals()['test_case_out_%s' % test_case_num]) + "\n"
 
-                except:
-                    # print("Error Occur")
-                    continue
+                if write_mode:
+                    if "# Out" in line:
+                        globals()['out_%s' % test_case_num] = eval(line[6:])
+                    elif "# Break" in line:
+                        print("Break!")
+                        write_mode = False
+                    command = line.replace('print(', 'prob.')
 
-            if "# Test case" in line:
-                test_case_num = str(line[11])
-                write_mode = True
+                    try:
+                        globals()['test_case_out_%s' % test_case_num] = eval(command[:-1])
+                        # globals()['test_case_out_%s' % test_case_num] = str(globals()['test_case_out_%s' % test_case_num]) + "\n"
 
-        #unittest process.
-        class MyTestCase(unittest.TestCase):
-            if (test_case_count > 0):
-                def test_text(self):
-                    text_1 = test_case_out_1
-                    mt_1 = out_1
-                    self.assertEquals(text_1, mt_1)
-            if (test_case_count > 1):
-                def test_text_two(self):
-                    text_2 = test_case_out_2
-                    mt_2 = out_2
-                    self.assertEqual(text_2,  mt_2)
-            if (test_case_count > 2):
-                def test_text_three(self):
-                    text_3 = test_case_out_3
-                    mt_3 = out_3
-                    self.assertEqual(text_3,  mt_3)
 
-        test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
-        test_result = TextTestRunner().run(test_suite)
-        x = len(test_result.failures)
-        if x==3:
-            result = "PASS"
+                    except:
+                        continue
+
+                if "# Test case" in line:
+                    print("in testcase  ")
+                    test_case_num = str(line[11])
+                    write_mode = True
+
+            # unittest process.
+            class MyTestCase(unittest.TestCase):
+                if (test_case_count > 0):
+                    def test_text(self):
+                        text_1 = test_case_out_1
+                        mt_1 = out_1
+                        self.assertEquals(text_1, mt_1)
+                if (test_case_count > 1):
+                    def test_text_two(self):
+                        text_2 = test_case_out_2
+                        mt_2 = out_2
+                        self.assertEqual(text_2, mt_2)
+                if (test_case_count > 2):
+                    def test_text_three(self):
+                        text_3 = test_case_out_3
+                        mt_3 = out_3
+                        self.assertEqual(text_3, mt_3)
+                if (test_case_count > 3):
+                    def test_text_three(self):
+                        text_4 = test_case_out_4
+                        mt_4 = out_4
+                        self.assertEqual(text_4, mt_4)
+                if (test_case_count > 4):
+                    def test_text_three(self):
+                        text_5 = test_case_out_5
+                        mt_5 = out_5
+                        self.assertEqual(text_5, mt_5)
+
+            test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
+            test_result = TextTestRunner().run(test_suite)
+            x = len(test_result.failures)
+            if x == 0:
+                result = "PASS"
+            else:
+                result = "FAIL"
+            print(str(test_case_count) + ' ' + str(Out_count))
+            for i in range(test_case_count):
+                i += 1
+                globals()['test_case_out_%s' % i] = ""
+                globals()['out_%s' % i] = ""
+            test_case_count = 0
+            Out_count = 0
+        return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                               'quizDetail': quiz.quizDetail,
+                                               'Deadline': quiz.deadline,
+                                               'Hint': quiz.hint,
+                                               'display': result,})
+
+    elif request.method == 'POST' and 'code-form-submit' in request.POST:
+        code = request.POST['code-form-comment']
+        print("in-code-form")
+        if code == '':
+            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                    'quizDetail': quiz.quizDetail,
+                                                    'Deadline': quiz.deadline,
+                                                    'Hint': quiz.hint,
+                                                    'code': code, })
         else:
-            result = "FAIL"
+            fileName = str(request.user) + '_' + str(quiz) + '_' + 'scrip.py'
+            f = open('./media/' + fileName, 'w')
+            f.write(code)
+            f.close()
+            Upload.objects.get_or_create(title=fileName, fileUpload='./media/' + fileName, user=request.user, quiz=quiz)
+            write_mode = False
+            test_case_count = 0
+            Out_count = 0
+            # open file .txt. Address  file ???????? Now! change follow your PC
+            f = open('./media/' + fileName, 'a')
+            case = quiz.text_testcase_content
+            f.write("\n\n")
+            for case_line in case.splitlines():
+                if (case_line[:11] == "# Test case"):
+                    test_case_count += 1
+                    Out_count += 1
+                f.write(case_line + "\n")
+            f.close()
+            for i in range(test_case_count):
+                i += 1
+                globals()['test_case_out_%s' % i] = ""
+                globals()['out_%s' % i] = ""
+            # code = code.lower()
+            f = open('./media/' + fileName, 'r')
+            code = f.read()
+            f.close()
+            prob = importlib.import_module(fileName[:-3])
+            for line in code.splitlines():
+                #print(line)
+                if "# Stop" in line:
+                    print("stop")
+                    write_mode = False
+
+                if write_mode:
+                    if "# Out" in line:
+                        print("Out")
+                        globals()['out_%s' % test_case_num] = eval(line[6:])
+                    elif "# Break" in line:
+                        print("Break!")
+                        write_mode = False
+                    command = line.replace('print(', 'prob.')
+
+                    try:
+                        print("try")
+                        globals()['test_case_out_%s' % test_case_num] = eval(command[:-1])
+                        # globals()['test_case_out_%s' % test_case_num] = str(globals()['test_case_out_%s' % test_case_num]) + "\n"
+
+
+                    except:
+                        continue
+
+                if "# Test case" in line:
+                    print("in testcase  ")
+                    test_case_num = str(line[11])
+                    write_mode = True
+
+            # unittest process.
+            class MyTestCase(unittest.TestCase):
+                if (test_case_count > 0):
+                    def test_text(self):
+                        text_1 = test_case_out_1
+                        mt_1 = out_1
+                        self.assertEquals(text_1, mt_1)
+                if (test_case_count > 1):
+                    def test_text_two(self):
+                        text_2 = test_case_out_2
+                        mt_2 = out_2
+                        self.assertEqual(text_2, mt_2)
+                if (test_case_count > 2):
+                    def test_text_three(self):
+                        text_3 = test_case_out_3
+                        mt_3 = out_3
+                        self.assertEqual(text_3, mt_3)
+                if (test_case_count > 3):
+                    def test_text_three(self):
+                        text_4 = test_case_out_4
+                        mt_4 = out_4
+                        self.assertEqual(text_4, mt_4)
+                if (test_case_count > 4):
+                    def test_text_three(self):
+                        text_5 = test_case_out_5
+                        mt_5 = out_5
+                        self.assertEqual(text_5, mt_5)
+
+            test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
+            test_result = TextTestRunner().run(test_suite)
+            x = len(test_result.failures)
+            if x == 0:
+                result = "PASS"
+            else:
+                result = "FAIL"
+            print(str(test_case_count) + ' ' + str(Out_count))
+            for i in range(test_case_count):
+                i += 1
+                globals()['test_case_out_%s' % i] = ""
+                globals()['out_%s' % i] = ""
+            test_case_count = 0
+            Out_count = 0
+            f = open('./media/' + fileName, 'r')
+            temp_f = f.readlines()
+            f.close()
+            f = open('./media/' + fileName, 'w')
+            for m in temp_f:
+                if "# Test case" in m:
+                    break
+                else:
+                    f.write(m)
+            f.close()
+            f = open('./media/' + fileName, 'r')
+            code = f.read()
+            f.close()
 
         #sent infomations to page.
-        return render(request, 'Upload.html', {
-            'quizTitle': quiz.quizTitle,
-            'quizDetail': quiz.quizDetail,
-            'Deadline': quiz.deadline,
-            'Hint': quiz.hint,
-            'uploaded_file_url': uploaded_file_url,
-            'display': result,
+            return render(request, 'Upload.html', {
+                'quizTitle': quiz.quizTitle,
+                'quizDetail': quiz.quizDetail,
+                'Deadline': quiz.deadline,
+                'Hint': quiz.hint,
+                'display': result,
+                'code': code,
         })
     else:
+        print("not-in-code-form")
         return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
                                            'quizDetail':quiz.quizDetail,
                                            'Deadline':quiz.deadline,
@@ -158,7 +314,7 @@ def uploadgrading(request, quiz_id):
         })
 
 
-def code(request, quiz_id):
+'''def code(request, quiz_id):
     quiz = Quiz.objects.get(pk=quiz_id)
     if request.method == 'POST':
         code = request.POST['code-form-comment']
@@ -186,4 +342,4 @@ def code(request, quiz_id):
                                            'quizDetail':quiz.quizDetail,
                                            'Deadline':quiz.deadline,
                                            'Hint':quiz.hint,
-        })
+        })'''

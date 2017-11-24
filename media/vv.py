@@ -1,3 +1,15 @@
+def asd(n):
+	a = n**3
+	return a
+
+def dsa(n):
+	b = n**4
+	return b
+
+def sda(n):
+	c = n**5
+	return c
+
 # Test case1
 print(asd(2))
 # Out int(4)
