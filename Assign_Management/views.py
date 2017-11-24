@@ -168,6 +168,19 @@ def uploadgrading(request, quiz_id):
                 globals()['out_%s' % i] = ""
             test_case_count = 0
             Out_count = 0
+            f = open('./media/' + fileName, 'r')
+            temp_f = f.readlines()
+            f.close()
+            f = open('./media/' + fileName, 'w')
+            for m in temp_f:
+                if "# Test case" in m:
+                    break
+                else:
+                    f.write(m)
+            f.close()
+            f = open('./media/' + fileName, 'r')
+            code_a = f.read()
+            f.close()
         return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                'quizDetail': quiz.quizDetail,
                                                'Deadline': quiz.deadline,
@@ -184,10 +197,15 @@ def uploadgrading(request, quiz_id):
                                                     'Hint': quiz.hint,
                                                     'code': code, })
         else:
-            fileName = str(request.user) + '_' + str(quiz) + '_' + 'scrip.py'
+            fileName = str(request.user) + '_' + str(quiz) + '_' + 'script.py'
             f = open('./media/' + fileName, 'w')
-            f.write(code)
+            for debug_line in code:
+                f.write(debug_line)
             f.close()
+            '''
+            f = open('./media/' + fileName, 'r')
+            print(f.read())
+            f.close()'''
             Upload.objects.get_or_create(title=fileName, fileUpload='./media/' + fileName, user=request.user, quiz=quiz)
             write_mode = False
             test_case_count = 0
@@ -208,10 +226,10 @@ def uploadgrading(request, quiz_id):
                 globals()['out_%s' % i] = ""
             # code = code.lower()
             f = open('./media/' + fileName, 'r')
-            code = f.read()
+            code_a = f.read()
             f.close()
             prob = importlib.import_module(fileName[:-3])
-            for line in code.splitlines():
+            for line in code_a.splitlines():
                 #print(line)
                 if "# Stop" in line:
                     print("stop")
@@ -282,18 +300,9 @@ def uploadgrading(request, quiz_id):
                 globals()['out_%s' % i] = ""
             test_case_count = 0
             Out_count = 0
-            f = open('./media/' + fileName, 'r')
-            temp_f = f.readlines()
-            f.close()
             f = open('./media/' + fileName, 'w')
-            for m in temp_f:
-                if "# Test case" in m:
-                    break
-                else:
-                    f.write(m)
-            f.close()
-            f = open('./media/' + fileName, 'r')
-            code = f.read()
+            for debug_line in code:
+                f.write(debug_line)
             f.close()
 
         #sent infomations to page.
@@ -314,32 +323,3 @@ def uploadgrading(request, quiz_id):
         })
 
 
-'''def code(request, quiz_id):
-    quiz = Quiz.objects.get(pk=quiz_id)
-    if request.method == 'POST':
-        code = request.POST['code-form-comment']
-        if code == '':
-            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
-                                                   'quizDetail': quiz.quizDetail,
-                                                   'Deadline': quiz.deadline,
-                                                   'Hint': quiz.hint,
-                                                   'code': code,})
-        else:
-            fileName = str(request.user)+'_'+str(quiz)+'_'+'scrip.py'
-            myfile = open('./media/'+fileName, 'w')
-            myfile.write(code)
-            myfile.close()
-            Upload.objects.get_or_create(title=fileName, fileUpload='./media/'+fileName, user=request.user, quiz=quiz)
-
-        return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
-                                           'quizDetail':quiz.quizDetail,
-                                           'Deadline':quiz.deadline,
-                                           'Hint':quiz.hint,
-                                        'code' : code,
-        })
-    else:
-        return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
-                                           'quizDetail':quiz.quizDetail,
-                                           'Deadline':quiz.deadline,
-                                           'Hint':quiz.hint,
-        })'''

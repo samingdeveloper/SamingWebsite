@@ -1,14 +1,8 @@
-def asd(n):
-	a = n**3
-	return a
+for i in range(5):
+	i+=1
+	print (i)
 
-def dsa(n):
-	b = n**4
-	return b
-
-def sda(n):
-	c = n**5
-	return c
+print(32)
 
 # Test case1
 print(asd(2))
