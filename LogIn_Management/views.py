@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.shortcuts import HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import loader
@@ -8,7 +8,9 @@ from django.contrib.auth.models import User
 from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management import Template
 from .models import Tracker
-
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 
 def LogIn_Page(request):
