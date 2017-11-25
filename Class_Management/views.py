@@ -18,14 +18,14 @@ def inside(request,className):
     return render(request, 'Inside.html', {'quiz': quiz})
 
 def Home(request):
-    var = request.session['var']
+    var = request.user.username
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     elif User.objects.get(username=var).extraauth.year:
         context = {
             'var':User.objects.get(username=var).extraauth.year,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
-            'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
+            #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
         }
         return render(request,'Home.html',context)
 

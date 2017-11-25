@@ -1,7 +1,7 @@
 {% extends "NavBar.html" %}
 {% block content %}
 {% load static %}
-
+<body background="{% static '/grading_code/images/background.png' %}">
 <table width="100%" border="0">
   <tr>
       <center><H1><u>{{ classname }}</u></H1></center>
@@ -45,5 +45,5 @@
 <script>
 jQuery("#jQueryUICalendar1").datepicker();
 </script>
-
+</body>
 {% endblock content %}

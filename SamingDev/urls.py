@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^LogIn_Auth/$', views.LogIn_Auth),
     url(r'^ClassRoom/', include('Class_Management.urls')),
     url(r'^Change_Password/$', views.Change_Password),
+    url(r'^Forgot_Password/$', views.Forgot_Password),
     url(r'^ClassRoom/Assignment/', include('Assign_Management.urls')),
     #url(r'^', include('Assign_Management.urls')),
 

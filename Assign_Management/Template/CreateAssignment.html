@@ -1,88 +1,63 @@
 {% extends 'NavBar.html' %}
 {% block content %}
 {% load static %}
-
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/createassignment.css' %}">
     <link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui.css" %}"/>
     <link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.css" %}"/>
+    <script src="{% static 'grading_code/js/pupupbtn.js' %}"></script>
     <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-1.10.2.min.js" %}"></script>
     <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui.min.js" %}"></script>
     <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.js" %}"></script>
     <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-sliderAccess.js" %}"></script>
 
-<form action="{% url 'Class_Management:Assign_Management:GenerateAssign' %}" method="post" enctype="multipart/form-data"
+<!-- input data in main ex. text or etc -->
+    <div id="main" >
+        <div class="center">
+            <h3>Create Assignment</h3>
+        </div>
+        <div class="div">
+            <form action="{% url 'Class_Management:Assign_Management:GenerateAssign' %}" method="post" enctype="multipart/form-data"
               > {% csrf_token %}
-<table width="100%" border="0">
-  <tr>
-    <td width="15%" height="577" rowspan="2" valign="top">&nbsp;</td>
-    <td width="60%" rowspan="2" valign="top"><p class="assignment"><strong> Assignment</strong></p>
-    <p>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-      <textarea name="Assignment" cols="80" rows="3"></textarea>
-    </p>
-    <p class="Detail"><strong>Assignment Detail</strong></p>
-    <p>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; 
-      <textarea name="Assignment2" cols="80" rows="5"></textarea>
-    </p>
-    <p class="deadline"><strong>Deadline </strong></p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <script type="text/javascript">
-		$(function(){
-		$("#dateInput").datetimepicker({
-			dateFormat: 'yy-mm-dd',
-			timeFormat: 'HH:mm:ss',
-			});
-});
-</script>
-    &nbsp;
-    <input type="text" name="dateInput" id="dateInput" />
-   &nbsp;&nbsp; &nbsp; </p>
+                <label for="assignmentname">Assignment name:</label>
+                <input type="text" id="assignmentname" name="asname" placeholder="input assignment name..">
 
-    <p class="code"><strong>Code Template   </strong></p>
-            <input type="file" name="upload_template" style="display:none"/>
-         <input type="text"
-                   name="uploadtext_template"
-                   onkeydown="upload_template.value=uploadtext_template.value "
-            />
-            <input type="button"
-                   name="uploadbutton"
-                   value="Choose File"
-                   onclick="upload_template.click()"
-                   onmouseout="uploadtext_template.value=upload_template.value"
-            />
-    <p><strong>Hint</strong></p>
-    <p>&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
-      <textarea name="hint" cols="80" rows="5"></textarea>
-      &nbsp;
-      &nbsp;
-    &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+                <label for="assignmentdetail">Assignment detail:</label>
+                <textarea type="text" id="assignmentdetail" name="asdetail" placeholder="input assignment detail.."></textarea>
 
-    </p>
+                <label for="test_case">Test case:</label>
+                <input type="file" name="upload_testcase" style="display:none" />
+                <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
+                <input type="button" name="uploadbutton" value="Choose File" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value">
 
-        <p><strong class="testcase">Test Case</strong></p>
-            <input type="file" name="upload_testcase" style="display:none"/>
-         <input type="text"
-                   name="uploadtext_testcase"
-                    id="uploadtext_testcase"
-                   onkeydown="upload_testcase.value=uploadtext_testcase.value "
-                    onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()"
-            />
-            <input type="button"
-                   name="uploadbutton"
-                   value="Choose File"
-                   onclick="upload_testcase.click()"
-                   onmouseout="uploadtext_testcase.value=upload_testcase.value"
-            />
-    <p>&nbsp;</p>
-    <td width="25%" height="550" align="center" valign="top"><p>&nbsp;</p>  
-    <button class="genquizbutton"><strong>Save</strong></button>  </tr>
+                <label for="upload_template">Code template:</label>
+                <input type="file" name="upload_template" style="display:none" />
+                <input type="text" name="uploadtext_template" onkeydown="upload_template.value=uploadtext_template.value ">
+                <input type="button" name="uploadbutton" value="Choose File" onclick="upload_template.click()" onmouseout="uploadtext_template.value=upload_template.value">
 
-  <tr>
-    <td height="38" valign="top">    
-  </tr>
-</table>
-</form>
+                <label for="hint">Hint:</label>
+                <input type="text" id="lhint" name="hint" placeholder="input hint..">
 
-<script>
-jQuery("#jQueryUICalendar1").datepicker();
-</script>
-</body>
+                <label for="timer">Timer:</label>
+                <input type="text" id="ltimer" name="timer" placeholder="Hour:Minute  ex.1:00 or 1:30">
+
+                <label for="deadline">Deadline:</label>
+                <script type="text/javascript">
+                    $(function(){
+                    $("#dateInput").datetimepicker({
+                      dateFormat: 'yy-mm-dd',
+                      timeFormat: 'HH:mm:ss',
+                      });
+                });
+                </script>
+                <input type="text" name="dateInput" id="dateInput" placeholder="ex.2017-11-29 07:07:32">
+
+
+                <input type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+
+    <script>
+    jQuery("#jQueryUICalendar1").datepicker();
+    </script>
 {% endblock %}

@@ -41,7 +41,7 @@ def LogIn_Auth(request):
         if user_a is not None:
             login(request, user_a)
             #if request.user_a.is_superuser:
-            request.session['var'] = username
+
             #return render(request, 'SelectClassroom.html', context)
             return HttpResponseRedirect("/ClassRoom/Home")
         else:
@@ -51,6 +51,8 @@ def LogIn_Auth(request):
 def Change_Password(request):
     return render(request,'Change_Password.html')
 
+def Forgot_Password(request):
+    return render(request,'Forgot_Password.html')
         #'''header_str = 'Hello, Python Variable'
     #template = loader.get_template('LogIn_Page.html')
     #context = {

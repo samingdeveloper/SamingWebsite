@@ -17,7 +17,6 @@ from django.core.files.storage import FileSystemStorage
 
 sys.path.append('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media')
 def CreateAssignment(request):
-    var = request.session['var']
     if not request.user.is_authenticated or not request.user.is_superuser:
         return HttpResponseRedirect('/LogOut')
     else:
@@ -35,9 +34,9 @@ def GenerateAssign(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST" and request.FILES['upload_testcase']:
-        var = request.session['var']
-        Assignment = request.POST.get('Assignment', '')
-        Assignment_Detail = request.POST.get('Assignment2', '')
+        var = request.user.username
+        Assignment = request.POST.get('asname', '')
+        Assignment_Detail = request.POST.get('asdetail', '')
         Deadline = request.POST.get('dateInput','')
         Hint = request.POST.get('hint','')
         dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
