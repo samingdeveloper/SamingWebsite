@@ -1,7 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 {% block content %}
 {%  load static %}
+
 <head>
 	<meta charset="utf-8"> <!--����ö�ʴ�������������-->
 	<!-- connect saming.png from floder fire -->
@@ -56,8 +58,9 @@
 			<br/>
 			<button type="submit" value="submit">Sign In</button>
 			<br/>
-            </form>
-			<a href="/Change_Password"><p class="small">Forgot your password?</p></a>
+
+			<a href="{% url 'reset_password_reset1' %}"><p class="small">Forgot your password?</p></a>
+			</form>
 		</div>
 	</div>
 		<!--��ǹ��ҧ�ش-->
