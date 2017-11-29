@@ -1,0 +1,33 @@
+{% extends "NavBar.html" %}
+{% block content %}
+{% load static %}
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
+
+    <div id="main">
+        <div class="center">
+            <h2>Information</h2>
+        </div>
+
+        <div class="back">
+            <table id="customers">
+                <tr>
+                    <th>Assignment Name</th>
+                    <th>Score</th>
+                    <th>Max Score</th>
+                </tr>
+                {%  for i in quiz %}
+                <tr>
+                    <td>
+                        <a href="{% url 'Class_Management:StudentQuizInfo' 'asd' i.id %}">{{ i.quizTitle }}</a>
+                    </td>
+                    <td>10</td>
+                    <td>10</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

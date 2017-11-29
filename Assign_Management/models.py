@@ -18,4 +18,3 @@ class Upload(models.Model):
         return self.title
 
 
-

@@ -207,6 +207,7 @@ textarea {
 
 
 .result {
+    color: white;
     background-color: black;
     /*width: 500px;*/
     height: 505px;
@@ -268,4 +269,80 @@ h1 {
 .p {
     text-indent: 30px;
     text-align: justify;
+}
+
+#wrap {
+    float: left;
+    position: relative;
+    left: 23%;
+}
+
+#content {
+    float: left;
+    position: relative;
+    left: -23%;
+}
+
+.tab {
+    overflow: hidden;
+    background-color: #4F4F4F;
+}
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    width: 80px;
+    height: auto;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: rgb(206, 206, 206);
+    padding: 15px 0px;
+    cursor: pointer;
+    border: none;
+    margin-right: 20px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background: #4F4F4F;
+    color: white;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background: rgb(121, 120, 120);
+    padding: 15px 0px;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 4px 0;
+    display: block;
+    border: none;
+    box-sizing: border-box;
+    background-color: black;
+    color: white;
+    font-family: 'Lato', sans-serif;
+	font-size: 16px;
+    font-weight: 300;
+}
+
+
+input[type=button] {
+    background-color: rgb(17, 114, 107);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 0px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+input[type=button]:hover {
+    background-color: rgb(27, 151, 143);
 }

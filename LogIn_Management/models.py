@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class extraauth(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     year = models.IntegerField(default=1)
     studentId = models.CharField(max_length=255)
 

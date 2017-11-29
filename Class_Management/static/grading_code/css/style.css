@@ -48,7 +48,7 @@ body {
     display: none;
     position: fixed;
     background-color: #f9f9f9;
-    min-width: 178px;
+    /*min-width: 300px;*/
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
@@ -65,6 +65,7 @@ body {
 .dropdown-content a:hover {
     background-color: green;
     color: white;
+
 }
 
 .dropdown:hover .dropdown-content {
@@ -95,6 +96,48 @@ body {
 .logo1:hover{
     background-color: #555;
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 #555;
+}
+
+#wrap {
+    float: left;
+    position: relative;
+    left: 23%;
+}
+
+#content {
+    float: left;
+    position: relative;
+    left: -23%;
+}
+
+.tab {
+    overflow: hidden;
+    background-color: #4F4F4F;
+}
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    width: 80px;
+    height: auto;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: rgb(206, 206, 206);
+    padding: 15px 0px;
+    cursor: pointer;
+    border: none;
+    margin-right: 20px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background: #4F4F4F;
+    color: white;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background: rgb(121, 120, 120);
+    padding: 15px 0px;
 }
 
 .sidenav {

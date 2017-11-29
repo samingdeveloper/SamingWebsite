@@ -7,5 +7,8 @@ urlpatterns = [
     url(r'^(?P<className>[0-9]+)/$', views.inside, name='Inside'),
     url(r'^Assignment/', include('Assign_Management.urls')),
     url(r'^Home/', views.Home, name='Home'),
-    url(r'^Submit/$', views.Submit, name='SubmitRoom')
+    url(r'^StudentInfo/$', views.StudentInfo, name='StudentInfo'),
+    url(r'^StudentInfo/(?P<username>[\w.@+-]+)/$', views.StudentScoreInfo, name='StudentScoreInfo'),
+    url(r'^StudentInfo/(?P<username>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/$', views.StudentQuizInfo, name='StudentQuizInfo'),
+    url(r'^Submit/$', views.Submit, name='SubmitRoom'),
 ]

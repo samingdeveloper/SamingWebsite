@@ -1,5 +1,5 @@
-<<!DOCTYPE html>
-    {% load static %}
+
+{% load static %}
 <html lang="en">
 {% block content %}
 <head>
@@ -14,14 +14,11 @@
     <script src="{% static 'grading_code/js/navbar_Assignment.js' %}"></script>
 
 <!-- start Section of codemirror -->
-    <!--<link rel="stylesheet" href="//codemirror.net/doc/docs.css">-->
     <link rel="stylesheet" href="{% static 'codemirror/plugin/codemirror-5.32.0/doc/docs.css' %}">
     <link rel="stylesheet" href="//codemirror.net/lib/codemirror.css">
     <link rel="stylesheet" href="//codemirror.net/theme/blackboard.css">
-    <script src="//codemirror.net/lib/codemirror.js"></script>
-    <script src="//codemirror.net/mode/javascript/javascript.js"></script>
-    <script src="//codemirror.net/addon/selection/active-line.js"></script>
-    <script src="//codemirror.net/addon/edit/matchbrackets.js"></script>>
+    <script  src="//codemirror.net/lib/codemirror.js"></script>
+    <script  src="//codemirror.net/mode/python/python.js"></script>
 <!-- ENd -->
 </head>
 
@@ -33,6 +30,8 @@
             <span style="margin-left: 20px;">
                 <img src="{% static 'grading_code/images/saming.png' %}" width="auto" height="30"> </span>
         </div>
+
+
         <div class="dropdown">
             <button class="dropbtn">{{ request.user.first_name }} {{ request.user.last_name }}
                 <i class="fa fa-caret-down"></i>
@@ -44,6 +43,7 @@
                     <i class="fa fa-power-off" style="font-size:18px; color: grey"></i> Log out</a>
             </div>
         </div>
+
     </div>
     <!-- input assignment -->
     <div id="mySidenav" class="sidenav">
@@ -51,10 +51,11 @@
         <a href="{% url 'Class_Management:Home' %}">Home</a>
         <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' %}">CreateAssignment</a>
         {%  for i in quiz %}
-            <a href={% url 'Class_Management:Assign_Management:Uploadfile' i.id %}>{{ i.quizTitle }}</a>
+            <a href="{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}">{{ i.quizTitle }}</a>
         {% endfor %}
     </div>
     <!-- input data in main ex. text or etc -->
+
 <div id="main">
         <div class="row">
             <div class="column side">
@@ -69,20 +70,19 @@
             </div>
             <div class="column middle">
                 <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data" >
-            {% csrf_token %}
-                    <textarea class="codemirror-textarea"  name="code-form-comment"  id="code-form-comment">{{ code }}</textarea>
+                    {% csrf_token %}
+
+                    <textarea class="codemirror-textarea"  name="code-form-comment"  id="code-form-comment" >{{ code }}</textarea>
+
                     <!--<option>blackboard</optionselected> //// back end -->
                     <div class="textarea1">
-                        Showtime
+                        Showtime: {{ Time }}
                     </div>
                     <input type="submit" class="button button1" name="code-form-submit" id="code-form-submit" value="RUN"/>
                 </form>
             </div>
             <div class="column side">
                 <div class="result">
-                    {{ display }}
-                </div>
-                <div class="result1">
                     {{ display }}
                 </div>
                 <!-- I don't know solotion in modified Browse file. You try it. -->
@@ -108,14 +108,14 @@
 
 
     <script>
-          var editor = CodeMirror.fromTextArea(document.getElementById("code-form-comment"), {
-        theme : "blackboard",
-        lineNumbers: true,
-        styleActiveLine: true,
-        matchBrackets: true,
-
-      });
+        var editor = CodeMirror.fromTextArea(document.getElementById("code-form-comment"), {
+       theme : "blackboard",
+       lineNumbers: true,
+       });
+        editor.setSize("100%", 550);
     </script>
+
+</div>
 
 </body>
 </html>

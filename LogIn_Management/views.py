@@ -49,10 +49,34 @@ def LogIn_Auth(request):
             return HttpResponse(template.render(context, request))
 
 def Change_Password(request):
-    return render(request,'Change_Password.html')
+    if request.method == "POST":
+        new_pass = request.POST.get("newpassword")
+        con_pass = request.POST.get("confirmpassword")
+        if new_pass == con_pass:
+            u = User.objects.get(username__exact=request.user.username)
+            u.set_password(new_pass)
+            u.save()
+            return render(request, 'Change_Password.html', {'change_pass_status':"You've successfully change your password."})
+        else:
+            return render(request, 'Change_Password.html',
+                          {'change_pass_status': "You've failed to change your password."})
+
+    else:
+        return render(request,'Change_Password.html')
 
 def Forgot_Password(request):
-    return render(request,'Forgot_Password.html')
+    if request.method == "POST":
+        Email = request.POST.get("Email")
+        if new_pass == con_pass:
+            u = User.objects.get(username__exact=request.user.username)
+            u.set_password(new_pass)
+            u.save()
+            return render(request, 'Forgot_Password.html', {'change_pass_status':"You've successfully change your password."})
+        else:
+            return render(request, 'Forgot_Password.html',
+                          {'change_pass_status': "You've failed to change your password."})
+    else:
+        return render(request,'Forgot_Password.html')
         #'''header_str = 'Hello, Python Variable'
     #template = loader.get_template('LogIn_Page.html')
     #context = {

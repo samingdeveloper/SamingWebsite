@@ -249,7 +249,7 @@ assignment {
 	color: #00B16A;
 }
 
-.tablink {
+.tablink1 {
     background-color: #555;
     color: white;
     float: left;
@@ -261,20 +261,10 @@ assignment {
     width: 10%;
 }
 
-.tablink:hover {
+.tablink1:hover {
     background-color: #777;
 }
 
-
-.tabcontent {
-	color: #000;
-	display: block;
-	padding: 50px;
-	text-align: left;
-	width: auto;
-	height:auto;
-	padding-bottom: 10%;
-}
 /*# {background}*/
 #assignment1 {
 	background-image: url(picture/1262.jpg);
@@ -291,14 +281,14 @@ assignment {
 	font-weight: bold;
 }
 /* Style the tab */
-div.tab {
+div.tab1 {
     overflow: hidden;
     border: 1px solid #ccc;
     background-color: #f1f1f1;
 }
 
 /* Style the buttons inside the tab */
-div.tab button {
+div.tab1 button {
     background-color: inherit;
     float: left;
     border: none;
@@ -310,17 +300,17 @@ div.tab button {
 }
 
 /* Change background color of buttons on hover */
-div.tab button:hover {
+div.tab1 button:hover {
     background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-div.tab button.active {
+div.tab1 button.active {
     background-color: #ccc;
 }
 
 /* Style the tab content */
-.tabcontent {
+.tabcontent1 {
     display: none;
     padding: 6px 12px;
     border: 1px solid #ccc;

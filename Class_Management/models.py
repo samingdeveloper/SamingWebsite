@@ -1,7 +1,8 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 class ClassRoom(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)
     className = models.CharField(max_length=255)
 
     def __str__(self):
@@ -9,7 +10,7 @@ class ClassRoom(models.Model):
 
 class Quiz(models.Model):
     quizTitle = models.CharField(max_length=255)
-    quizDetail = models.CharField(max_length=1024)
+    quizDetail = models.TextField()
     deadline = models.DateTimeField(blank=True, null=True)
     hint = models.CharField(max_length=1024, blank=True, null=True)
     text_template_content = models.TextField()

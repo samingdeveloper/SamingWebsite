@@ -1,49 +1,117 @@
 {% extends "NavBar.html" %}
 {% block content %}
 {% load static %}
-<body background="{% static '/grading_code/images/background.png' %}">
-<table width="100%" border="0">
-  <tr>
-      <center><H1><u>{{ classname }}</u></H1></center>
-    <td height="137" colspan="4" valign="top"><p>&nbsp;</p>
-      <p><center> <img src="{% static "png/person.png" %}" width="90" height="90">&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; <img src="{% static "png/person.png" %}" width="90" height="90"></center></p>      </td>
-    </tr>
-  <tr>
-    <td width="15%" height="67" valign="top">&nbsp;</td>
-    <td width="12%" valign="top">    
-    <td width="28%" valign="top"><p class="teacher1"><span class="teacher1"><span class="teacher1"><strong>Teacher : Admin 1</strong></span></span></p>
-    <p class="teacher1"><span class="teacher1"><span class="teacher1"><strong>Email : admin1@mail.kmutt.ac.th </strong></span></span></p>            
-    <td width="45%" valign="top"><p class="teacher2"><strong><span class="teacher2">Teacher : Admin 2</span></strong></p>
-    <p class="teacher2"><strong><span class="teacher2">Email : admin2@mail.kmutt.ac.th </span></strong></p>        
-  </tr>
-</table>
-{%  for i in quiz %}
-  <tr>
-          <script>console.log(i)</script>
-    <td height="465" colspan="4" valign="top"><center>
-        <p><a href={% url 'Class_Management:Assign_Management:Uploadfile' i.id %} class="button" >
-          <strong>Assignment : {{ i.quizTitle }}<br>
-          Detail : {{ i.quizDetail }} <br>
-          Deadline : {{ i.deadline }} <br>
-        </strong></a>    </p>
-    </center>
-    </td>
-      {%  if request.user.is_superuser %}
-  <td height="465" colspan="4" valign="top">
-      <form action="{% url 'Class_Management:Assign_Management:DeleteAssign' i.id %}" method="post" style="display: inline;">
-          {% csrf_token %}
-          <input type="hidden" name="quiz_id" value="{{ i.id }}" />
-          <center><button type="submit" class="genquizbutton">
-              <span class="glyphicon glyphicon-remove"></span>Delete
-          </button></center>
-      </form>
-  </td>
-  {% endif %}
-  </tr>
-    {% endfor %}
 
-<script>
-jQuery("#jQueryUICalendar1").datepicker();
-</script>
-</body>
-{% endblock content %}
+    <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
+    <script src="{% static '/grading_code/js/popup.js' %}"></script>
+
+    <!-- Trigger/Open The Modal -->
+
+    <!-- input assignment -->
+    <div class="banner">
+        <div class="nameclass">{{ classname }}</div>
+        <div class="nameadmin">Bawornsak sakulkueakulsuk</div>
+    </div>
+
+    <div id="main">
+        <div class="row">
+            <div class="column side">
+                <div class="boxadmin">
+                    <p>Teacher:</p>
+                    <p>Bawornsak sakulkueakulsuk</p>
+                </div>
+                {%  if request.user.is_superuser %}
+                <button id="myBtn" class="boxadd">Add Admin</button>
+                {% endif %}
+            </div>
+
+            <div class="column middle">
+            {%  for i in quiz %}
+                <div class="boxassign">
+                    <div class="nameassign">{{ i.quizTitle }}</div>
+                </div>
+                <div class="boxassign2">
+                    {%  if request.user.is_superuser %}
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:DeleteAssign' i.id %}'">Delete</button>
+                    <button class="delete">Edit</button>
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}'">View</button>
+                    {%  else %}
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}'">Open</button>
+                    {% endif %}
+                    <div class="detail">
+                        <p>Assignment name : {{ i.quizTitle }}</p>
+                        <p>Hint: {{ i.hint }}</p>
+                        <p>Deadline : {{ i.deadline }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {%  if request.user.is_superuser %}
+                <div class="tooltip">
+                    <button1>
+                        <span class="tooltiptext">Create classroom</span>
+                        <a href="/ClassRoom/Assignment/generate_assign/">
+                            <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                        </a>
+                    </button1>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h4>Add Admin</h4>
+            </div>
+            <div class="modal-body">
+                <form action="/action_page.php">
+                    <br>
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
+
+                    <label for="country">Status:</label>
+                    <select id="country" name="country">
+                        <option value="1"> Teacher</option>
+                        <option value="2"> TA</option>
+                    </select>
+                    <br></br>
+                    <input type="submit" value="Add">
+                    <br></br>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+{% endblock %}

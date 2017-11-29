@@ -1,0 +1,39 @@
+{% extends "NavBar.html" %}
+{% block content %}
+{% load static %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
+
+  <!-- input assignment -->
+  <div id="main">
+    <div class="center">
+      <h2>Information</h2>
+    </div>
+
+    <div class="back">
+      <table id="customers">
+        <tr>
+          <th>Student ID</th>
+          <th>Name</th>
+          <th>Progress</th>
+        </tr>
+        {% for i in User_objects %}
+                  {% if i.extraauth.year == user_year %}
+        <tr>
+          <td>
+            <a href='{% url 'Class_Management:StudentScoreInfo' i.username %}'>{{ i.extraauth.studentId }}</a>
+          </td>
+          <td>{{ i.first_name }} {{ i.last_name }}</td>
+          <td>
+            <div class="container">
+              <div class="skills html">90%</div>
+            </div>
+          </td>
+        </tr>
+            {% endif %}
+          {% endfor %}
+      </table>
+    </div>
+  </div>
+
+    {% endblock %}}

@@ -1,0 +1,37 @@
+{% extends "NavBar.html" %}
+{% block content %}
+{% load static %}
+
+
+  <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/whacthAS.css' %}">
+  <script src="{% static 'js/show_AS.js' %}"></script>
+  <script src="{% static 'js/animation.js' %}"></script>
+
+
+  <div id="main">
+    <div class="center">
+      <h2>Information</h2>
+    </div>
+    <div class="back">
+      <table id="customers">
+        <tr>
+          <th>Maria Anders</th>
+          <th>59340500001</th>
+          <th>Anders1997@mail.kmutt.ac.th</th>
+        </tr>
+      </table>
+
+      <p>Assignment name: Roman</p>
+      <p>Assignment detail: Something..</p>
+      <p>Deadline:</p>
+
+      <label for="showcode">Code:</label>
+      <textarea type="text" id="showcode" name="showcodedetail" placeholder=""></textarea>
+
+      <label for="showcase">Test case:</label>
+      <textarea type="text" id="showcase" name="showcasedetail" placeholder=""></textarea>
+
+    </div>
+  </div>
+
+{% endblock %}

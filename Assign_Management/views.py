@@ -10,12 +10,15 @@ import unittest
 import importlib
 import sys
 from unittest import TextTestRunner
+import datetime
+from django.utils import timezone
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
 sys.path.append('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media')
+
 def CreateAssignment(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
         return HttpResponseRedirect('/LogOut')
@@ -63,9 +66,15 @@ def DeleteAssign(request, quiz_id):
 
 
 def uploadgrading(request, quiz_id):
+    timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
+    t = timezone.localtime(timezone.now())  # offset-awared datetime
+    t.astimezone(timezone.utc).replace(tzinfo=None)
     quiz = Quiz.objects.get(pk=quiz_id)
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
+    elif t > quiz.deadline:
+        print("deadline is here."+str(t))
+        return HttpResponseRedirect('/ClassRoom/Home')
     elif request.method == 'POST' and 'upload_submit' in request.POST:
         if request.FILES['upload']:
             print("in_upload_submit")

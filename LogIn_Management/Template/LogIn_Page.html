@@ -7,31 +7,35 @@
 	<!-- connect saming.png from floder fire -->
 	<link rel="icon" type="png" href="{%  static "saming.png" %}"/>
 	<title>Saming</title> <!-- show name tab title on web-->
-
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/login.css' %}">
 	<!-- Google Fonts -->
-	<link href="{% static 'https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' %}" rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet'
+        type='text/css'>
 
 	<!--<link rel="stylesheet" href="css/animate.css">--><!--�ٻẺ�������͹��� �� animation �������-->
 	<!-- Custom Stylesheet -->
-	<link rel="stylesheet" href="{% static "style.css" %}"/>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
-<body>
-	<center>
-		<br><img src="{% static "saming.png" %}" style="width:80px;height:80px;"></br>
-	</center>
+<body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
 	<div class="container">
 	<!--��ǹ���-->
-		<div class="top">
-			<h1 id="title" class="hidden"><span id="logo"><span>Sign in to SaMing</span></span></h1>
-		</div>
+    <div class="center">
+		<img src="{% static "grading_code/images/saming_login.png"%}" style="width:80px;height:80px;"></br>
+		<br></br>
+        <div class="h1">Sign in to SaminG</div>
+    </div>
+    <br>
 		<!--��� log-in-->
 		<div class="login-box animated fadeInUp">
 			<!--<div class="box-header">
 				<h2>Log In</h2>
 			</div>-->
-            {% if messages %}
+        <div class="div">
+            <form action="/LogIn_Auth/" method="post">
+                {% csrf_token %}
+                            {% if messages %}
                 <div class="row">
                     <div class='col-sm-6 col-sm-offset-3'>
                 {% for message in messages %}
@@ -43,21 +47,25 @@
                     </div>
                 </div>
             {% endif %}
-            <form action="/LogIn_Auth/" method="post">
-                {% csrf_token %}
-			<br><br>
-			<label for="username">User ID</label> <!-- �����Ź�Ҩж١ ��˹����㹵���� username ��� password-->
+			<label for="userid">User ID:</label> <!-- �����Ź�Ҩж١ ��˹����㹵���� username ��� password-->
 			<br/>
-			<input type="text" name="username" value="" id="username">
+			<input type="text" name="username" value="" id="userid" placeholder="Your user id..">
 			<br/>
 			<label for="password">Password</label>
 			<br/>
-			<input type="password" name="password" value="" id="password">
+			<input type="password" name="password" value="" id="password" placeholder="Your password..">
 			<br/>
-			<button type="submit" value="submit">Sign In</button>
+                <input type="submit" value="Sign in" >
 			<br/>
+                <div class="forgot">
+			<a href="{% url 'reset_password_reset1' %}"><p class="small">Forgot your password?</p></a>
+        </div>
             </form>
-			<a href="/Forgot_Password"><p class="small">Forgot your password?</p></a>
+        <div class="footer">
+            <p>Web Application </p>
+            <p>Grading platform for programming system</p>
+        </div>
+        </div>
 		</div>
 	</div>
 		<!--��ǹ��ҧ�ش-->
