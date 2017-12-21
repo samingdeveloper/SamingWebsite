@@ -10,14 +10,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('Class_Management', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('Assign_Management', '0002_upload_quiz'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='classroom',
+            model_name='upload',
             name='user',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
         ),
     ]

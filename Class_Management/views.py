@@ -3,7 +3,7 @@ from .models import ClassRoom,Quiz
 from Assign_Management.models import Upload
 from django.http import Http404
 from django.contrib.auth.models import User, Group
-from LogIn_Management.models import extraauth,Tracker
+#from LogIn_Management.models import extraauth,Tracker
 from Assign_Management import views
 def index(request):
     list_classroom = ClassRoom.objects.all()

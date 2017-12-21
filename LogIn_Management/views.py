@@ -7,7 +7,7 @@ from django.contrib.auth import (authenticate,login,logout,get_user_model)
 from django.contrib.auth.models import User
 from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management import Template
-from .models import Tracker
+#from .models import Tracker
 
 # Create your views here.
 
