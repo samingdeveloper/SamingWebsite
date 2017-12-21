@@ -25,7 +25,7 @@
 <body>
     <div class="navbar">
         <div class="logo">
-            <button class="logo1" onclick="openNav()">
+            <button class="logo1" onclick="myFunction1()">
                 <img src="{% static 'grading_code/images/Tap.png' %}" width="auto" height="30"> </button>
             <span style="margin-left: 20px;">
                 <img src="{% static 'grading_code/images/saming.png' %}" width="auto" height="30"> </span>
@@ -47,9 +47,10 @@
     </div>
     <!-- input assignment -->
     <div id="mySidenav" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <a href="{% url 'Class_Management:Home' %}">Home</a>
+        {% if request.user.is_superuser %}
         <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' %}">CreateAssignment</a>
+        {% endif %}
         {%  for i in quiz %}
             <a href="{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}">{{ i.quizTitle }}</a>
         {% endfor %}
@@ -76,14 +77,31 @@
 
                     <!--<option>blackboard</optionselected> //// back end -->
                     <div class="textarea1">
-                        Showtime: {{ Time }}
+                        Deadline: {{ Deadline }}
                     </div>
                     <input type="submit" class="button button1" name="code-form-submit" id="code-form-submit" value="RUN"/>
                 </form>
             </div>
             <div class="column side">
                 <div class="result">
-                    {{ display }}
+                    {% if Case_Count > 0 %}
+                        CASE 1: {{ display.pass_or_fail.case1 }}<br><br>
+                    {% endif %}
+                    {% if Case_Count > 1 %}
+                        CASE 2: {{ display.pass_or_fail.case2 }}<br><br>
+                    {% endif %}
+                    {% if Case_Count > 2 %}
+                        CASE 3: {{ display.pass_or_fail.case3 }}<br><br>
+                    {% endif %}
+                    {% if Case_Count > 3 %}
+                        CASE 4: {{ display.pass_or_fail.case4 }}<br><br>
+                    {% endif %}
+                    {% if Case_Count > 4 %}
+                        CASE 5: {{ display.pass_or_fail.case5 }}<br><br>
+                    {% endif %}
+                    {% if Case_Count %}
+                        RESULT: {{ display.pass_or_fail.result }}
+                    {% endif %}
                 </div>
                 <!-- I don't know solotion in modified Browse file. You try it. -->
                 <form method="post" enctype="multipart/form-data">

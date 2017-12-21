@@ -1,9 +1,10 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404
 from .models import ClassRoom,Quiz
+from Assign_Management.models import Upload
 from django.http import Http404
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from LogIn_Management.models import extraauth,Tracker
-
+from Assign_Management import views
 def index(request):
     list_classroom = ClassRoom.objects.all()
     context = {
@@ -19,16 +20,64 @@ def inside(request,className):
     return render(request, 'Inside.html', {'quiz': quiz})
 
 def Home(request):
+    add_status = 0
     var = request.user.username
+    action = request.POST.get("action","")
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
+
+    elif request.method == "POST" and action == 'add':
+        email = request.POST.get("firstemail","")
+        status = request.POST["country"]
+        try:
+            user_obj = User.objects.get(email=email)
+            g = Group.objects.get(name=status)
+            if status == "Admin":
+                user_obj.is_superuser = True
+                user_obj.save()
+            g.user_set.add(user_obj)
+            #print(user_obj)
+        except:
+            add_status = 2
+            return render(request, 'Home.html', {'add_status': add_status})
+        #print(status)
+        add_status = 1
+        return render(request,'Home.html',{'add_status':add_status})
+
+    elif request.method == "POST" and action == 'delete':
+        email = request.POST.get("firstemail","")
+        status = request.POST["country"]
+        try:
+            user_obj = User.objects.get(email=email)
+            g = Group.objects.get(name=status)
+            if status == "Admin":
+                user_obj.is_superuser = False
+                user_obj.save()
+            g.user_set.remove(user_obj)
+            #print(user_obj)
+        except:
+            add_status = 2
+            return render(request, 'Home.html', {'add_status': add_status})
+        #print(status)
+        add_status = 3
+        return render(request,'Home.html',{'add_status':add_status})
+
     elif User.objects.get(username=var).extraauth.year:
+
         context = {
             'var':User.objects.get(username=var).extraauth.year,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
+            'user_obj':User.objects.all(),
             #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
         }
         return render(request,'Home.html',context)
+
+
+def About(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    else:
+        return render(request,'About.html')
 
 def StudentInfo(request):
     var = request.user.username
@@ -66,11 +115,14 @@ def StudentScoreInfo(request,username):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
+        request.session['u_id'] = [username]
+        u_id = request.session['u_id']
         var = request.user.username
         context = {
             'var':User.objects.get(username=var).extraauth.year,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
             'User_objects':User.objects.all(),
+            'u_id': {'user_name':u_id[0]},
         }
         return render(request,'ShowScoreStudent.html',context)
 
@@ -79,11 +131,25 @@ def StudentQuizInfo(request,username,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
+        quiz_to_show = Quiz.objects.get(pk=quiz_id)
+        u_id = request.session['u_id']
+        file_to_show = str(u_id[0]) + '_' + str(quiz_to_show.quizTitle.replace(' ','_')) + quiz_id + '_' + 'script' + '.py'
+        try:
+            f = open('./media/'+file_to_show, 'r')
+            code_write_to_show = f.read()
+            f.close()
+        except:
+            code_write_to_show = ""
+        #print(file_to_show)
+        #print(code_write_to_show)
         var = request.user.username
         context = {
             'var':User.objects.get(username=var).extraauth.year,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
             'User_objects':User.objects.all(),
+            'u_id': {'user_name': u_id[0]},
+            'quiz_to_show':quiz_to_show,
+            "code_write_to_show":code_write_to_show,
         }
         return render(request,'ShowQuizStudent.html',context)
 

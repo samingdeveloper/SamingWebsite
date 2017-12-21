@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class extraauth(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     year = models.IntegerField(default=1)
-    studentId = models.CharField(max_length=255)
+    studentId = models.CharField(default="",max_length=255)
 
 
 class Tracker(models.Model):

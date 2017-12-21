@@ -4,8 +4,7 @@
 
 
   <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/whacthAS.css' %}">
-  <script src="{% static 'js/show_AS.js' %}"></script>
-  <script src="{% static 'js/animation.js' %}"></script>
+  <script src="{% static 'grading_code/js/animation.js' %}"></script>
 
 
   <div id="main">
@@ -15,21 +14,18 @@
     <div class="back">
       <table id="customers">
         <tr>
-          <th>Maria Anders</th>
-          <th>59340500001</th>
-          <th>Anders1997@mail.kmutt.ac.th</th>
+          <th>{{ u_id.user_name }}</th>
         </tr>
       </table>
-
-      <p>Assignment name: Roman</p>
-      <p>Assignment detail: Something..</p>
-      <p>Deadline:</p>
+      <p>Assignment name: {{ quiz_to_show.quizTitle }}</p>
+      <p>Assignment detail: {{ quiz_to_show.quizDetail }}</p>
+      <p>Deadline: {{ quiz_to_show.deadline }}</p>
 
       <label for="showcode">Code:</label>
-      <textarea type="text" id="showcode" name="showcodedetail" placeholder=""></textarea>
+      <textarea type="text" id="showcode" name="showcodedetail" placeholder="">{{ code_write_to_show }}</textarea>
 
       <label for="showcase">Test case:</label>
-      <textarea type="text" id="showcase" name="showcasedetail" placeholder=""></textarea>
+      <textarea type="text" id="showcase" name="showcasedetail" placeholder="">{{ quiz_to_show.text_testcase_content }}</textarea>
 
     </div>
   </div>

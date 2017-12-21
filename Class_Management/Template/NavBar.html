@@ -21,7 +21,7 @@
 <body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
     <div class="navbar">
         <div class="logo">
-            <button class="logo1" onclick="openNav()">
+            <button class="logo1" onclick="myFunction1()">
                 <img src="{% static 'grading_code/images/Tap.png' %}" width="auto" height="30"> </button>
             <span style="margin-left: 20px;">
                 <img src="{% static 'grading_code/images/saming.png' %}" width="auto" height="30"> </span>
@@ -36,7 +36,7 @@
                     <button class="tablinks" onclick="location.href='/ClassRoom/StudentInfo';">
                         Student
                     </button>
-                    <button class="tablinks" onclick="location.href='/ClassRoom/Home';">
+                    <button class="tablinks" onclick="location.href='/ClassRoom/About';">
                         About
                     </button>
                 </div>
@@ -60,7 +60,6 @@
     </div>
     <!-- input assignment -->
     <div id="mySidenav" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         {%  for i in quiz %}
             <a href={% url 'Class_Management:Assign_Management:Uploadfile' i.id %}>{{ i.quizTitle }}</a>
         {% endfor %}

@@ -1,13 +1,16 @@
-
-function openNav() {
-            document.getElementById("mySidenav").style.width = "200px";
-            document.getElementById("main").style.marginLeft = "200px";
-        }
-                
-function closeNav() {
-            document.getElementById("mySidenav").style.width = "0";
-            document.getElementById("main").style.marginLeft= "0";
-        }
+function myFunction1() {
+    var x = document.getElementById("mySidenav");
+    if (x.style.display == "block") {
+        document.getElementById("mySidenav").style.width = "0px";
+        document.getElementById("main").style.marginLeft = "0px";
+        x.style.display = "none";
+    }
+    else {
+        document.getElementById("mySidenav").style.width = "200px";
+        document.getElementById("main").style.marginLeft = "200px";
+        x.style.display = "block";
+    }
+}
 function myFunction() {
             document.getElementById("myDropdown").classList.toggle("show");
         }

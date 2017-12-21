@@ -14,9 +14,24 @@
     </div>
 
     <div id="main">
+    {% if add_status == 1 %}
+        <script>
+            alert("Added Success.");
+        </script>
+        {% elif add_status == 2 %}
+        <script>
+            alert("Add Failed,Check your input email.");
+        </script>
+        {% elif add_status == 3 %}
+        <script>
+            alert("Deleted Success.");
+        </script>
+    {% endif %}
         <div class="row">
             <div class="column side">
                 <div class="boxadmin">
+                    {% for i in user_obj %}
+
                     <p>Teacher:</p>
                     <p>Bawornsak sakulkueakulsuk</p>
                 </div>
@@ -68,18 +83,26 @@
                 <h4>Add Admin</h4>
             </div>
             <div class="modal-body">
-                <form action="/action_page.php">
+                <form method="post"> {% csrf_token %}
                     <br>
                     <label for="email">Email:</label>
                     <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
 
                     <label for="country">Status:</label>
                     <select id="country" name="country">
-                        <option value="1"> Teacher</option>
-                        <option value="2"> TA</option>
+                        <option value="Teacher"> Teacher</option>
+                        <option value="TA"> TA</option>
+                        <option value="Admin"> Admin</option>
+                    </select>
+
+                    <label for="country">Action:</label>
+                    <select id="country" name="action">
+                        <option value="add"> Add</option>
+                        <option value="delete"> Delete</option>
                     </select>
                     <br></br>
-                    <input type="submit" value="Add">
+                    <input type="submit" name="add_status" value="PROCEED">
+
                     <br></br>
                 </form>
             </div>

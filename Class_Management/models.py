@@ -19,3 +19,13 @@ class Quiz(models.Model):
     def __str__(self):
         return self.quizTitle
 
+class AddTA(models.Model):
+    Email = models.CharField(max_length=255)
+    status_choice = (
+        ('Teacher', 'Teacher'),
+        ('TA', 'TA'),
+    )
+    title = models.CharField(max_length=100, choices=status_choice)
+
+    def __str__(self):
+        return self.Email + ' ' + '(' + self.title + ')'

@@ -20,7 +20,7 @@
                 {%  for i in quiz %}
                 <tr>
                     <td>
-                        <a href="{% url 'Class_Management:StudentQuizInfo' 'asd' i.id %}">{{ i.quizTitle }}</a>
+                        <a href="{% url 'Class_Management:StudentQuizInfo' u_id.user_name i.id %}">{{ i.quizTitle }}</a>
                     </td>
                     <td>10</td>
                     <td>10</td>

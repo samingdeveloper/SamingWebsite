@@ -15,6 +15,7 @@
         <tr>
           <th>Student ID</th>
           <th>Name</th>
+            <th>Email</th>
           <th>Progress</th>
         </tr>
         {% for i in User_objects %}
@@ -24,6 +25,7 @@
             <a href='{% url 'Class_Management:StudentScoreInfo' i.username %}'>{{ i.extraauth.studentId }}</a>
           </td>
           <td>{{ i.first_name }} {{ i.last_name }}</td>
+            <td>{{ i.email }}</td>
           <td>
             <div class="container">
               <div class="skills html">90%</div>

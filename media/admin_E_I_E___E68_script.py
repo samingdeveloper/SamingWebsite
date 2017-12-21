@@ -8,4 +8,5 @@ def dsa(n):
 
 def sda(n):
 	c = n**4
-	return c
+	return c
+

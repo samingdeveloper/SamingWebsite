@@ -30,13 +30,13 @@ def LogIn_Auth(request):
         context = {
             'var1':username,
         }
-        '''if user is not None:
-            login(request, user)
+        #if user is not None:
+            #login(request, user)
             # Redirect to a success page.
-            return render(request,'LogIn_Page.html',context)
-        else:
+            #return render(request,'LogIn_Page.html',context)
+        #else:
             # Return an 'invalid login' error message.
-            return HttpResponse(template.render(context,request))'''
+            #return HttpResponse(template.render(context,request))
         #if user.objects.filter(userId=username) or user.objects.filter(studentId=username) and user.objects.filter(userPassWord=password):
         if user_a is not None:
             login(request, user_a)
