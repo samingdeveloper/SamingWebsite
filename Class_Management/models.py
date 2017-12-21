@@ -19,7 +19,48 @@ class Quiz(models.Model):
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
-        return self.quizTitle
+        return self.quizTitle + " : " + self.classroom.className
+
+class QuizStatus(models.Model):
+    quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    status = models.BooleanField(default=False)
+    def __str__(self):
+        return self.studentId + " : " + self.quizId + " : " + self.classroom.className
+
+class QuizScore(models.Model):
+    quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    passOrFail = models.FloatField(blank=True, null=True)
+    testCase1 = models.FloatField(blank=True, null=True)
+    testCase2 = models.FloatField(blank=True, null=True)
+    testCase3 = models.FloatField(blank=True, null=True)
+    testCase4 = models.FloatField(blank=True, null=True)
+    testCase5 = models.FloatField(blank=True, null=True)
+    testCase6 = models.FloatField(blank=True, null=True)
+    testCase7 = models.FloatField(blank=True, null=True)
+    testCase8 = models.FloatField(blank=True, null=True)
+    testCase9 = models.FloatField(blank=True, null=True)
+    testCase10 = models.FloatField(blank=True, null=True)
+    def __str__(self):
+        return self.studentId + " : " + self.quizId + " : " + self.classroom.className
+
+class QuizTimer(models.Model):
+    quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    timer = models.DateTimeField(blank=True, null=True)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.studentId + " : " + self.quizId + " : " + self.classroom.className
+
+class QuizTracker(models.Model):
+    quizDoneCount = models.IntegerField(default=0)
+    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.studentId + " : " + self.classroom.className
 
 class AddTA(models.Model):
     Email = models.CharField(max_length=255)
