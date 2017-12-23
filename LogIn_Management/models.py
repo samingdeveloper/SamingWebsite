@@ -46,18 +46,20 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
-    username = models.CharField(max_length=255, null=True)
-    first_name = models.CharField(max_length=255,  blank=True, null=True)
-    last_name = models.CharField(max_length=255, blank=True, null=True)
+    username = models.CharField(primary_key=True, max_length=255)
+    first_name = models.CharField(max_length=255,  blank=True,default=' ')
+    last_name = models.CharField(max_length=255, blank=True, default=' ')
+    studentId = models.CharField(unique=True, max_length=255, null=True)
+    studentYear = models.IntegerField(default=1, blank=True, null=True)
     active = models.BooleanField(default=True) #can login
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
     objects = UserManager()
-    USERNAME_FIELD =  'email' #username
+    USERNAME_FIELD =  'username' #username
     # email and password are require by default
-    REQUIRED_FIELDS = ['username',]
+    REQUIRED_FIELDS = ['email']
     def __str__(self):
-        return self.email
+        return self.username
 
     def get_full_name(self):
         if self.first_name or self.last_name:

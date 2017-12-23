@@ -48,7 +48,7 @@
     <!-- input assignment -->
     <div id="mySidenav" class="sidenav">
         <a href="{% url 'Class_Management:Home' %}">Home</a>
-        {% if request.user.is_superuser %}
+        {% if request.user.is_admin %}
         <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' %}">CreateAssignment</a>
         {% endif %}
         {%  for i in quiz %}

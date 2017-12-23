@@ -2,9 +2,12 @@ from django.shortcuts import render,HttpResponseRedirect,get_object_or_404
 from .models import ClassRoom,Quiz
 from Assign_Management.models import Upload
 from django.http import Http404
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 #from LogIn_Management.models import extraauth,Tracker
 from Assign_Management import views
+
+User = get_user_model()
 def index(request):
     list_classroom = ClassRoom.objects.all()
     context = {
@@ -33,7 +36,7 @@ def Home(request):
             user_obj = User.objects.get(email=email)
             g = Group.objects.get(name=status)
             if status == "Admin":
-                user_obj.is_superuser = True
+                user_obj.is_admin = True
                 user_obj.save()
             g.user_set.add(user_obj)
             #print(user_obj)
@@ -51,7 +54,7 @@ def Home(request):
             user_obj = User.objects.get(email=email)
             g = Group.objects.get(name=status)
             if status == "Admin":
-                user_obj.is_superuser = False
+                user_obj.is_admin = False
                 user_obj.save()
             g.user_set.remove(user_obj)
             #print(user_obj)
@@ -62,13 +65,13 @@ def Home(request):
         add_status = 3
         return render(request,'Home.html',{'add_status':add_status})
 
-    elif User.objects.get(username=var).extraauth.year:
+    elif User.objects.get(username=var).studentYear:
 
         context = {
-            'var':User.objects.get(username=var).extraauth.year,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
+            'var':User.objects.get(username=var).studentYear,
+            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'user_obj':User.objects.all(),
-            #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
+            #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)),
         }
         return render(request,'Home.html',context)
 
@@ -88,11 +91,11 @@ def StudentInfo(request):
         '''z = extraauth.objects.all().values_list('studentId', flat=True)
         x = User.objects.all()
         for i in x:
-            if i.extraauth.year == 1:
-                print(i.extraauth.year)
-        #quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year))
+            if i.studentYear == 1:
+                print(i.studentYear)
+        #quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
         print(z)'''
-        temp_class = ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)
+        temp_class = ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)
         if temp_class.className == "FRA141":
             user_year = 1
         elif temp_class.className == "FRA241":
@@ -102,11 +105,11 @@ def StudentInfo(request):
         elif temp_class.className == "FRA441":
             user_year = 4
         context = {
-            'var':User.objects.get(username=var).extraauth.year,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
+            'var':User.objects.get(username=var).studentYear,
+            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'user_year':user_year,
             'User_objects':User.objects.all(),
-            #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year)),
+            #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)),
         }
         return render(request,'ShowStudent.html',context)
 
@@ -119,8 +122,8 @@ def StudentScoreInfo(request,username):
         u_id = request.session['u_id']
         var = request.user.username
         context = {
-            'var':User.objects.get(username=var).extraauth.year,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
+            'var':User.objects.get(username=var).studentYear,
+            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'User_objects':User.objects.all(),
             'u_id': {'user_name':u_id[0]},
         }
@@ -144,8 +147,8 @@ def StudentQuizInfo(request,username,quiz_id):
         #print(code_write_to_show)
         var = request.user.username
         context = {
-            'var':User.objects.get(username=var).extraauth.year,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year),
+            'var':User.objects.get(username=var).studentYear,
+            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'User_objects':User.objects.all(),
             'u_id': {'user_name': u_id[0]},
             'quiz_to_show':quiz_to_show,

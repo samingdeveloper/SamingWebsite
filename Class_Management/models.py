@@ -15,6 +15,11 @@ class Quiz(models.Model):
     quizDetail = models.TextField()
     deadline = models.DateTimeField(blank=True, null=True)
     hint = models.CharField(max_length=1024, blank=True, null=True)
+    mode_choices = (
+        ("Pass or Fail", "Pass or Fail"),
+        ("Scoring", "Scoring")
+    )
+    mode = models.CharField(max_length=100, choices=mode_choices)
     text_template_content = models.TextField()
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)

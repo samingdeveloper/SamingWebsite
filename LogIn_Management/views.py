@@ -4,11 +4,10 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib import messages
 from django.contrib.auth import (authenticate,login,logout,get_user_model)
-from django.contrib.auth.models import User
 from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management import Template
 #from .models import Tracker
-
+User = get_user_model()
 # Create your views here.
 
 def LogIn_Page(request):
@@ -40,7 +39,7 @@ def LogIn_Auth(request):
         #if user.objects.filter(userId=username) or user.objects.filter(studentId=username) and user.objects.filter(userPassWord=password):
         if user_a is not None:
             login(request, user_a)
-            #if request.user_a.is_superuser:
+            #if request.user_a.is_admin:
 
             #return render(request, 'SelectClassroom.html', context)
             return HttpResponseRedirect("/ClassRoom/Home")

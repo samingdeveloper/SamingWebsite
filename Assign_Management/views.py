@@ -5,7 +5,7 @@ from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management.models import ClassRoom, Quiz
 from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 import unittest
 import importlib
 import sys
@@ -15,12 +15,13 @@ from django.utils import timezone
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
+User = get_user_model()
 # Create your views here.
 
 sys.path.append('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media')
 
 def CreateAssignment(request):
-    if not request.user.is_authenticated or not request.user.is_superuser:
+    if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     else:
         return render(request,'CreateAssignment.html')
@@ -34,7 +35,7 @@ def AssignmentDetail(request):
 
 
 def GenerateAssign(request):
-    if not request.user.is_authenticated or not request.user.is_superuser:
+    if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST" and request.FILES['upload_testcase']:
         var = request.user.username
@@ -42,15 +43,16 @@ def GenerateAssign(request):
         Assignment_Detail = request.POST.get('asdetail', '')
         Deadline = request.POST.get('dateInput','')
         Hint = request.POST.get('hint','')
-        dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
+        #dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
         asd = request.FILES.get('upload_testcase',False)
         asdf = request.FILES.get('upload_template',False)
+        mode = request.POST.get('mode','')
         dab = asd.read()
         dabb = asdf.read()
-        print(dsa)
-        print(dab)
-        print(dabb)
-        GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint,classroom=ClassRoom.objects.get(id=User.objects.get(username=var).extraauth.year))
+        #print(dsa)
+        #print(dab)
+        #print(dabb)
+        GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
         #GenerateAssign_instance.save()
         return HttpResponseRedirect('/ClassRoom/Home')
     else:
@@ -58,7 +60,7 @@ def GenerateAssign(request):
 
 
 def DeleteAssign(request, quiz_id):
-    if not request.user.is_authenticated or not request.user.is_superuser:
+    if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     quiz = Quiz.objects.get(pk=quiz_id)
     quiz.delete()
@@ -72,7 +74,7 @@ def uploadgrading(request, quiz_id):
     quiz = Quiz.objects.get(pk=quiz_id)
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
-    elif t > quiz.deadline and not request.user.is_superuser:
+    elif t > quiz.deadline and not request.user.is_admin:
         print("deadline is here."+str(t))
         return HttpResponseRedirect('/ClassRoom/Home')
     elif request.method == 'POST' and 'upload_submit' in request.POST:
@@ -83,12 +85,14 @@ def uploadgrading(request, quiz_id):
             fileName = uploaded_to_file.name.replace(' ','_')
             OSS = OverwriteStorage()
             in_sys_file = OSS.save(fileName, uploaded_to_file)
+            print(in_sys_file)
             #myfile = open('./media/' + fileName, 'w')f
             Upload.objects.get_or_create(title=fileName, Uploadfile=in_sys_file ,user=request.user, quiz=quiz)
             #myfile.close()
             write_mode = False
             test_case_count = 0
             Out_count = 0
+            score_total = 0
             # open file .txt. Address  file ???????? Now! change follow your PC
             f = open('./media/' + fileName, 'a')
             case = quiz.text_testcase_content
@@ -108,7 +112,7 @@ def uploadgrading(request, quiz_id):
             # code = code.lower()
             prob = importlib.import_module(fileName[:-3])
             for line in code.splitlines():
-                print(line)
+                #print(line)
                 if "# Stop" in line:
                     print("stop")
                     write_mode = False
@@ -116,6 +120,9 @@ def uploadgrading(request, quiz_id):
                 if write_mode:
                     if "# Out" in line:
                         globals()['out_%s' % test_case_num] = eval(line[6:])
+                    elif "# Score" in line:
+                        print("SOCREEEE")
+                        globals()['score_%s' % test_case_num] = float(eval(line[8:]))
                     elif "# Break" in line:
                         print("Break!")
                         write_mode = False
@@ -156,6 +163,7 @@ def uploadgrading(request, quiz_id):
                             case_1_result = "PASS"
                         else:
                             case_1_result = "FAIL"
+                            globals()['score_1'] = 0
                         self.assertEquals(self.text_1, self.mt_1)
 
                 if (test_case_count > 1):
@@ -167,6 +175,7 @@ def uploadgrading(request, quiz_id):
                             case_2_result = "PASS"
                         else:
                             case_2_result = "FAIL"
+                            globals()['score_2'] = 0
                         self.assertEqual(self.text_2, self.mt_2)
 
                 if (test_case_count > 2):
@@ -178,6 +187,7 @@ def uploadgrading(request, quiz_id):
                             case_3_result = "PASS"
                         else:
                             case_3_result = "FAIL"
+                            globals()['score_3'] = 0
                         self.assertEqual(self.text_3, self.mt_3)
 
                 if (test_case_count > 3):
@@ -189,6 +199,7 @@ def uploadgrading(request, quiz_id):
                             case_4_result = "PASS"
                         else:
                             case_4_result = "FAIL"
+                            globals()['score_4'] = 0
                         self.assertEqual(self.text_4, self.mt_4)
 
                 if (test_case_count > 4):
@@ -200,17 +211,22 @@ def uploadgrading(request, quiz_id):
                             case_5_result = "PASS"
                         else:
                             case_5_result = "FAIL"
+                            globals()['score_5'] = 0
                         self.assertEqual(self.text_5, self.mt_5)
 
             test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
             test_result = TextTestRunner().run(test_suite)
             x = len(test_result.failures)
-
-            if x == 0:
+            if quiz.mode == "Pass or Fail" and x == 0:
+                result = "PASS"
+            elif quiz.mode == "Scoring" and x == 0:
+                for i in range(test_case_count):
+                    i += 1
+                    score_total = score_total + globals()['score_%s' % i]
                 result = "PASS"
             else:
                 result = "FAIL"
-
+            print(score_total)
             result_set = {'pass_or_fail':{'case1':case_1_result,'case2':case_2_result,'case3':case_3_result,
                                           'case4':case_4_result,'case5':case_5_result,'result':result,}}
 
@@ -219,8 +235,10 @@ def uploadgrading(request, quiz_id):
                 i += 1
                 globals()['test_case_out_%s' % i] = ""
                 globals()['out_%s' % i] = ""
+                globals()['score_%s' % i] = 0
             test_case_count = 0
             Out_count = 0
+            score_total = 0
             f = open('./media/' + fileName, 'r')
             temp_f = f.readlines()
             f.close()
@@ -252,7 +270,7 @@ def uploadgrading(request, quiz_id):
                                                     'code': code, })
         else:
             #print(code)
-            fileName = str(request.user) + '_' + str(quiz.quizTitle).replace(' ','_') + quiz_id + '_' + 'script' + '.py'
+            fileName = str(request.user.studentId) + '_' + str(quiz.quizTitle).replace(' ','_') + quiz_id + '_' + 'script' + '.py'
             f = open('./media/' + fileName, 'w')
             for debug_line in code:
                 f.write(debug_line)

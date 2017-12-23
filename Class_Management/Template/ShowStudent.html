@@ -19,10 +19,10 @@
           <th>Progress</th>
         </tr>
         {% for i in User_objects %}
-                  {% if i.extraauth.year == user_year %}
+                  {% if i.studentYear == user_year %}
         <tr>
           <td>
-            <a href='{% url 'Class_Management:StudentScoreInfo' i.username %}'>{{ i.extraauth.studentId }}</a>
+            <a href='{% url 'Class_Management:StudentScoreInfo' i.username %}'>{{ i.studentId }}</a>
           </td>
           <td>{{ i.first_name }} {{ i.last_name }}</td>
             <td>{{ i.email }}</td>

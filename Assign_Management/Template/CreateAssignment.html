@@ -34,6 +34,12 @@
                 <input type="text" name="uploadtext_template" onkeydown="upload_template.value=uploadtext_template.value ">
                 <input type="button" name="uploadbutton" value="Choose File" onclick="upload_template.click()" onmouseout="uploadtext_template.value=upload_template.value">
 
+                <label for="mode">Mode:</label>
+                <select name="mode">
+                        <option value="Pass or Fail"> Pass or Fail</option>
+                        <option value="Scoring"> Scoring </option>
+                </select>
+
                 <label for="hint">Hint:</label>
                 <input type="text" id="lhint" name="hint" placeholder="input hint..">
 
