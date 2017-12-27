@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404
-from .models import ClassRoom,Quiz
+from .models import *
 from Assign_Management.models import Upload
 from django.http import Http404
 from django.contrib.auth.models import Group
@@ -104,11 +104,15 @@ def StudentInfo(request):
             user_year = 3
         elif temp_class.className == "FRA441":
             user_year = 4
+        quiz_count = Quiz.objects.filter(classroom=temp_class).count()
+        if quiz_count == 0:
+            quiz_count = 1
         context = {
             'var':User.objects.get(username=var).studentYear,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'user_year':user_year,
             'User_objects':User.objects.all(),
+            'quiz_count':quiz_count
             #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)),
         }
         return render(request,'ShowStudent.html',context)
@@ -136,13 +140,14 @@ def StudentQuizInfo(request,username,quiz_id):
     else:
         quiz_to_show = Quiz.objects.get(pk=quiz_id)
         u_id = request.session['u_id']
-        file_to_show = str(u_id[0]) + '_' + str(quiz_to_show.quizTitle.replace(' ','_')) + quiz_id + '_' + 'script' + '.py'
+        #file_to_show = str(u_id[0]) + '_' + str(quiz_to_show.quizTitle.replace(' ','_')) + quiz_id + '_' + 'script' + '.py'
         try:
-            f = open('./media/'+file_to_show, 'r')
-            code_write_to_show = f.read()
-            f.close()
+            #f = open('./media/'+file_to_show, 'r')
+            code_to_show = QuizScore.objects.get(quizId=quiz_id, studentId=u_id[0], classroom=quiz_to_show.classroom,
+                                            ).code
+            #f.close()
         except:
-            code_write_to_show = ""
+            code_to_show = ""
         #print(file_to_show)
         #print(code_write_to_show)
         var = request.user.username
@@ -152,7 +157,7 @@ def StudentQuizInfo(request,username,quiz_id):
             'User_objects':User.objects.all(),
             'u_id': {'user_name': u_id[0]},
             'quiz_to_show':quiz_to_show,
-            "code_write_to_show":code_write_to_show,
+            "code_to_show":code_to_show,
         }
         return render(request,'ShowQuizStudent.html',context)
 

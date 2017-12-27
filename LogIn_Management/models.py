@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255,  blank=True,default=' ')
     last_name = models.CharField(max_length=255, blank=True, default=' ')
     studentId = models.CharField(unique=True, max_length=255, null=True)
-    studentYear = models.IntegerField(default=1, blank=True, null=True)
+    studentYear = models.SmallIntegerField(default=1, blank=True, null=True)
     active = models.BooleanField(default=True) #can login
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
@@ -59,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     # email and password are require by default
     REQUIRED_FIELDS = ['email']
     def __str__(self):
-        return self.username
+        return self.studentId + ' : ' + self.username
 
     def get_full_name(self):
         if self.first_name or self.last_name:

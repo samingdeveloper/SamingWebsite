@@ -1,7 +1,7 @@
 {% extends "NavBar.html" %}
 {% block content %}
-{% load static %}
-
+    {% load score_tags %}
+    {% load staticfiles %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
 
@@ -14,6 +14,7 @@
             <table id="customers">
                 <tr>
                     <th>Assignment Name</th>
+                    <th>Mode</th>
                     <th>Score</th>
                     <th>Max Score</th>
                 </tr>
@@ -22,8 +23,14 @@
                     <td>
                         <a href="{% url 'Class_Management:StudentQuizInfo' u_id.user_name i.id %}">{{ i.quizTitle }}</a>
                     </td>
-                    <td>10</td>
-                    <td>10</td>
+                    <td>{{ i.mode }}</td>
+                    {% if i.mode == "Pass or Fail" %}
+                        <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
+                        <td></td>
+                    {% elif i.mode == "Scoring" %}
+                        <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
+                        <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
+                {% endif %}
                 </tr>
                 {% endfor %}
             </table>

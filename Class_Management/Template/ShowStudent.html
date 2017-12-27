@@ -1,6 +1,7 @@
 {% extends "NavBar.html" %}
 {% block content %}
 {% load static %}
+    {% load mathfilters %}
 
   <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
 
@@ -28,14 +29,32 @@
             <td>{{ i.email }}</td>
           <td>
             <div class="container">
-              <div class="skills html">90%</div>
+              <div id={{ i.username }} >{{ i.quiztracker_set.all.0.quizDoneCount|div:quiz_count|mul:100 }} %</div>
             </div>
           </td>
         </tr>
+                      <script>
+                      var x = {{ i.quiztracker_set.all.0.quizDoneCount|div:quiz_count|mul:100 }}
+        function change_qp_classname() {
+            if (x >= 80 && x <= 100){
+                document.getElementById("{{ i.username }}").className = "skills html";
+            }
+            else if (x >= 50 && x < 80){
+                document.getElementById("{{ i.username }}").className = "skills css";
+            }
+            else if (x >= 10 && x < 50){
+                document.getElementById("{{ i.username }}").className = "skills js";
+            }
+            else if (x >= 0 && x < 10){
+                document.getElementById("{{ i.username }}").className = "skills php";
+            }
+        }
+        document.getElementById("{{ i.username }}").innerHTML = change_qp_classname();
+        document.getElementById("{{ i.username }}").innerHTML = x.toFixed([0])+' %';
+    </script>
             {% endif %}
           {% endfor %}
       </table>
     </div>
   </div>
-
     {% endblock %}}

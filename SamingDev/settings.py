@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'Class_Management.apps.ClassManagementConfig',
     'Assign_Management.apps.AssignManagementConfig',
+    'mathfilters'
 ]
 
 EMAIL_HOST = 'smtp.gmail.com'
@@ -76,6 +77,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'Class_Management.context_processors.quiz_processor',
             ],
+
         },
     },
 ]

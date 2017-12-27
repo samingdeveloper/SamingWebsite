@@ -99,8 +99,10 @@
                     {% if Case_Count > 4 %}
                         CASE 5: {{ display.pass_or_fail.case5 }}<br><br>
                     {% endif %}
-                    {% if Case_Count %}
+                    {% if mode == "Pass or Fail" %}
                         RESULT: {{ display.pass_or_fail.result }}
+                        {% elif mode == "Scoring" %}
+                        RESULT: {{ display.scoring.total_score }} SCORE.
                     {% endif %}
                 </div>
                 <!-- I don't know solotion in modified Browse file. You try it. -->
