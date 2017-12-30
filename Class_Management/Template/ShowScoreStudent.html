@@ -29,7 +29,7 @@
                         <td></td>
                     {% elif i.mode == "Scoring" %}
                         <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
-                        <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
+                        <td>{% u_score u_id.user_name i.classroom i "Max" %}</td>
                 {% endif %}
                 </tr>
                 {% endfor %}

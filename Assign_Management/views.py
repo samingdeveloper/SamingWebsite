@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect, get_object_or_404
+from django.shortcuts import render, HttpResponseRedirect
 from django.http import HttpResponse
 from django.template import loader
 from django.middleware.csrf import CsrfViewMiddleware
@@ -139,13 +139,13 @@ def uploadgrading(request, quiz_id):
         if request.FILES['upload']:
             print("in_upload_submit")
             uploaded_to_file = request.FILES['upload']
-            #fileName = str(request.user) + '_uploaded_' + uploaded_to_file.name + '_' + str(quiz) + '_' + 'script.py'
-            fileName = uploaded_to_file.name.replace(' ','_')
+            fileName = str(request.user.studentId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
+            #fileName = uploaded_to_file.name.replace(' ','_')
             OSS = OverwriteStorage()
             in_sys_file = OSS.save(fileName, uploaded_to_file)
-            print(in_sys_file)
+            #print(in_sys_file)
             #myfile = open('./media/' + fileName, 'w')f
-            Upload.objects.get_or_create(title=fileName, Uploadfile=in_sys_file ,user=request.user, quiz=quiz)
+            Upload.objects.get_or_create(title=fileName, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
             #myfile.close()
             write_mode = False
             test_case_count = 0
@@ -283,9 +283,10 @@ def uploadgrading(request, quiz_id):
                 result_model = 10
                 max_score = 10
             elif quiz.mode == "Pass or Fail" and x != 0:
+                result = "FAIL"
                 result_model = 0
-                max_score = 0
-            elif quiz.mode == "Scoring" and x == 0:
+                max_score = 10
+            elif quiz.mode == "Scoring":
                 for i in range(test_case_count):
                     i += 1
                     score_total = score_total + globals()['score_%s' % i]
@@ -323,7 +324,6 @@ def uploadgrading(request, quiz_id):
                 globals()['score_%s' % i] = 0
             test_case_count = 0
             Out_count = 0
-            score_total = 0
             f = open('./media/' + fileName, 'r')
             temp_f = f.readlines()
             f.close()
@@ -335,15 +335,24 @@ def uploadgrading(request, quiz_id):
                     f.write(m)
             f.close()
             f = open('./media/' + fileName, 'r')
-            QuizScore.objects.update_or_create(quizId=quiz,
-                                               studentId=User.objects.get(studentId=request.user.studentId),
-                                               classroom=quiz.classroom,
-                                               total_score=score_total,
-                                               passOrFail=result_model,
-                                               max_score=max_score,
-                                               code = f.read(),
-                                               )
-            #code_a = f.read()
+            try:
+                quiz_score = QuizScore.objects.get(quizId=quiz,
+                                                   studentId=User.objects.get(studentId=request.user.studentId),
+                                                   classroom=quiz.classroom)
+                quiz_score.total_score = score_total
+                quiz_score.passOrFail = result_model
+                quiz_score.max_score = max_score
+                quiz_score.code = f.read()
+                quiz_score.save()
+            except ObjectDoesNotExist:
+                QuizScore.objects.create(quizId=quiz,
+                                        studentId=User.objects.get(studentId=request.user.studentId),
+                                        classroom=quiz.classroom,
+                                        total_score=score_total,
+                                        passOrFail=result_model,
+                                        max_score=max_score,
+                                        code=f.read(),
+                                        )
             f.close()
         return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                'quizDetail': quiz.quizDetail,
@@ -365,12 +374,12 @@ def uploadgrading(request, quiz_id):
                                                     'code': code, })
         else:
             #print(code)
-            fileName = str(request.user.studentId) + '_' + str(quiz.quizTitle).replace(' ','_') + quiz_id + '_' + 'script' + '.py'
+            fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ '.py'
             f = open('./media/' + fileName, 'w')
             for debug_line in code:
                 f.write(debug_line)
             f.close()
-            Upload.objects.get_or_create(title=fileName, fileUpload='./media/' + fileName, user=request.user, quiz=quiz)
+            Upload.objects.get_or_create(title=fileName, fileUpload='./media/' + fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
             write_mode = False
             test_case_count = 0
             Out_count = 0
@@ -516,9 +525,12 @@ def uploadgrading(request, quiz_id):
             if quiz.mode == "Pass or Fail" and x == 0:
                 result = "PASS"
                 result_model = 10
+                max_score = 10
             elif quiz.mode == "Pass or Fail" and x != 0:
+                result = "FAIL"
                 result_model = 0
-            elif quiz.mode == "Scoring" and x == 0:
+                max_score = 10
+            elif quiz.mode == "Scoring":
                 for i in range(test_case_count):
                     i += 1
                     score_total = score_total + globals()['score_%s' % i]
@@ -532,13 +544,6 @@ def uploadgrading(request, quiz_id):
                                            'case4': case_4_result, 'case5': case_5_result, 'result': result, },
                           'scoring': {'total_score': score_total,'max_score': max_score}
                           }
-            QuizScore.objects.update_or_create(quizId=quiz,
-                                               studentId=User.objects.get(studentId=request.user.studentId),
-                                               classroom=quiz.classroom,
-                                               total_score=score_total,
-                                               passOrFail=result_model,
-                                               max_score=max_score,
-                                               )
 
             if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
                                       classroom=quiz.classroom).status == False:
@@ -564,7 +569,6 @@ def uploadgrading(request, quiz_id):
                 globals()['score_%s' % i] = 0
             test_case_count = 0
             Out_count = 0
-            score_total = 0
             f = open('./media/' + fileName, 'r')
             temp_f = f.readlines()
             f.close()
@@ -576,14 +580,23 @@ def uploadgrading(request, quiz_id):
                     f.write(m)
             f.close()
             f = open('./media/' + fileName, 'r')
-            QuizScore.objects.update_or_create(quizId=quiz,
-                                               studentId=User.objects.get(studentId=request.user.studentId),
-                                               classroom=quiz.classroom,
-                                               total_score=score_total,
-                                               passOrFail=result_model,
-                                               max_score=max_score,
-                                               code=f.read(),
-                                               )
+            try:
+                quiz_score = QuizScore.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
+                                      classroom=quiz.classroom)
+                quiz_score.total_score = score_total
+                quiz_score.passOrFail = result_model
+                quiz_score.max_score = max_score
+                quiz_score.code = f.read()
+                quiz_score.save()
+            except ObjectDoesNotExist:
+                QuizScore.objects.create(quizId=quiz,
+                                        studentId=User.objects.get(studentId=request.user.studentId),
+                                        classroom=quiz.classroom,
+                                        total_score=score_total,
+                                        passOrFail=result_model,
+                                        max_score=max_score,
+                                        code=f.read(),
+                                        )
             f.close()
         return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                'quizDetail': quiz.quizDetail,

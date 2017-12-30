@@ -12,6 +12,12 @@ def u_score(studentId, classroom, quizId, mode):
             return score.total_score
         except ObjectDoesNotExist:
             return ''
+    elif mode == "Max":
+        try:
+            score = QuizScore.objects.get(studentId=studentId, classroom=classroom, quizId=quizId)
+            return score.max_score
+        except ObjectDoesNotExist:
+            return ''
     elif mode == "Pass or Fail":
         try:
             score = QuizScore.objects.get(studentId=studentId, classroom=classroom, quizId=quizId)

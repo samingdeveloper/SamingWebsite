@@ -142,9 +142,14 @@ def StudentQuizInfo(request,username,quiz_id):
         u_id = request.session['u_id']
         #file_to_show = str(u_id[0]) + '_' + str(quiz_to_show.quizTitle.replace(' ','_')) + quiz_id + '_' + 'script' + '.py'
         try:
-            #f = open('./media/'+file_to_show, 'r')
+           # f = open('./media/'+file_to_show, 'r')
+            #x = Upload.objects.get(user=u_id[0], quiz=quiz_to_show.id, classroom=quiz_to_show.classroom)
             code_to_show = QuizScore.objects.get(quizId=quiz_id, studentId=u_id[0], classroom=quiz_to_show.classroom,
                                             ).code
+            #code_to_show = f.read()
+            #x.Uploadfile.open(mode="rb")
+            #code_to_show = x.Uploadfile.read()
+            #x.Uploadfile.close()
             #f.close()
         except:
             code_to_show = ""
