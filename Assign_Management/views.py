@@ -78,12 +78,14 @@ def GenerateAssign(request):
                 else:
                     Timer_temp += i
             Timer = Timer_temp
+            o = Timer.split(':')
+            x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
             #get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom)
             for j in get_tracker:
                 QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
                                          studentId=j.studentId,
                                          classroom=GenerateAssign_instance_temp.classroom,
-                                         timer=Timer,
+                                         timer=x,
                                          )
         #GenerateAssign_instance.save()
 
@@ -117,8 +119,131 @@ def DeleteAssign(request, quiz_id):
     quiz.delete()
     return HttpResponseRedirect('/ClassRoom/Home')
 
+def EditAssign(request, quiz_id):
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponseRedirect('/LogOut')
+    elif request.method == "POST":
+        print('inthsi')
+        quiz = Quiz.objects.get(pk=quiz_id)
+        OSS = OverwriteStorage()
+        var = request.user.username
+        Assignment = request.POST.get('asname', '')
+        Assignment_Detail = request.POST.get('asdetail', '')
+        Deadline = request.POST.get('dateInput', '')
+        Hint = request.POST.get('hint', '')
+        Timer = request.POST.get('timer', '')
+        asd = request.FILES.get('upload_testcase', False)
+        asdf = request.FILES.get('upload_template', False)
+        mode = request.POST.get('mode', '')
+        redo = request.POST.get('redo', '')
+        in_sys_file = OSS.save(asd.name, asd)
+        in_sys_file = OSS.save(asdf.name, asdf)
+        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media/' + asd.name, 'r')
+        dab = f.read()
+        f.close()
+        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media/' + asdf.name, 'r')
+        dabb = f.read()
+        f.close()
+        os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
+        os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
+        ### Define Section ###
+        quiz.quizTitle = Assignment
+        quiz.quizDetail = Assignment_Detail
+        quiz.deadline = Deadline
+        quiz.hint = Hint
+        quiz.text_testcase_content = dab
+        quiz.text_template_content = dabb
+        quiz.mode = mode
+        quiz.save()
+        GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail,
+                                                        deadline=Deadline, text_template_content=dabb,
+                                                        text_testcase_content=dab, hint=Hint, mode=mode,
+                                                        classroom=ClassRoom.objects.get(
+                                                            id=User.objects.get(username=var).studentYear))
+        get_tracker = QuizTracker.objects.filter(
+            classroom=GenerateAssign_instance_temp.classroom)  # reference at QuizTracker
+        if redo == "Yes":
+            try:
+                for k in get_tracker:
+                    status = QuizStatus.objects.get(quizId=GenerateAssign_instance_temp,
+                                                        studentId=k.studentId,
+                                                        classroom=GenerateAssign_instance_temp.classroom,
+                                                    )
+                    start = QuizTimer.objects.get(quizId=GenerateAssign_instance_temp,
+                                                  studentId=k.studentId,
+                                                  classroom=GenerateAssign_instance_temp.classroom,
+                                                  )
+                    tracker = QuizTracker.objects.get(  studentId=k.studentId,
+                                                        classroom=GenerateAssign_instance_temp.classroom,
+                                                        )
+                    try:
+                        score = QuizScore.objects.get(quizId=GenerateAssign_instance_temp,
+                                                      studentId=k.studentId,
+                                                      classroom=GenerateAssign_instance_temp.classroom,
+                                                    )
+                    except ObjectDoesNotExist:
+                        QuizScore.objects.get_or_create(quizId=GenerateAssign_instance_temp,
+                                              studentId=k.studentId,
+                                              classroom=GenerateAssign_instance_temp.classroom,
+                                              )
+                        score = QuizScore.objects.get(quizId=GenerateAssign_instance_temp,
+                                                      studentId=k.studentId,
+                                                      classroom=GenerateAssign_instance_temp.classroom,
+                                                    )
+                    status.status = False
+                    start.start = False
+                    if tracker.quizDoneCount > 0:
+                        tracker.quizDoneCount -= 1
+                    score.passOrFail = 0
+                    score.total_score = 0
+                    score.max_score = 0
+                    score.code = ''
+                    status.save(update_fields=["status"])
+                    start.save(update_fields=["start"])
+                    tracker.save(update_fields=["quizDoneCount"])
+                    score.save(update_fields=["passOrFail","total_score","max_score","code"])
+                if Timer != '':
+                    print("timeryes")
+                    Timer_temp = ''
+                    for i in Timer:
+                        if i == ' ':
+                            pass
+                        else:
+                            Timer_temp += i
+                    Timer = Timer_temp
+                    o = Timer.split(':')
+                    x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
+                    # get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom)
+                    for j in get_tracker:
+                        timer = QuizTimer.objects.get(quizId=GenerateAssign_instance_temp,
+                                                      studentId=j.studentId,
+                                                      classroom=GenerateAssign_instance_temp.classroom,
+                                                      )
+                        timer.timer = x
+                        timer.timer_stop = None
+                        timer.save(update_fields=["timer","timer_stop"])
+            except ObjectDoesNotExist:
+                pass
+
+
+        return HttpResponseRedirect('/ClassRoom/Home')
+
+    else:
+        quiz = Quiz.objects.get(pk=quiz_id)
+        try:
+            quizTimer = QuizTimer.objects.get(quizId=quiz)
+        except:
+            quizTimer = ''
+        context = {'quizedit': quiz,
+                   'quiztedit': quizTimer,
+                   'quizdedit': quiz.deadline,
+                  }
+        return render(request, 'EditAssignment.html', context)
 
 def uploadgrading(request, quiz_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
     t = timezone.localtime(timezone.now())  # offset-awared datetime
     t.astimezone(timezone.utc).replace(tzinfo=None)
@@ -127,14 +252,43 @@ def uploadgrading(request, quiz_id):
         Timer = QuizTimer.objects.get(quizId=quiz,
                                         studentId=User.objects.get(studentId=request.user.studentId),
                                         classroom=quiz.classroom,
-                                        ).timer
+                                        ).timer_stop
     except ObjectDoesNotExist:
-        Timer = ''
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect('/LogOut')
-    elif t > quiz.deadline  or Timer=="00:00:00" and not request.user.is_admin:
-        print("deadline is here."+str(t))
-        return HttpResponseRedirect('/ClassRoom/Home')
+        Timer = None
+    #set utc+7 check setting file 'Asia/Bangkok'
+    if Timer is not None:
+        print("Timer is not None.")
+        deadline, timer_stop = timezone.localtime(quiz.deadline),timezone.localtime(Timer)
+        deadline.astimezone(timezone.utc).replace(tzinfo=None)
+        timer_stop.astimezone(timezone.utc).replace(tzinfo=None)
+        if t >= deadline or t >= timer_stop:
+            #print("Time's up!" + str(t.timestamp()))
+            return HttpResponseRedirect('/ClassRoom/Home')
+    elif Timer is None:
+        print("Timer is None.")
+        deadline =  timezone.localtime(quiz.deadline)
+        deadline.astimezone(timezone.utc).replace(tzinfo=None)
+        print(t)
+        print(deadline)
+        if t >= deadline:
+            #print("deadline is here." + str(t))
+            return HttpResponseRedirect('/ClassRoom/Home')
+
+    if request.method == "POST" and 'time_left' in request.POST:
+        print("this?")
+        time_left = request.POST.get("time_left",'')
+        print(time_left)
+        try:
+            timer = QuizTimer.objects.get(
+                quizId=quiz,
+                studentId=User.objects.get(studentId=request.user.studentId),
+                classroom=quiz.classroom, )
+            timer.timer = time_left
+            timer.save(update_fields=["timer"])
+        except ObjectDoesNotExist:
+            pass
+        return render(request, 'Home.html')
+
     elif request.method == 'POST' and 'upload_submit' in request.POST:
         if request.FILES['upload']:
             print("in_upload_submit")
@@ -361,6 +515,8 @@ def uploadgrading(request, quiz_id):
                                                'display': result_set,
                                                'Case_Count': test_result.testsRun,
                                                'mode': quiz.mode,
+                                               'Timer':timer_stop.timestamp()*1000,
+                                               'Deadtimestamp':deadline.timestamp()*1000,
                                                })
 
     elif request.method == 'POST' and 'code-form-submit' in request.POST:
@@ -371,7 +527,10 @@ def uploadgrading(request, quiz_id):
                                                     'quizDetail': quiz.quizDetail,
                                                     'Deadline': quiz.deadline,
                                                     'Hint': quiz.hint,
-                                                    'code': code, })
+                                                    'code': code,
+                                                   'Timer':timer_stop.timestamp()*1000,
+                                               'Deadtimestamp':deadline.timestamp()*1000,
+                                                   })
         else:
             #print(code)
             fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ '.py'
@@ -379,7 +538,7 @@ def uploadgrading(request, quiz_id):
             for debug_line in code:
                 f.write(debug_line)
             f.close()
-            Upload.objects.get_or_create(title=fileName, fileUpload='./media/' + fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
+            Upload.objects.get_or_create(title=fileName, fileUpload=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
             write_mode = False
             test_case_count = 0
             Out_count = 0
@@ -606,21 +765,33 @@ def uploadgrading(request, quiz_id):
                                                'Case_Count': test_result.testsRun,
                                                'mode': quiz.mode,
                                                'code': code,
-                                               })
+                                               'Timer':timer_stop.timestamp()*1000,
+                                               'Deadtimestamp':deadline.timestamp()*1000,})
     else:
         print("not-in-code-form")
         try:
             Timer = QuizTimer.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
                                           classroom=quiz.classroom, )
             if Timer.timer:
+                if not Timer.start:
+                    Timer.timer_stop = timezone.now() + timezone.timedelta(seconds=Timer.timer)
                 Timer.start = True
-                Timer.save()
+                Timer.save(update_fields=["timer_stop","start"])
+                return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                       'quizDetail': quiz.quizDetail,
+                                                       'Deadline': quiz.deadline,
+                                                       'Hint': quiz.hint,
+                                                       'Timer': Timer.timer_stop.timestamp() * 1000,
+                                                       'Deadtimestamp': deadline.timestamp() * 1000,
+                                                       })
+
         except ObjectDoesNotExist:
-            pass
-        return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
-                                           'quizDetail':quiz.quizDetail,
-                                           'Deadline':quiz.deadline,
-                                           'Hint':quiz.hint,
-        })
+            return render(request, 'Upload.html', {'quizTitle':quiz.quizTitle,
+                                               'quizDetail':quiz.quizDetail,
+                                               'Deadline':quiz.deadline,
+                                               'Hint':quiz.hint,
+                                                'Timer':False,
+                                                'Deadtimestamp':deadline.timestamp()*1000,
+            })
 
 

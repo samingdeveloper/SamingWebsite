@@ -26,44 +26,49 @@ def Home(request):
     add_status = 0
     var = request.user.username
     action = request.POST.get("action","")
+    user_group = {"teacher":User.objects.filter(groups__name=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + "Teacher"),
+             "ta":User.objects.filter(groups__name=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + "TA"),
+             }
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
     elif request.method == "POST" and action == 'add':
         email = request.POST.get("firstemail","")
-        status = request.POST["country"]
+        status = ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + request.POST["country"]
         try:
             user_obj = User.objects.get(email=email)
-            g = Group.objects.get(name=status)
-            if status == "Admin":
-                user_obj.is_admin = True
+            add_status = 1
+            if request.POST["country"] == "Admin" and request.user.is_admin:
+                user_obj.admin = True
                 user_obj.save()
+                return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+            g = Group.objects.get(name=status)
             g.user_set.add(user_obj)
-            #print(user_obj)
-        except:
+            return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+        except Exception as e:
+            print(e)
             add_status = 2
-            return render(request, 'Home.html', {'add_status': add_status})
-        #print(status)
-        add_status = 1
-        return render(request,'Home.html',{'add_status':add_status})
+            return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
 
     elif request.method == "POST" and action == 'delete':
         email = request.POST.get("firstemail","")
-        status = request.POST["country"]
+        status = ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + request.POST["country"]
         try:
             user_obj = User.objects.get(email=email)
-            g = Group.objects.get(name=status)
-            if status == "Admin":
-                user_obj.is_admin = False
+            add_status = 3
+            if request.POST["country"] == "Admin" and request.user.is_admin:
+                user_obj.admin = False
                 user_obj.save()
+                return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+            g = Group.objects.get(name=status)
             g.user_set.remove(user_obj)
-            #print(user_obj)
-        except:
+            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+        except Exception as e:
+            print(e)
             add_status = 2
-            return render(request, 'Home.html', {'add_status': add_status})
-        #print(status)
+            return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
         add_status = 3
-        return render(request,'Home.html',{'add_status':add_status})
+        return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
 
     elif User.objects.get(username=var).studentYear:
 
@@ -71,6 +76,7 @@ def Home(request):
             'var':User.objects.get(username=var).studentYear,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'user_obj':User.objects.all(),
+            'user_group': user_group,
             #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)),
         }
         return render(request,'Home.html',context)
@@ -125,13 +131,27 @@ def StudentScoreInfo(request,username):
         request.session['u_id'] = [username]
         u_id = request.session['u_id']
         var = request.user.username
-        context = {
-            'var':User.objects.get(username=var).studentYear,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
-            'User_objects':User.objects.all(),
-            'u_id': {'user_name':u_id[0]},
-        }
-        return render(request,'ShowScoreStudent.html',context)
+        try:
+            score = QuizScore.objects.filter(studentId=u_id[0], classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
+            x = 0
+            y = 0
+            for i in score:
+                #print(i.total_score)
+                #print(i.passOrFail)
+                x += i.total_score + i.passOrFail
+                y += i.max_score
+            context = {
+                'var': User.objects.get(username=var).studentYear,
+                'classname': ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
+                'User_objects': User.objects.all(),
+                'u_id': {'user_name': u_id[0]},
+                'totalscore': x,
+                'maxscore': y,
+            }
+            return render(request, 'ShowScoreStudent.html', context)
+        except:
+            print('noe')
+            return render(request, 'ShowScoreStudent.html')
 
 
 def StudentQuizInfo(request,username,quiz_id):

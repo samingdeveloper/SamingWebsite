@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator, MaxValueValidator
 User = get_user_model()
 
 # Create your models here.
@@ -48,14 +49,15 @@ class QuizScore(models.Model):
 class QuizTimer(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     studentId = models.ForeignKey(User, on_delete=models.CASCADE)
-    timer = models.CharField(max_length=255,null=True)
+    timer = models.IntegerField(null=True)
+    timer_stop = models.DateTimeField(blank=True,null=True)
     start = models.BooleanField(default=False)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.studentId.studentId) + " : " + str(self.quizId) + " : " + self.classroom.className
 
 class QuizTracker(models.Model):
-    quizDoneCount = models.PositiveSmallIntegerField(default=0)
+    quizDoneCount = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0),MaxValueValidator(100)])
     studentId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):

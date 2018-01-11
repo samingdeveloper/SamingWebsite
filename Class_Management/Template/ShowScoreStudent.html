@@ -33,6 +33,14 @@
                 {% endif %}
                 </tr>
                 {% endfor %}
+            {% if quiz %}
+            <tr>
+            <td>Total Score</td>
+                <td></td>
+                <td>{{ totalscore }}</td>
+                <td>{{ maxscore }}</td>
+            </tr>
+            {% endif %}
             </table>
         </div>
     </div>

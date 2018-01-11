@@ -20,7 +20,7 @@
         </script>
         {% elif add_status == 2 %}
         <script>
-            alert("Add Failed,Check your input email.");
+            alert("Failed,Check your input email.");
         </script>
         {% elif add_status == 3 %}
         <script>
@@ -33,7 +33,13 @@
 
 
                     <p>Teacher:</p>
-                    <p>Bawornsak sakulkueakulsuk</p>
+                    {% for i in user_group.teacher %}
+                        <p>{{ i.get_full_name }}</p>
+                    {% endfor %}
+                    <p>TA:</p>
+                    {% for j in user_group.ta %}
+                        <p>{{ j.get_full_name }}</p>
+                    {% endfor %}
                 </div>
                 {%  if request.user.is_admin %}
                 <button id="myBtn" class="boxadd">Add Admin</button>
@@ -47,8 +53,8 @@
                 </div>
                 <div class="boxassign2">
                     {%  if request.user.is_admin %}
-                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:DeleteAssign' i.id %}'">Delete</button>
-                    <button class="delete">Edit</button>
+                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' i.id %}', '{{ i.quizTitle }}')" >Delete</button>
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' i.id %}'">Edit</button>
                     <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}'">View</button>
                     {%  else %}
                     <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}'">Open</button>
@@ -56,6 +62,9 @@
                     <div class="detail">
                         <p>Assignment name : {{ i.quizTitle }}</p>
                         <p>Hint: {{ i.hint }}</p>
+                        {% if i.quiztimer_set.all.0.timer %}
+                            <p>Time: {{ i.quiztimer_set.all.0.timer_stop }} </p>
+                        {% endif %}
                         <p>Deadline : {{ i.deadline }}</p>
                     </div>
                 </div>
@@ -92,7 +101,9 @@
                     <select id="country" name="country">
                         <option value="Teacher"> Teacher</option>
                         <option value="TA"> TA</option>
+                        {% if request.user.is_admin %}
                         <option value="Admin"> Admin</option>
+                        {% endif %}
                     </select>
 
                     <label for="country">Action:</label>
@@ -136,5 +147,15 @@
             }
         }
     </script>
-
+    <script>
+        function delQuiz(url,name) {
+            if (confirm("Delete "+name+' ?')){
+                location.href=url;
+                x = location.href;
+            }
+            else{
+                window.close();
+            }
+        }
+    </script>
 {% endblock %}

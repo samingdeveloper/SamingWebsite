@@ -63,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_full_name(self):
         if self.first_name or self.last_name:
-            full_name = self.first_name + self.last_name
+            full_name = self.first_name + ' ' + self.last_name
             return full_name
 
     def has_perm(self, perm, obj=None):

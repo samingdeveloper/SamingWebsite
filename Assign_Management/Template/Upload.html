@@ -19,10 +19,11 @@
     <link rel="stylesheet" href="//codemirror.net/theme/blackboard.css">
     <script  src="//codemirror.net/lib/codemirror.js"></script>
     <script  src="//codemirror.net/mode/python/python.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!-- ENd -->
 </head>
 
-<body>
+<body onunload="myFunction()">
     <div class="navbar">
         <div class="logo">
             <button class="logo1" onclick="myFunction1()">
@@ -55,7 +56,7 @@
             <a href="{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}">{{ i.quizTitle }}</a>
         {% endfor %}
     </div>
-    <!-- input data in main ex. text or etc -->
+    <!-- input data in main ex. text or etc f -->
 
 <div id="main">
         <div class="row">
@@ -66,6 +67,8 @@
                         <p>{{ quizDetail }}
                         </p>
                         <p>{{ Hint }}</p>
+                        <p id="Time_Up"></p>
+                        <p id="Deadline"></p>
                     </div>
                 </div>
             </div>
@@ -76,8 +79,7 @@
                     <textarea class="codemirror-textarea"  name="code-form-comment"  id="code-form-comment" >{{ code }}</textarea>
 
                     <!--<option>blackboard</optionselected> //// back end -->
-                    <div class="textarea1">
-                        Deadline: {{ Deadline }}
+                    <div id="nowtime" class="textarea1">
                     </div>
                     <input type="submit" class="button button1" name="code-form-submit" id="code-form-submit" value="RUN"/>
                 </form>
@@ -135,6 +137,65 @@
         editor.setSize("100%", 550);
     </script>
 
+    <script>
+        var deadline =  new Date({{ Deadtimestamp }});
+        if ("{{ Timer }}" == "False" ){
+            var time_up = null;
+        }
+        else {
+            var time_up = new Date({{ Timer }});
+        }
+        console.log(time_up);
+        console.log(deadline);
+        console.log(Date.now());
+        var mytime = setInterval(function(){ myCountFunction(); }, 1000);
+        try {
+            document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
+            document.getElementById("Time_Up").innerHTML = "Timer: " + time_up.toLocaleDateString() + ' ' + time_up.toLocaleTimeString();
+        }
+        catch(err){
+            document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
+        }
+    </script>
+
+    <script>
+        function myFunction() {
+                clearInterval(mytime);
+                //console.log("hello unload");
+                alert("Time's up!");
+                location.href='{% url 'Class_Management:Home' %}';
+                x = location.href;
+            }
+            /*String.prototype.toHHMMSS = function () {
+            var sec_num = parseInt(this, 10); // don't forget the second param
+            var hours   = Math.floor(sec_num / 3600);
+            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            return hours+':'+minutes+':'+seconds;
+        };*/
+            function myCountFunction() {
+                if (time_up == null){
+                    if (Date.now() >= deadline) {
+                        console.log("Date.now() >= deadline");
+                        myFunction()
+                    }
+                }
+                else if (Date.now() >= time_up || Date.now() >= deadline) {
+                    console.log("Date.now() >= deadline++");
+                    myFunction()
+                }
+                else {
+                    document.getElementById("nowtime").innerHTML = Date();
+                    console.log(time_up);
+                    console.log(deadline);
+                    console.log(Date());
+                }
+            }
+    </script>
 </div>
 
 </body>

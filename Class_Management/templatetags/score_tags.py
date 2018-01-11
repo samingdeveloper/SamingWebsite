@@ -5,7 +5,7 @@ register = template.Library()
 
 @register.simple_tag
 def u_score(studentId, classroom, quizId, mode):
-    score = ''
+    score = 0
     if mode == "Scoring":
         try:
             score = QuizScore.objects.get(studentId=studentId, classroom=classroom, quizId=quizId)
@@ -26,3 +26,5 @@ def u_score(studentId, classroom, quizId, mode):
             return ''
     else:
         return score
+
+
