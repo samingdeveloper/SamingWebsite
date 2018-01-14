@@ -29,7 +29,9 @@
             <td>{{ i.email }}</td>
           <td>
             <div class="container">
-              <div id={{ i.username }} >{{ i.quiztracker_set.all.0.quizDoneCount|div:quiz_count|mul:100 }} %</div>
+                <div id={{ i.username }}progress>
+                    <div id={{ i.username }}percent><center>{{ i.quiztracker_set.all.0.quizDoneCount|div:quiz_count|mul:100 }} %</center></div>
+                </div>
             </div>
           </td>
         </tr>
@@ -37,20 +39,21 @@
                       var x = {{ i.quiztracker_set.all.0.quizDoneCount|div:quiz_count|mul:100 }}
         function change_qp_classname() {
             if (x >= 80 && x <= 100){
-                document.getElementById("{{ i.username }}").className = "skills html";
+                document.getElementById("{{ i.username }}progress").className = "skills html";
             }
             else if (x >= 50 && x < 80){
-                document.getElementById("{{ i.username }}").className = "skills css";
+                document.getElementById("{{ i.username }}progress").className = "skills css";
             }
             else if (x >= 10 && x < 50){
-                document.getElementById("{{ i.username }}").className = "skills js";
+                document.getElementById("{{ i.username }}progress").className = "skills js";
             }
             else if (x >= 0 && x < 10){
-                document.getElementById("{{ i.username }}").className = "skills php";
+                document.getElementById("{{ i.username }}progress").className = "skills php";
             }
-        }
-        document.getElementById("{{ i.username }}").innerHTML = change_qp_classname();
-        document.getElementById("{{ i.username }}").innerHTML = x.toFixed([0])+' %';
+        };
+        change_qp_classname();
+        document.getElementById("{{ i.username }}progress").style.width = x.toFixed([0])+'%';
+        document.getElementById("{{ i.username }}percent").innerHTML = x.toFixed([0])+' %';
     </script>
             {% endif %}
           {% endfor %}

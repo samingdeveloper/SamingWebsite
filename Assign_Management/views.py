@@ -57,9 +57,6 @@ def GenerateAssign(request):
         f.close()
         os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
         os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
-        #print(dsa)
-        #print(dab)
-        #print(dabb)
         GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
         GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
         get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
@@ -80,14 +77,12 @@ def GenerateAssign(request):
             Timer = Timer_temp
             o = Timer.split(':')
             x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
-            #get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom)
             for j in get_tracker:
                 QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
                                          studentId=j.studentId,
                                          classroom=GenerateAssign_instance_temp.classroom,
                                          timer=x,
                                          )
-        #GenerateAssign_instance.save()
 
         return HttpResponseRedirect('/ClassRoom/Home')
     else:
@@ -104,14 +99,11 @@ def DeleteAssign(request, quiz_id):
             quizDoneCount = QuizTracker.objects.get(
                             studentId=j.studentId,
                             classroom=quiz.classroom, )
-            #o = str(j.studentId.studentId) + " : " + j.classroom.className
-            #print(o)
             print(quizDoneCount)
             if quizDoneCount.quizDoneCount != 0:
                 try:
                     quizDoneCount.quizDoneCount -= 1
                     quizDoneCount.save(update_fields=["quizDoneCount"])
-                    #quizDoneCount = QuizTracker.objects.get(studentId=j.studentId, classroom=quiz.classroom)
                 except quizDoneCount.DoesNotExist:
                     pass
         elif j.status is not True:
@@ -123,7 +115,6 @@ def EditAssign(request, quiz_id):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST":
-        print('inthsi')
         quiz = Quiz.objects.get(pk=quiz_id)
         OSS = OverwriteStorage()
         var = request.user.username
@@ -213,7 +204,6 @@ def EditAssign(request, quiz_id):
                     Timer = Timer_temp
                     o = Timer.split(':')
                     x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
-                    # get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom)
                     for j in get_tracker:
                         timer = QuizTimer.objects.get(quizId=GenerateAssign_instance_temp,
                                                       studentId=j.studentId,
@@ -262,7 +252,6 @@ def uploadgrading(request, quiz_id):
         deadline.astimezone(timezone.utc).replace(tzinfo=None)
         timer_stop.astimezone(timezone.utc).replace(tzinfo=None)
         if t >= deadline or t >= timer_stop:
-            #print("Time's up!" + str(t.timestamp()))
             return HttpResponseRedirect('/ClassRoom/Home')
     elif Timer is None:
         print("Timer is None.")
@@ -271,7 +260,6 @@ def uploadgrading(request, quiz_id):
         print(t)
         print(deadline)
         if t >= deadline:
-            #print("deadline is here." + str(t))
             return HttpResponseRedirect('/ClassRoom/Home')
 
     if request.method == "POST" and 'time_left' in request.POST:
@@ -283,24 +271,20 @@ def uploadgrading(request, quiz_id):
                 quizId=quiz,
                 studentId=User.objects.get(studentId=request.user.studentId),
                 classroom=quiz.classroom, )
-            timer.timer = time_left
+            timer.timer = time_leftz
             timer.save(update_fields=["timer"])
         except ObjectDoesNotExist:
             pass
         return render(request, 'Home.html')
 
-    elif request.method == 'POST' and 'upload_submit' in request.POST:
+    elif request.method == 'POST' and 'upload_submit' in request.POST and 'code-form-submit' not in request.POST:
         if request.FILES['upload']:
             print("in_upload_submit")
             uploaded_to_file = request.FILES['upload']
             fileName = str(request.user.studentId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
-            #fileName = uploaded_to_file.name.replace(' ','_')
             OSS = OverwriteStorage()
             in_sys_file = OSS.save(fileName, uploaded_to_file)
-            #print(in_sys_file)
-            #myfile = open('./media/' + fileName, 'w')f
             Upload.objects.get_or_create(title=fileName, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
-            #myfile.close()
             write_mode = False
             test_case_count = 0
             Out_count = 0
@@ -322,10 +306,8 @@ def uploadgrading(request, quiz_id):
             f = open('./media/' + fileName, 'r')
             code = f.read()
             f.close()
-            # code = code.lower()
             prob = importlib.import_module(fileName[:-3])
             for line in code.splitlines():
-                #print(line)
                 if "# Stop" in line:
                     print("stop")
                     write_mode = False
@@ -343,8 +325,6 @@ def uploadgrading(request, quiz_id):
 
                     try:
                         globals()['test_case_out_%s' % test_case_num] = eval(command[:-1])
-                        # globals()['test_case_out_%s' % test_case_num] = str(globals()['test_case_out_%s' % test_case_num]) + "\n"
-
                     except:
                         continue
 
@@ -508,18 +488,30 @@ def uploadgrading(request, quiz_id):
                                         code=f.read(),
                                         )
             f.close()
-        return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
-                                               'quizDetail': quiz.quizDetail,
-                                               'Deadline': quiz.deadline,
-                                               'Hint': quiz.hint,
-                                               'display': result_set,
-                                               'Case_Count': test_result.testsRun,
-                                               'mode': quiz.mode,
-                                               'Timer':timer_stop.timestamp()*1000,
-                                               'Deadtimestamp':deadline.timestamp()*1000,
-                                               })
+        try:
+            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                   'quizDetail': quiz.quizDetail,
+                                                   'Deadline': quiz.deadline,
+                                                   'Hint': quiz.hint,
+                                                   'display': result_set,
+                                                   'Case_Count': test_result.testsRun,
+                                                   'mode': quiz.mode,
+                                                   'Timer':timer_stop.timestamp()*1000,
+                                                   'Deadtimestamp':deadline.timestamp()*1000,
+                                                   })
+        except Exception as e:
+            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                   'quizDetail': quiz.quizDetail,
+                                                   'Deadline': quiz.deadline,
+                                                   'Hint': quiz.hint,
+                                                   'display': result_set,
+                                                   'Case_Count': test_result.testsRun,
+                                                   'mode': quiz.mode,
+                                                   'Timer': False,
+                                                   'Deadtimestamp': deadline.timestamp() * 1000,
+                                                   })
 
-    elif request.method == 'POST' and 'code-form-submit' in request.POST:
+    elif request.method == 'POST' and 'code-form-submit' in request.POST and 'upload_submit' not in request.POST:
         code = request.POST['code-form-comment']
         print("in-code-form")
         if code == '':
@@ -532,7 +524,6 @@ def uploadgrading(request, quiz_id):
                                                'Deadtimestamp':deadline.timestamp()*1000,
                                                    })
         else:
-            #print(code)
             fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ '.py'
             f = open('./media/' + fileName, 'w')
             for debug_line in code:
@@ -558,14 +549,11 @@ def uploadgrading(request, quiz_id):
                 i += 1
                 globals()['test_case_out_%s' % i] = ""
                 globals()['out_%s' % i] = ""
-            # code = code.lower()
             f = open('./media/' + fileName, 'r')
             code_a = f.read()
             f.close()
-            #print(code_a)
             prob = importlib.import_module(fileName[:-3])
             for line in code_a.splitlines():
-                #print(line)
                 if "# Stop" in line:
                     print("stop")
                     write_mode = False
@@ -591,9 +579,6 @@ def uploadgrading(request, quiz_id):
                         print("try")
                         print(eval(command[:-1]))
                         globals()['test_case_out_%s' % test_case_num] = eval(command[:-1])
-                        #print("HEEEEEEEEEEERE")
-                        #print(globals()['test_case_out_%s' % test_case_num])
-                        # globals()['test_case_out_%s' % test_case_num] = str(globals()['test_case_out_%s' % test_case_num]) + "\n"
 
 
                     except:
@@ -603,9 +588,7 @@ def uploadgrading(request, quiz_id):
                     print("in testcase  ")
                     test_case_num = str(line[11])
                     write_mode = True
-            #print(test_case_out_1)
-            #print(test_case_out_2)
-            #print(test_case_out_3)
+
 
             case_1_result = ""
             case_2_result = ""
@@ -757,16 +740,28 @@ def uploadgrading(request, quiz_id):
                                         code=f.read(),
                                         )
             f.close()
-        return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
-                                               'quizDetail': quiz.quizDetail,
-                                               'Deadline': quiz.deadline,
-                                               'Hint': quiz.hint,
-                                               'display': result_set,
-                                               'Case_Count': test_result.testsRun,
-                                               'mode': quiz.mode,
-                                               'code': code,
-                                               'Timer':timer_stop.timestamp()*1000,
-                                               'Deadtimestamp':deadline.timestamp()*1000,})
+        try:
+            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                   'quizDetail': quiz.quizDetail,
+                                                   'Deadline': quiz.deadline,
+                                                   'Hint': quiz.hint,
+                                                   'display': result_set,
+                                                   'Case_Count': test_result.testsRun,
+                                                   'mode': quiz.mode,
+                                                   'code': code,
+                                                   'Timer':timer_stop.timestamp()*1000,
+                                                   'Deadtimestamp':deadline.timestamp()*1000,})
+        except Exception as e:
+            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                   'quizDetail': quiz.quizDetail,
+                                                   'Deadline': quiz.deadline,
+                                                   'Hint': quiz.hint,
+                                                   'display': result_set,
+                                                   'Case_Count': test_result.testsRun,
+                                                   'mode': quiz.mode,
+                                                   'code': code,
+                                                   'Timer': False,
+                                                   'Deadtimestamp': deadline.timestamp() * 1000, })
     else:
         print("not-in-code-form")
         try:
