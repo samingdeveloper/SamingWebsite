@@ -7,6 +7,7 @@ from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
 import sys,os,datetime,importlib,unittest
+from RestrictedPython import safe_builtins, utility_builtins, limited_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
 from django.conf import settings
@@ -307,24 +308,28 @@ def uploadgrading(request, quiz_id):
                 f = open('./media/' + fileName, 'r')
                 code = f.read()
                 f.close()
-                #importlib.invalidate_caches()
                 if fileName[:-3] in sys.modules:
                     del sys.modules[fileName[:-3]]
+                    importlib.invalidate_caches()
                     prob = importlib.import_module(fileName[:-3])
+                    #importlib.reload(prob)
                 else:
                     prob = importlib.import_module(fileName[:-3])
+                    #importlib.reload(prob)
                 #print(prob)
                 for line in code.splitlines():
+                    if line.startswith("import"):
+                        if line[7:] not in safe_builtins:
+                            raise SyntaxError("name '" + line[7:] + "' is restricted")
                     if "# Stop" in line:
                         #print("stop")
                         write_mode = False
-
                     if write_mode:
                         if "# Out" in line:
-                            globals()['out_%s' % test_case_num] = eval(line[6:])
+                            globals()['out_%s' % test_case_num] = eval(line[6:],{'__builtins__': safe_builtins},{})
                         elif "# Score" in line:
                             #print("SOCREEEE")
-                            globals()['score_%s' % test_case_num] = float(eval(line[8:]))
+                            globals()['score_%s' % test_case_num] = float(eval(line[8:],{'__builtins__': safe_builtins},{}))
                         elif "# Break" in line:
                             #print("Break!")
                             write_mode = False
@@ -334,14 +339,14 @@ def uploadgrading(request, quiz_id):
                             #print(command)
                         try:
                             globals()['test_case_out_%s' % test_case_num] = eval(command[:-1])
-                        except:
+                        except Exception as E:
+                            print(E)
                             continue
 
                     if "# Test case" in line:
                         #print("in testcase  ")
                         test_case_num = str(line[11])
                         write_mode = True
-
                 global case_1_result
                 case_1_result = ""
                 global case_2_result
@@ -497,6 +502,7 @@ def uploadgrading(request, quiz_id):
                                             code=f.read(),
                                             )
                 f.close()
+                print(eval('dir()'))
             try:
                 return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                        'quizDetail': quiz.quizDetail,
@@ -814,6 +820,3 @@ def uploadgrading(request, quiz_id):
                                                     'exception':e,
                                                     'Deadtimestamp':deadline.timestamp()*1000,
                                               })
-
-
-
