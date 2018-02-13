@@ -1,13 +1,13 @@
 from django.shortcuts import render, HttpResponseRedirect
-from django.http import HttpResponse
-from django.template import loader
-from django.middleware.csrf import CsrfViewMiddleware
+#from django.http import HttpResponse
+#from django.template import loader
+#from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management.models import *
 from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
-import sys,os,datetime,importlib,unittest
-from RestrictedPython import safe_builtins, utility_builtins, limited_builtins
+import sys,os,datetime,importlib,unittest,ast,inspect
+from RestrictedPython import safe_builtins, utility_builtins, limited_builtins, compile_restricted
 from unittest import TextTestRunner
 from django.utils import timezone
 from django.conf import settings
@@ -18,6 +18,11 @@ User = get_user_model()
 # Create your views here.
 
 sys.path.append('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media')
+
+####################### Utility #######################
+
+
+####################### url #######################
 
 def CreateAssignment(request):
     if not request.user.is_authenticated or not request.user.is_admin:
@@ -293,6 +298,25 @@ def uploadgrading(request, quiz_id):
                 score_total = 0
                 max_score = 0
                 # open file .txt. Address  file ???????? Now! change follow your PC
+                f = open('./media/' + fileName, 'r')
+                code = f.read()
+                f.close()
+                try:
+                    byte_code = compile_restricted(code, '<inline>', 'exec')
+                    #print(byte_code)
+                    #print(safe_builtins)
+                    exec(byte_code, {'__builtins__': safe_builtins}, {})
+                except Exception as E:
+                    raise RuntimeError(E)
+                if fileName[:-3] in sys.modules:
+                    del sys.modules[fileName[:-3]]
+                    #importlib.invalidate_caches()
+                    prob = importlib.import_module(fileName[:-3])
+                    #importlib.reload(prob)
+                else:
+                    prob = importlib.import_module(fileName[:-3])
+                    #importlib.reload(prob)
+                #print(prob)
                 f = open('./media/' + fileName, 'a')
                 case = quiz.text_testcase_content
                 f.write("\n\n")
@@ -308,19 +332,8 @@ def uploadgrading(request, quiz_id):
                 f = open('./media/' + fileName, 'r')
                 code = f.read()
                 f.close()
-                if fileName[:-3] in sys.modules:
-                    del sys.modules[fileName[:-3]]
-                    importlib.invalidate_caches()
-                    prob = importlib.import_module(fileName[:-3])
-                    #importlib.reload(prob)
-                else:
-                    prob = importlib.import_module(fileName[:-3])
-                    #importlib.reload(prob)
-                #print(prob)
+
                 for line in code.splitlines():
-                    if line.startswith("import"):
-                        if line[7:] not in safe_builtins:
-                            raise SyntaxError("name '" + line[7:] + "' is restricted")
                     if "# Stop" in line:
                         #print("stop")
                         write_mode = False
@@ -333,12 +346,21 @@ def uploadgrading(request, quiz_id):
                         elif "# Break" in line:
                             #print("Break!")
                             write_mode = False
-                        elif "print" in line:
-                            command = line.replace('print(', 'prob.')
+                        elif "prob." in line:
+                            command = line
                             #print("command this line")
                             #print(command)
+                            '''try:
+                                exec_command = inspect.getsource(eval(command[:-4]))
+                                byte_code = compile_restricted(exec_command, '<inline>', 'exec')
+                                print(byte_code)
+                                exec(byte_code, {'__builtins__': safe_builtins}, {})
+                            except Exception as E:
+                                print(E)
+                                continue'''
                         try:
-                            globals()['test_case_out_%s' % test_case_num] = eval(command[:-1])
+                            globals()['test_case_out_%s' % test_case_num] = eval(command)
+
                         except Exception as E:
                             print(E)
                             continue
@@ -502,7 +524,7 @@ def uploadgrading(request, quiz_id):
                                             code=f.read(),
                                             )
                 f.close()
-                print(eval('dir()'))
+                #print(eval('dir()'))
             try:
                 return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                        'quizDetail': quiz.quizDetail,
@@ -552,6 +574,25 @@ def uploadgrading(request, quiz_id):
                 score_total = 0
                 max_score = 0
                 # open file .txt. Address  file ???????? Now! change follow your PC
+                f = open('./media/' + fileName, 'r')
+                code = f.read()
+                f.close()
+                try:
+                    byte_code = compile_restricted(code, '<inline>', 'exec')
+                    # print(byte_code)
+                    # print(safe_builtins)
+                    exec(byte_code, {'__builtins__': utility_builtins}, {})
+                except Exception as E:
+                    raise RuntimeError(E)
+                if fileName[:-3] in sys.modules:
+                    del sys.modules[fileName[:-3]]
+                    # importlib.invalidate_caches()
+                    prob = importlib.import_module(fileName[:-3])
+                    # importlib.reload(prob)
+                else:
+                    prob = importlib.import_module(fileName[:-3])
+                    # importlib.reload(prob)
+                    # print(prob)
                 f = open('./media/' + fileName, 'a')
                 case = quiz.text_testcase_content
                 f.write("\n\n")
@@ -568,12 +609,6 @@ def uploadgrading(request, quiz_id):
                 f = open('./media/' + fileName, 'r')
                 code_a = f.read()
                 f.close()
-                #importlib.invalidate_caches()
-                if fileName[:-3] in sys.modules:
-                    del sys.modules[fileName[:-3]]
-                    prob = importlib.import_module(fileName[:-3])
-                else:
-                    prob = importlib.import_module(fileName[:-3])
                 for line in code_a.splitlines():
                     if "# Stop" in line:
                         #print("stop")
@@ -582,17 +617,17 @@ def uploadgrading(request, quiz_id):
                     if write_mode:
                         if "# Out" in line:
                             #print("Out")
-                            globals()['out_%s' % test_case_num] = eval(line[6:])
+                            globals()['out_%s' % test_case_num] = eval(line[6:],{'__builtins__': safe_builtins},{})
                         elif "# Score" in line:
                             #print("SOCREEEE")
-                            globals()['score_%s' % test_case_num] = float(eval(line[8:]))
+                            globals()['score_%s' % test_case_num] = float(eval(line[8:],{'__builtins__': safe_builtins},{}))
                         elif "# Break" in line:
                             #print("Break!")
                             write_mode = False
-                        if "print" in line:
+                        if "prob." in line:
                             #print("THISSSSSSSSSSSSLINEEEEEEEE")
                             #print(line)
-                            command = line.replace('print(', 'prob.')
+                            command = line
                             #print("command this line")
                             #print(command)
                             #print(eval(command[:-1]))
@@ -600,7 +635,7 @@ def uploadgrading(request, quiz_id):
                         try:
                             #print("try")
                             #print(eval(command[:-1]))
-                            globals()['test_case_out_%s' % test_case_num] = eval(command[:-1])
+                            globals()['test_case_out_%s' % test_case_num] = eval(command)
 
 
                         except:
@@ -820,3 +855,4 @@ def uploadgrading(request, quiz_id):
                                                     'exception':e,
                                                     'Deadtimestamp':deadline.timestamp()*1000,
                                               })
+
