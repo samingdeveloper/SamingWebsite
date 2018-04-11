@@ -1,0 +1,8 @@
+Django==2.0.3
+uWSGI
+#gunicorn==19.7.1
+django-mathfilters
+pytz
+django-bootstrap4
+RestrictedPython==4.0b2
+timeout-decorator

@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - web
+
+  web:
+    container_name: docker_django_container #container name
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: docker_django_image #image name
+    stdin_open: true
+    tty: true
+    #command: python manage.py runserver 0.0.0.0:8000
+    command: uwsgi --ini SamingDev.ini
+    volumes:
+      - .:/code
+      - ./static:/static
+      #- C:/Program Files/Python36/Lib:/code
+    ports:
+    - "8000:8000"

@@ -3,9 +3,6 @@
   <component name="dataSourceStorageLocal">
     <data-source name="Django default" uuid="d51ddc20-87b0-4426-a0d4-572becdc773c">
       <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
-      <auth-required>false</auth-required>
-      <first-sync>true</first-sync>
-      <introspection-schemas>*:</introspection-schemas>
     </data-source>
   </component>
 </project>

@@ -131,6 +131,8 @@ def StudentScoreInfo(request,username):
         request.session['u_id'] = [username]
         u_id = request.session['u_id']
         var = request.user.username
+        if username != var and not request.user.is_admin:
+            return HttpResponseRedirect("/ClassRoom/Home")
         try:
             score = QuizScore.objects.filter(studentId=u_id[0], classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
             x = 0
@@ -158,6 +160,8 @@ def StudentQuizInfo(request,username,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
+        if username != request.user.username and not request.user.is_admin:
+            return HttpResponseRedirect("/ClassRoom/Home")
         quiz_to_show = Quiz.objects.get(pk=quiz_id)
         u_id = request.session['u_id']
         #file_to_show = str(u_id[0]) + '_' + str(quiz_to_show.quizTitle.replace(' ','_')) + quiz_id + '_' + 'script' + '.py'

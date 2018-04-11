@@ -6,7 +6,7 @@ from Class_Management.models import *
 from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
-import sys,os,datetime,importlib,unittest,ast,inspect
+import sys,os,datetime,importlib,unittest,ast,inspect,timeout_decorator
 from RestrictedPython import safe_builtins, utility_builtins, limited_builtins, compile_restricted
 from unittest import TextTestRunner
 from django.utils import timezone
@@ -17,7 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 User = get_user_model()
 # Create your views here.
 
-sys.path.append('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media')
+sys.path.append(os.getcwd()+"/media")
 
 ####################### Utility #######################
 
@@ -55,10 +55,10 @@ def GenerateAssign(request):
         mode = request.POST.get('mode','')
         in_sys_file = OSS.save(asd.name, asd)
         in_sys_file = OSS.save(asdf.name, asdf)
-        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media/'+asd.name, 'r')
+        f = open('D:/Life/PC TEMP/KMUTT_FIBO/241_Grading/SamingDev/media/'+asd.name, 'r')
         dab = f.read()
         f.close()
-        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media/'+asdf.name, 'r')
+        f = open('D:/Life/PC TEMP/KMUTT_FIBO/241_Grading/SamingDev/media/'+asdf.name, 'r')
         dabb = f.read()
         f.close()
         os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
@@ -135,10 +135,10 @@ def EditAssign(request, quiz_id):
         redo = request.POST.get('redo', '')
         in_sys_file = OSS.save(asd.name, asd)
         in_sys_file = OSS.save(asdf.name, asdf)
-        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media/' + asd.name, 'r')
+        f = open('D:/Life/PC TEMP/KMUTT_FIBO/241_Grading/SamingDev/media/' + asd.name, 'r')
         dab = f.read()
         f.close()
-        f = open('D:/Work/Django_Project/KMUTT_FIBO/241_Grading/SamingDev/media/' + asdf.name, 'r')
+        f = open('D:/Life/PC TEMP/KMUTT_FIBO/241_Grading/SamingDev/media/' + asdf.name, 'r')
         dabb = f.read()
         f.close()
         os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
@@ -236,6 +236,7 @@ def EditAssign(request, quiz_id):
                   }
         return render(request, 'EditAssignment.html', context)
 
+@timeout_decorator.timeout(5, use_signals=False)
 def uploadgrading(request, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -302,12 +303,13 @@ def uploadgrading(request, quiz_id):
                 code = f.read()
                 f.close()
                 try:
-                    byte_code = compile_restricted(code, '<inline>', 'exec')
+                    restricted_globals = dict(__builtins__=safe_builtins)
+                    byte_code = compile_restricted(code, filename='./media/' + fileName, mode='exec')
                     #print(byte_code)
                     #print(safe_builtins)
-                    exec(byte_code, {'__builtins__': safe_builtins}, {})
+                    exec(byte_code, safe_builtins, None)
                 except Exception as E:
-                    raise RuntimeError(E)
+                    raise SyntaxError(E)
                 if fileName[:-3] in sys.modules:
                     del sys.modules[fileName[:-3]]
                     #importlib.invalidate_caches()
@@ -354,7 +356,7 @@ def uploadgrading(request, quiz_id):
                                 exec_command = inspect.getsource(eval(command[:-4]))
                                 byte_code = compile_restricted(exec_command, '<inline>', 'exec')
                                 print(byte_code)
-                                exec(byte_code, {'__builtins__': safe_builtins}, {})
+                                exec(byte_code, {'__builtins__': utility_builtins}, {})
                             except Exception as E:
                                 print(E)
                                 continue'''
