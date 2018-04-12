@@ -778,20 +778,8 @@ def uploadgrading(request, quiz_id):
                     globals()['score_%s' % i] = 0
                 test_case_count = 0
                 Out_count = 0
-                f = open('./media/' + fileName, 'r')
-                temp_f = f.readlines()
-                '''temp_f = [x.strip() for x in temp_f]
-                for i in temp_f:
-                    if i == '\n':
-                        temp_f.remove(i)
-                print(temp_f)'''
-                f.close()
                 f = open('./media/' + fileName, 'w')
-                for m in temp_f:
-                    if "# Test case" in m:
-                        break
-                    else:
-                        f.write(m)
+                f.write(code_temp)
                 f.close()
                 f = open('./media/' + fileName, 'r')
                 try:
