@@ -236,7 +236,7 @@ def EditAssign(request, quiz_id):
                   }
         return render(request, 'EditAssignment.html', context)
 
-@timeout_decorator.timeout(5, use_signals=False)
+#@timeout_decorator.timeout(5, use_signals=False)
 def uploadgrading(request, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -371,6 +371,7 @@ def uploadgrading(request, quiz_id):
                         #print("in testcase  ")
                         test_case_num = str(line[11])
                         write_mode = True
+
                 global case_1_result
                 case_1_result = ""
                 global case_2_result
@@ -499,6 +500,7 @@ def uploadgrading(request, quiz_id):
                 f = open('./media/' + fileName, 'r')
                 temp_f = f.readlines()
                 f.close()
+                print(temp_f)
                 f = open('./media/' + fileName, 'w')
                 for m in temp_f:
                     if "# Test case" in m:
@@ -553,6 +555,8 @@ def uploadgrading(request, quiz_id):
 
         elif request.method == 'POST' and 'code-form-submit' in request.POST:
             code = request.POST['code-form-comment']
+            global code_temp
+            code_temp = code
             #print("in-code-form")
             if code == '':
                 return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
@@ -567,6 +571,7 @@ def uploadgrading(request, quiz_id):
                 fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ '.py'
                 f = open('./media/' + fileName, 'w')
                 for debug_line in code:
+                    #print(debug_line)
                     f.write(debug_line)
                 f.close()
                 Upload.objects.get_or_create(title=fileName, fileUpload=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
@@ -580,10 +585,10 @@ def uploadgrading(request, quiz_id):
                 code = f.read()
                 f.close()
                 try:
-                    byte_code = compile_restricted(code, '<inline>', 'exec')
+                    byte_code = compile_restricted(code, filename='./media/' + fileName, mode='exec')
                     # print(byte_code)
                     # print(safe_builtins)
-                    exec(byte_code, {'__builtins__': utility_builtins}, {})
+                    exec(byte_code, safe_builtins, None)
                 except Exception as E:
                     raise RuntimeError(E)
                 if fileName[:-3] in sys.modules:
@@ -627,27 +632,30 @@ def uploadgrading(request, quiz_id):
                             #print("Break!")
                             write_mode = False
                         if "prob." in line:
-                            #print("THISSSSSSSSSSSSLINEEEEEEEE")
-                            #print(line)
                             command = line
-                            #print("command this line")
-                            #print(command)
-                            #print(eval(command[:-1]))
+                            # print("command this line")
+                            # print(command)
+                            '''try:
+                                exec_command = inspect.getsource(eval(command[:-4]))
+                                byte_code = compile_restricted(exec_command, '<inline>', 'exec')
+                                print(byte_code)
+                                exec(byte_code, {'__builtins__': utility_builtins}, {})
+                            except Exception as E:
+                                print(E)
+                                continue'''
 
                         try:
-                            #print("try")
-                            #print(eval(command[:-1]))
                             globals()['test_case_out_%s' % test_case_num] = eval(command)
 
 
-                        except:
+                        except Exception as E:
+                            print(E)
                             continue
 
                     if "# Test case" in line:
                         #print("in testcase  ")
                         test_case_num = str(line[11])
                         write_mode = True
-
 
                 case_1_result = ""
                 case_2_result = ""
@@ -772,6 +780,11 @@ def uploadgrading(request, quiz_id):
                 Out_count = 0
                 f = open('./media/' + fileName, 'r')
                 temp_f = f.readlines()
+                '''temp_f = [x.strip() for x in temp_f]
+                for i in temp_f:
+                    if i == '\n':
+                        temp_f.remove(i)
+                print(temp_f)'''
                 f.close()
                 f = open('./media/' + fileName, 'w')
                 for m in temp_f:
@@ -807,10 +820,11 @@ def uploadgrading(request, quiz_id):
                                                        'display': result_set,
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
-                                                       'code': code,
+                                                       'code': code_temp,
                                                        'Timer':timer_stop.timestamp()*1000,
                                                        'Deadtimestamp':deadline.timestamp()*1000,})
             except Exception as e:
+                print(e)
                 return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                        'quizDetail': quiz.quizDetail,
                                                        'Deadline': quiz.deadline,
@@ -818,7 +832,7 @@ def uploadgrading(request, quiz_id):
                                                        'display': result_set,
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
-                                                       'code': code,
+                                                       'code': code_temp,
                                                        'Timer': False,
                                                        'Deadtimestamp': deadline.timestamp() * 1000, })
         else:
@@ -836,6 +850,7 @@ def uploadgrading(request, quiz_id):
                                                            'Deadline': quiz.deadline,
                                                            'Hint': quiz.hint,
                                                            'Timer': Timer.timer_stop.timestamp() * 1000,
+                                                           'code': code_temp,
                                                            'Deadtimestamp': deadline.timestamp() * 1000,
                                                            })
 
@@ -845,16 +860,29 @@ def uploadgrading(request, quiz_id):
                                                    'Deadline':quiz.deadline,
                                                    'Hint':quiz.hint,
                                                     'Timer':False,
+                                                    'code': code_temp,
                                                     'Deadtimestamp':deadline.timestamp()*1000,
                 })
     except Exception as e:
         print(e)
-        return render(request, 'Upload.html',{'quizTitle':quiz.quizTitle,
-                                                   'quizDetail':quiz.quizDetail,
-                                                   'Deadline':quiz.deadline,
-                                                   'Hint':quiz.hint,
-                                                    'Timer':False,
-                                                    'exception':e,
-                                                    'Deadtimestamp':deadline.timestamp()*1000,
-                                              })
-
+        try:
+            if request.method == 'POST' and 'upload_submit' in request.POST:
+                code_temp = ''
+            return render(request, 'Upload.html',{'quizTitle':quiz.quizTitle,
+                                                       'quizDetail':quiz.quizDetail,
+                                                       'Deadline':quiz.deadline,
+                                                       'Hint':quiz.hint,
+                                                        'Timer':False,
+                                                        'exception':e,
+                                                        'code':code_temp,
+                                                        'Deadtimestamp':deadline.timestamp()*1000,
+                                                  })
+        except Exception as e:
+            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                   'quizDetail': quiz.quizDetail,
+                                                   'Deadline': quiz.deadline,
+                                                   'Hint': quiz.hint,
+                                                   'Timer': False,
+                                                   'exception': e,
+                                                   'Deadtimestamp': deadline.timestamp() * 1000,
+                                                   })

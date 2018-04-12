@@ -1,0 +1,1086 @@
+Undead request intercepted at: 12-04-2018 05:15:04 UTC
+
+POST http://127.0.0.1:8000/ClassRoom/Assignment/Upload/213/
+Hostname:   DESKTOP-D5E1EKF
+Thread ID:  7220
+Process ID: 8496
+Started:    12-04-2018 05:14:59 UTC
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\threading.py", line 884, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\socketserver.py", line 639, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\socketserver.py", line 696, in __init__
+    self.handle()
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\servers\basehttp.py", line 154, in handle
+    handler.run(self.server.get_app())
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\wsgiref\handlers.py", line 137, in run
+    self.result = application(self.environ, self.start_response)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\contrib\staticfiles\handlers.py", line 66, in __call__
+    return self.application(environ, start_response)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\wsgi.py", line 146, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\base.py", line 81, in get_response
+    response = self._middleware_chain(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\dogslow\__init__.py", line 313, in __call__
+    response = self.get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "D:\Life\PC TEMP\KMUTT_FIBO\241_Grading\SamingDev\Assign_Management\views.py", line 310, in uploadgrading
+    exec(byte_code, safe_builtins, None)
+  File "./media/59340500018_uploaded_cccf_FRA141.py", line 15, in <module>
+    pass
+
+Full backtrace with local variables:
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\threading.py", line 884, in _bootstrap
+    self._bootstrap_inner()
+
+      Arguments: _bootstrap(self=<Thread(Thread-4, started daemon 7220)>)
+      Local variables:
+
+      {'self': <Thread(Thread-4, started daemon 7220)>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\threading.py", line 916, in _bootstrap_inner
+    self.run()
+
+      Arguments: _bootstrap_inner(self=<Thread(Thread-4, started daemon 7220)>)
+      Local variables:
+
+      {'self': <Thread(Thread-4, started daemon 7220)>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+
+      Arguments: run(self=<Thread(Thread-4, started daemon 7220)>)
+      Local variables:
+
+      {'self': <Thread(Thread-4, started daemon 7220)>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\socketserver.py", line 639, in process_request_thread
+    self.finish_request(request, client_address)
+
+      Arguments: process_request_thread(self=<django.core.servers.basehttp.WSGIServer object at 0x068C0890>, request=<socket.socket fd=960, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 50231)>, client_address=('127.0.0.1', 50231))
+      Local variables:
+
+      {'client_address': ('127.0.0.1', 50231),
+       'request': <socket.socket fd=960, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 50231)>,
+       'self': <django.core.servers.basehttp.WSGIServer object at 0x068C0890>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\socketserver.py", line 361, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+
+      Arguments: finish_request(self=<django.core.servers.basehttp.WSGIServer object at 0x068C0890>, request=<socket.socket fd=960, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 50231)>, client_address=('127.0.0.1', 50231))
+      Local variables:
+
+      {'client_address': ('127.0.0.1', 50231),
+       'request': <socket.socket fd=960, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 50231)>,
+       'self': <django.core.servers.basehttp.WSGIServer object at 0x068C0890>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\socketserver.py", line 696, in __init__
+    self.handle()
+
+      Arguments: __init__(self=<django.core.servers.basehttp.WSGIRequestHandler object at 0x06D10370>, request=<socket.socket fd=960, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 50231)>, client_address=('127.0.0.1', 50231), server=<django.core.servers.basehttp.WSGIServer object at 0x068C0890>)
+      Local variables:
+
+      {'client_address': ('127.0.0.1', 50231),
+       'request': <socket.socket fd=960, family=AddressFamily.AF_INET, type=SocketKind.SOCK_STREAM, proto=0, laddr=('127.0.0.1', 8000), raddr=('127.0.0.1', 50231)>,
+       'self': <django.core.servers.basehttp.WSGIRequestHandler object at 0x06D10370>,
+       'server': <django.core.servers.basehttp.WSGIServer object at 0x068C0890>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\servers\basehttp.py", line 154, in handle
+    handler.run(self.server.get_app())
+
+      Arguments: handle(self=<django.core.servers.basehttp.WSGIRequestHandler object at 0x06D10370>)
+      Local variables:
+
+      {'handler': <django.core.servers.basehttp.ServerHandler object at 0x06D10610>,
+       'self': <django.core.servers.basehttp.WSGIRequestHandler object at 0x06D10370>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\wsgiref\handlers.py", line 137, in run
+    self.result = application(self.environ, self.start_response)
+
+      Arguments: run(self=<django.core.servers.basehttp.ServerHandler object at 0x06D10610>, application=<django.contrib.staticfiles.handlers.StaticFilesHandler object at 0x068C0810>)
+      Local variables:
+
+      {'application': <django.contrib.staticfiles.handlers.StaticFilesHandler object at 0x068C0810>,
+       'self': <django.core.servers.basehttp.ServerHandler object at 0x06D10610>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\contrib\staticfiles\handlers.py", line 66, in __call__
+    return self.application(environ, start_response)
+
+      Arguments: __call__(self=<django.contrib.staticfiles.handlers.StaticFilesHandler object at 0x068C0810>, environ=<dict object at 0x0725E3F0 (really long repr)>, start_response=<bound method BaseHandler.start_response of <django.core.servers.basehttp.ServerHandler object at 0x06D10610>>)
+      Local variables:
+
+      {'__class__': <class 'django.contrib.staticfiles.handlers.StaticFilesHandler'>,
+       'environ': {'ALLUSERSPROFILE': 'C:\\ProgramData',
+                   'APPDATA': 'C:\\Users\\Administrater\\AppData\\Roaming',
+                   'COMMONPROGRAMFILES': 'C:\\Program Files (x86)\\Common Files',
+                   'COMMONPROGRAMFILES(X86)': 'C:\\Program Files (x86)\\Common '
+                                              'Files',
+                   'COMMONPROGRAMW6432': 'C:\\Program Files\\Common Files',
+                   'COMPUTERNAME': 'DESKTOP-D5E1EKF',
+                   'COMSPEC': 'C:\\WINDOWS\\system32\\cmd.exe',
+                   'CONTENT_LENGTH': '729',
+                   'CONTENT_TYPE': 'multipart/form-data; '
+                                   'boundary=----WebKitFormBoundary682B5E74wDhaM2BC',
+                   'CSRF_COOKIE': 'gqaAjAVkuQvuxpoQLH4NKl9fcG3p9b29eMdhHVIML6hfqqlsLmuavch9aKV9yfRj',
+                   'DJANGO_SETTINGS_MODULE': 'SamingDev.settings',
+                   'ESET_OPTIONS': '                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ',
+                   'GATEWAY_INTERFACE': 'CGI/1.1',
+                   'HOMEDRIVE': 'C:',
+                   'HOMEPATH': '\\Users\\Administrater',
+                   'HTTP_ACCEPT': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                   'HTTP_ACCEPT_ENCODING': 'gzip, deflate, br',
+                   'HTTP_ACCEPT_LANGUAGE': 'en-US,en;q=0.9',
+                   'HTTP_CACHE_CONTROL': 'max-age=0',
+                   'HTTP_CONNECTION': 'keep-alive',
+                   'HTTP_COOKIE': 'csrftoken=gqaAjAVkuQvuxpoQLH4NKl9fcG3p9b29eMdhHVIML6hfqqlsLmuavch9aKV9yfRj; '
+                                  'sessionid=4txvsuov6y1tzzsosfepujcomkobmq2b',
+                   'HTTP_HOST': '127.0.0.1:8000',
+                   'HTTP_ORIGIN': 'http://127.0.0.1:8000',
+                   'HTTP_REFERER': 'http://127.0.0.1:8000/ClassRoom/Assignment/Upload/213/',
+                   'HTTP_UPGRADE_INSECURE_REQUESTS': '1',
+                   'HTTP_USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                                      'Chrome/65.0.3325.181 Safari/537.36',
+                   'LOCALAPPDATA': 'C:\\Users\\Administrater\\AppData\\Local',
+                   'LOGONSERVER': '\\\\DESKTOP-D5E1EKF',
+                   'NUMBER_OF_PROCESSORS': '8',
+                   'ONEDRIVE': 'C:\\Users\\Administrater\\OneDrive',
+                   'OS': 'Windows_NT',
+                   'PATH': 'C:\\Program '
+                           'Files\\Docker\\Docker\\Resources\\bin;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program '
+                           'Files (x86)\\Common Files\\Ulead '
+                           'Systems\\MPEG;C:\\Program Files (x86)\\NVIDIA '
+                           'Corporation\\PhysX\\Common;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program '
+                           'Files\\nodejs\\;C:\\Program Files '
+                           '(x86)\\Yarn\\bin;C:\\Program Files '
+                           '(x86)\\Git\\cmd;C:\\Program Files\\MySQL\\MySQL '
+                           'Utilities '
+                           '1.6\\;C:\\cygwin64\\bin;C:\\Users\\Administrater\\AppData\\Local\\Programs\\Python\\Python36-32\\Scripts\\;C:\\Users\\Administrater\\AppData\\Local\\Programs\\Python\\Python36-32\\;C:\\Users\\Administrater\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\Administrater\\AppData\\Roaming\\npm;C:\\Users\\Administrater\\AppData\\Local\\Yarn\\bin;C:\\cygwin64\\bin;',
+                   'PATHEXT': '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC',
+                   'PATH_INFO': '/ClassRoom/Assignment/Upload/213/',
+                   'PROCESSOR_ARCHITECTURE': 'x86',
+                   'PROCESSOR_ARCHITEW6432': 'AMD64',
+                   'PROCESSOR_IDENTIFIER': 'Intel64 Family 6 Model 94 Stepping '
+                                           '3, GenuineIntel',
+                   'PROCESSOR_LEVEL': '6',
+                   'PROCESSOR_REVISION': '5e03',
+                   'PROGRAMDATA': 'C:\\ProgramData',
+                   'PROGRAMFILES': 'C:\\Program Files (x86)',
+                   'PROGRAMFILES(X86)': 'C:\\Program Files (x86)',
+                   'PROGRAMW6432': 'C:\\Program Files',
+                   'PROMPT': '$P$G',
+                   'PSMODULEPATH': 'C:\\Program '
+                                   'Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules',
+                   'PUBLIC': 'C:\\Users\\Public',
+                   'QUERY_STRING': '',
+                   'REMOTE_ADDR': '127.0.0.1',
+                   'REMOTE_HOST': '',
+                   'REQUEST_METHOD': 'POST',
+                   'RUN_MAIN': 'true',
+                   'SCRIPT_NAME': '',
+                   'SERVER_NAME': '192.150.14.69',
+                   'SERVER_PORT': '8000',
+                   'SERVER_PROTOCOL': 'HTTP/1.1',
+                   'SERVER_SOFTWARE': 'WSGIServer/0.2',
+                   'SESSIONNAME': 'Console',
+                   'SYSTEMDRIVE': 'C:',
+                   'SYSTEMROOT': 'C:\\WINDOWS',
+                   'TEMP': 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp',
+                   'TMP': 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp',
+                   'USERDOMAIN': 'DESKTOP-D5E1EKF',
+                   'USERDOMAIN_ROAMINGPROFILE': 'DESKTOP-D5E1EKF',
+                   'USERNAME': 'Administrater',
+                   'USERPROFILE': 'C:\\Users\\Administrater',
+                   'WINDIR': 'C:\\WINDOWS',
+                   'wsgi.errors': <_io.TextIOWrapper name='<stderr>' mode='w' encoding='utf-8'>,
+                   'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>,
+                   'wsgi.input': <_io.BufferedReader name=960>,
+                   'wsgi.multiprocess': False,
+                   'wsgi.multithread': True,
+                   'wsgi.run_once': False,
+                   'wsgi.url_scheme': 'http',
+                   'wsgi.version': (1, 0)},
+       'self': <django.contrib.staticfiles.handlers.StaticFilesHandler object at 0x068C0810>,
+       'start_response': <bound method BaseHandler.start_response of <django.core.servers.basehttp.ServerHandler object at 0x06D10610>>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\wsgi.py", line 146, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.core.handlers.wsgi.WSGIHandler object at 0x06D163F0>, environ=<dict object at 0x0725E3F0 (really long repr)>, start_response=<bound method BaseHandler.start_response of <django.core.servers.basehttp.ServerHandler object at 0x06D10610>>)
+      Local variables:
+
+      {'environ': {'ALLUSERSPROFILE': 'C:\\ProgramData',
+                   'APPDATA': 'C:\\Users\\Administrater\\AppData\\Roaming',
+                   'COMMONPROGRAMFILES': 'C:\\Program Files (x86)\\Common Files',
+                   'COMMONPROGRAMFILES(X86)': 'C:\\Program Files (x86)\\Common '
+                                              'Files',
+                   'COMMONPROGRAMW6432': 'C:\\Program Files\\Common Files',
+                   'COMPUTERNAME': 'DESKTOP-D5E1EKF',
+                   'COMSPEC': 'C:\\WINDOWS\\system32\\cmd.exe',
+                   'CONTENT_LENGTH': '729',
+                   'CONTENT_TYPE': 'multipart/form-data; '
+                                   'boundary=----WebKitFormBoundary682B5E74wDhaM2BC',
+                   'CSRF_COOKIE': 'gqaAjAVkuQvuxpoQLH4NKl9fcG3p9b29eMdhHVIML6hfqqlsLmuavch9aKV9yfRj',
+                   'DJANGO_SETTINGS_MODULE': 'SamingDev.settings',
+                   'ESET_OPTIONS': '                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ',
+                   'GATEWAY_INTERFACE': 'CGI/1.1',
+                   'HOMEDRIVE': 'C:',
+                   'HOMEPATH': '\\Users\\Administrater',
+                   'HTTP_ACCEPT': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                   'HTTP_ACCEPT_ENCODING': 'gzip, deflate, br',
+                   'HTTP_ACCEPT_LANGUAGE': 'en-US,en;q=0.9',
+                   'HTTP_CACHE_CONTROL': 'max-age=0',
+                   'HTTP_CONNECTION': 'keep-alive',
+                   'HTTP_COOKIE': 'csrftoken=gqaAjAVkuQvuxpoQLH4NKl9fcG3p9b29eMdhHVIML6hfqqlsLmuavch9aKV9yfRj; '
+                                  'sessionid=4txvsuov6y1tzzsosfepujcomkobmq2b',
+                   'HTTP_HOST': '127.0.0.1:8000',
+                   'HTTP_ORIGIN': 'http://127.0.0.1:8000',
+                   'HTTP_REFERER': 'http://127.0.0.1:8000/ClassRoom/Assignment/Upload/213/',
+                   'HTTP_UPGRADE_INSECURE_REQUESTS': '1',
+                   'HTTP_USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                                      'Chrome/65.0.3325.181 Safari/537.36',
+                   'LOCALAPPDATA': 'C:\\Users\\Administrater\\AppData\\Local',
+                   'LOGONSERVER': '\\\\DESKTOP-D5E1EKF',
+                   'NUMBER_OF_PROCESSORS': '8',
+                   'ONEDRIVE': 'C:\\Users\\Administrater\\OneDrive',
+                   'OS': 'Windows_NT',
+                   'PATH': 'C:\\Program '
+                           'Files\\Docker\\Docker\\Resources\\bin;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program '
+                           'Files (x86)\\Common Files\\Ulead '
+                           'Systems\\MPEG;C:\\Program Files (x86)\\NVIDIA '
+                           'Corporation\\PhysX\\Common;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program '
+                           'Files\\nodejs\\;C:\\Program Files '
+                           '(x86)\\Yarn\\bin;C:\\Program Files '
+                           '(x86)\\Git\\cmd;C:\\Program Files\\MySQL\\MySQL '
+                           'Utilities '
+                           '1.6\\;C:\\cygwin64\\bin;C:\\Users\\Administrater\\AppData\\Local\\Programs\\Python\\Python36-32\\Scripts\\;C:\\Users\\Administrater\\AppData\\Local\\Programs\\Python\\Python36-32\\;C:\\Users\\Administrater\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\Administrater\\AppData\\Roaming\\npm;C:\\Users\\Administrater\\AppData\\Local\\Yarn\\bin;C:\\cygwin64\\bin;',
+                   'PATHEXT': '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC',
+                   'PATH_INFO': '/ClassRoom/Assignment/Upload/213/',
+                   'PROCESSOR_ARCHITECTURE': 'x86',
+                   'PROCESSOR_ARCHITEW6432': 'AMD64',
+                   'PROCESSOR_IDENTIFIER': 'Intel64 Family 6 Model 94 Stepping '
+                                           '3, GenuineIntel',
+                   'PROCESSOR_LEVEL': '6',
+                   'PROCESSOR_REVISION': '5e03',
+                   'PROGRAMDATA': 'C:\\ProgramData',
+                   'PROGRAMFILES': 'C:\\Program Files (x86)',
+                   'PROGRAMFILES(X86)': 'C:\\Program Files (x86)',
+                   'PROGRAMW6432': 'C:\\Program Files',
+                   'PROMPT': '$P$G',
+                   'PSMODULEPATH': 'C:\\Program '
+                                   'Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules',
+                   'PUBLIC': 'C:\\Users\\Public',
+                   'QUERY_STRING': '',
+                   'REMOTE_ADDR': '127.0.0.1',
+                   'REMOTE_HOST': '',
+                   'REQUEST_METHOD': 'POST',
+                   'RUN_MAIN': 'true',
+                   'SCRIPT_NAME': '',
+                   'SERVER_NAME': '192.150.14.69',
+                   'SERVER_PORT': '8000',
+                   'SERVER_PROTOCOL': 'HTTP/1.1',
+                   'SERVER_SOFTWARE': 'WSGIServer/0.2',
+                   'SESSIONNAME': 'Console',
+                   'SYSTEMDRIVE': 'C:',
+                   'SYSTEMROOT': 'C:\\WINDOWS',
+                   'TEMP': 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp',
+                   'TMP': 'C:\\Users\\ADMINI~1\\AppData\\Local\\Temp',
+                   'USERDOMAIN': 'DESKTOP-D5E1EKF',
+                   'USERDOMAIN_ROAMINGPROFILE': 'DESKTOP-D5E1EKF',
+                   'USERNAME': 'Administrater',
+                   'USERPROFILE': 'C:\\Users\\Administrater',
+                   'WINDIR': 'C:\\WINDOWS',
+                   'wsgi.errors': <_io.TextIOWrapper name='<stderr>' mode='w' encoding='utf-8'>,
+                   'wsgi.file_wrapper': <class 'wsgiref.util.FileWrapper'>,
+                   'wsgi.input': <_io.BufferedReader name=960>,
+                   'wsgi.multiprocess': False,
+                   'wsgi.multithread': True,
+                   'wsgi.run_once': False,
+                   'wsgi.url_scheme': 'http',
+                   'wsgi.version': (1, 0)},
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'self': <django.core.handlers.wsgi.WSGIHandler object at 0x06D163F0>,
+       'start_response': <bound method BaseHandler.start_response of <django.core.servers.basehttp.ServerHandler object at 0x06D10610>>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\base.py", line 81, in get_response
+    response = self._middleware_chain(request)
+
+      Arguments: get_response(self=<django.core.handlers.wsgi.WSGIHandler object at 0x06D163F0>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'self': <django.core.handlers.wsgi.WSGIHandler object at 0x06D163F0>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <django.middleware.security.SecurityMiddleware object at 0x06D4E290>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.middleware.security.SecurityMiddleware object at 0x06D4E290>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'response': None,
+       'self': <django.middleware.security.SecurityMiddleware object at 0x06D4E290>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <django.contrib.sessions.middleware.SessionMiddleware object at 0x06D3CFF0>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.contrib.sessions.middleware.SessionMiddleware object at 0x06D3CFF0>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'response': None,
+       'self': <django.contrib.sessions.middleware.SessionMiddleware object at 0x06D3CFF0>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <django.middleware.common.CommonMiddleware object at 0x06D3CC90>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.middleware.common.CommonMiddleware object at 0x06D3CC90>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'response': None,
+       'self': <django.middleware.common.CommonMiddleware object at 0x06D3CC90>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <django.middleware.csrf.CsrfViewMiddleware object at 0x06D3C9D0>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.middleware.csrf.CsrfViewMiddleware object at 0x06D3C9D0>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'response': None,
+       'self': <django.middleware.csrf.CsrfViewMiddleware object at 0x06D3C9D0>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <django.contrib.auth.middleware.AuthenticationMiddleware object at 0x06D3C850>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.contrib.auth.middleware.AuthenticationMiddleware object at 0x06D3C850>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'response': None,
+       'self': <django.contrib.auth.middleware.AuthenticationMiddleware object at 0x06D3C850>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <django.contrib.messages.middleware.MessageMiddleware object at 0x06D3C830>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.contrib.messages.middleware.MessageMiddleware object at 0x06D3C830>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'response': None,
+       'self': <django.contrib.messages.middleware.MessageMiddleware object at 0x06D3C830>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <django.middleware.clickjacking.XFrameOptionsMiddleware object at 0x064050F0>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\utils\deprecation.py", line 95, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<django.middleware.clickjacking.XFrameOptionsMiddleware object at 0x064050F0>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'response': None,
+       'self': <django.middleware.clickjacking.XFrameOptionsMiddleware object at 0x064050F0>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <dogslow.WatchdogMiddleware object at 0x0656BDB0>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\dogslow\__init__.py", line 313, in __call__
+    response = self.get_response(request)
+
+      Arguments: __call__(self=<dogslow.WatchdogMiddleware object at 0x0656BDB0>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'self': <dogslow.WatchdogMiddleware object at 0x0656BDB0>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\exception.py", line 35, in inner
+    response = get_response(request)
+
+      Arguments: inner(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'get_response': <bound method BaseHandler._get_response of <django.core.handlers.wsgi.WSGIHandler object at 0x06D163F0>>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>}
+
+  File "C:\Users\Administrater\AppData\Local\Programs\Python\Python36-32\lib\site-packages\django\core\handlers\base.py", line 126, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+
+      Arguments: _get_response(self=<django.core.handlers.wsgi.WSGIHandler object at 0x06D163F0>, request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>)
+      Local variables:
+
+      {'callback': <function uploadgrading at 0x06C93E40>,
+       'callback_args': (),
+       'callback_kwargs': {'quiz_id': '213'},
+       'middleware_method': <bound method CsrfViewMiddleware.process_view of <django.middleware.csrf.CsrfViewMiddleware object at 0x06D3C9D0>>,
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'resolver': <URLResolver 'SamingDev.urls' (None:None) '^/'>,
+       'resolver_match': ResolverMatch(func=Assign_Management.views.uploadgrading, args=(), kwargs={'quiz_id': '213'}, url_name=Uploadfile, app_names=['Class_Management', 'Assign_Management'], namespaces=['Class_Management', 'Assign_Management']),
+       'response': None,
+       'self': <django.core.handlers.wsgi.WSGIHandler object at 0x06D163F0>,
+       'wrapped_callback': <function uploadgrading at 0x06C93E40>}
+
+  File "D:\Life\PC TEMP\KMUTT_FIBO\241_Grading\SamingDev\Assign_Management\views.py", line 310, in uploadgrading
+    exec(byte_code, safe_builtins, None)
+
+      Arguments: uploadgrading(request=<WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>, quiz_id='213')
+      Local variables:
+
+      {'OSS': <Assign_Management.storage.OverwriteStorage object at 0x060BEED0>,
+       'Out_count': 0,
+       'Timer': None,
+       'byte_code': <code object <module> at 0x06FFAF40, file "./media/59340500018_uploaded_cccf_FRA141.py", line 2>,
+       'code': '\n'
+               'def asd(n):\n'
+               '\ta = n**2\n'
+               '\treturn a\n'
+               '\n'
+               'def dsa(n):\n'
+               '\tb = n**3\n'
+               '\treturn b\n'
+               '\n'
+               'def sda(n):\n'
+               '\tc = n**4\n'
+               '\treturn c\n'
+               '\n'
+               'while(True):\n'
+               '\tpass\n'
+               '\n',
+       'f': <_io.TextIOWrapper name='./media/59340500018_uploaded_cccf_FRA141.py' mode='r' encoding='cp874'>,
+       'fileName': '59340500018_uploaded_cccf_FRA141.py',
+       'in_sys_file': '59340500018_uploaded_cccf_FRA141.py',
+       'max_score': 0,
+       'quiz': <Quiz: cccf : FRA141>,
+       'quiz_id': '213',
+       'request': <WSGIRequest: POST '/ClassRoom/Assignment/Upload/213/'>,
+       'restricted_globals': {'__builtins__': {'ArithmeticError': <class 'ArithmeticError'>,
+                                               'AssertionError': <class 'AssertionError'>,
+                                               'AttributeError': <class 'AttributeError'>,
+                                               'BaseException': <class 'BaseException'>,
+                                               'BufferError': <class 'BufferError'>,
+                                               'BytesWarning': <class 'BytesWarning'>,
+                                               'DeprecationWarning': <class 'DeprecationWarning'>,
+                                               'EOFError': <class 'EOFError'>,
+                                               'EnvironmentError': <class 'OSError'>,
+                                               'Exception': <class 'Exception'>,
+                                               'False': False,
+                                               'FloatingPointError': <class 'FloatingPointError'>,
+                                               'FutureWarning': <class 'FutureWarning'>,
+                                               'GeneratorExit': <class 'GeneratorExit'>,
+                                               'IOError': <class 'OSError'>,
+                                               'ImportError': <class 'ImportError'>,
+                                               'ImportWarning': <class 'ImportWarning'>,
+                                               'IndentationError': <class 'IndentationError'>,
+                                               'IndexError': <class 'IndexError'>,
+                                               'KeyError': <class 'KeyError'>,
+                                               'KeyboardInterrupt': <class 'KeyboardInterrupt'>,
+                                               'LookupError': <class 'LookupError'>,
+                                               'MemoryError': <class 'MemoryError'>,
+                                               'NameError': <class 'NameError'>,
+                                               'None': None,
+                                               'NotImplementedError': <class 'NotImplementedError'>,
+                                               'OSError': <class 'OSError'>,
+                                               'OverflowError': <class 'OverflowError'>,
+                                               'PendingDeprecationWarning': <class 'PendingDeprecationWarning'>,
+                                               'ReferenceError': <class 'ReferenceError'>,
+                                               'RuntimeError': <class 'RuntimeError'>,
+                                               'RuntimeWarning': <class 'RuntimeWarning'>,
+                                               'StopIteration': <class 'StopIteration'>,
+                                               'SyntaxError': <class 'SyntaxError'>,
+                                               'SyntaxWarning': <class 'SyntaxWarning'>,
+                                               'SystemError': <class 'SystemError'>,
+                                               'SystemExit': <class 'SystemExit'>,
+                                               'TabError': <class 'TabError'>,
+                                               'True': True,
+                                               'TypeError': <class 'TypeError'>,
+                                               'UnboundLocalError': <class 'UnboundLocalError'>,
+                                               'UnicodeDecodeError': <class 'UnicodeDecodeError'>,
+                                               'UnicodeEncodeError': <class 'UnicodeEncodeError'>,
+                                               'UnicodeError': <class 'UnicodeError'>,
+                                               'UnicodeTranslateError': <class 'UnicodeTranslateError'>,
+                                               'UnicodeWarning': <class 'UnicodeWarning'>,
+                                               'UserWarning': <class 'UserWarning'>,
+                                               'ValueError': <class 'ValueError'>,
+                                               'Warning': <class 'Warning'>,
+                                               'ZeroDivisionError': <class 'ZeroDivisionError'>,
+                                               '__build_class__': <built-in function __build_class__>,
+                                               '__builtins__': {'ArithmeticError': <class 'ArithmeticError'>,
+                                                                'AssertionError': <class 'AssertionError'>,
+                                                                'AttributeError': <class 'AttributeError'>,
+                                                                'BaseException': <class 'BaseException'>,
+                                                                'BlockingIOError': <class 'BlockingIOError'>,
+                                                                'BrokenPipeError': <class 'BrokenPipeError'>,
+                                                                'BufferError': <class 'BufferError'>,
+                                                                'BytesWarning': <class 'BytesWarning'>,
+                                                                'ChildProcessError': <class 'ChildProcessError'>,
+                                                                'ConnectionAbortedError': <class 'ConnectionAbortedError'>,
+                                                                'ConnectionError': <class 'ConnectionError'>,
+                                                                'ConnectionRefusedError': <class 'ConnectionRefusedError'>,
+                                                                'ConnectionResetError': <class 'ConnectionResetError'>,
+                                                                'DeprecationWarning': <class 'DeprecationWarning'>,
+                                                                'EOFError': <class 'EOFError'>,
+                                                                'Ellipsis': Ellipsis,
+                                                                'EnvironmentError': <class 'OSError'>,
+                                                                'Exception': <class 'Exception'>,
+                                                                'False': False,
+                                                                'FileExistsError': <class 'FileExistsError'>,
+                                                                'FileNotFoundError': <class 'FileNotFoundError'>,
+                                                                'FloatingPointError': <class 'FloatingPointError'>,
+                                                                'FutureWarning': <class 'FutureWarning'>,
+                                                                'GeneratorExit': <class 'GeneratorExit'>,
+                                                                'IOError': <class 'OSError'>,
+                                                                'ImportError': <class 'ImportError'>,
+                                                                'ImportWarning': <class 'ImportWarning'>,
+                                                                'IndentationError': <class 'IndentationError'>,
+                                                                'IndexError': <class 'IndexError'>,
+                                                                'InterruptedError': <class 'InterruptedError'>,
+                                                                'IsADirectoryError': <class 'IsADirectoryError'>,
+                                                                'KeyError': <class 'KeyError'>,
+                                                                'KeyboardInterrupt': <class 'KeyboardInterrupt'>,
+                                                                'LookupError': <class 'LookupError'>,
+                                                                'MemoryError': <class 'MemoryError'>,
+                                                                'ModuleNotFoundError': <class 'ModuleNotFoundError'>,
+                                                                'NameError': <class 'NameError'>,
+                                                                'None': None,
+                                                                'NotADirectoryError': <class 'NotADirectoryError'>,
+                                                                'NotImplemented': NotImplemented,
+                                                                'NotImplementedError': <class 'NotImplementedError'>,
+                                                                'OSError': <class 'OSError'>,
+                                                                'OverflowError': <class 'OverflowError'>,
+                                                                'PendingDeprecationWarning': <class 'PendingDeprecationWarning'>,
+                                                                'PermissionError': <class 'PermissionError'>,
+                                                                'ProcessLookupError': <class 'ProcessLookupError'>,
+                                                                'RecursionError': <class 'RecursionError'>,
+                                                                'ReferenceError': <class 'ReferenceError'>,
+                                                                'ResourceWarning': <class 'ResourceWarning'>,
+                                                                'RuntimeError': <class 'RuntimeError'>,
+                                                                'RuntimeWarning': <class 'RuntimeWarning'>,
+                                                                'StopAsyncIteration': <class 'StopAsyncIteration'>,
+                                                                'StopIteration': <class 'StopIteration'>,
+                                                                'SyntaxError': <class 'SyntaxError'>,
+                                                                'SyntaxWarning': <class 'SyntaxWarning'>,
+                                                                'SystemError': <class 'SystemError'>,
+                                                                'SystemExit': <class 'SystemExit'>,
+                                                                'TabError': <class 'TabError'>,
+                                                                'TimeoutError': <class 'TimeoutError'>,
+                                                                'True': True,
+                                                                'TypeError': <class 'TypeError'>,
+                                                                'UnboundLocalError': <class 'UnboundLocalError'>,
+                                                                'UnicodeDecodeError': <class 'UnicodeDecodeError'>,
+                                                                'UnicodeEncodeError': <class 'UnicodeEncodeError'>,
+                                                                'UnicodeError': <class 'UnicodeError'>,
+                                                                'UnicodeTranslateError': <class 'UnicodeTranslateError'>,
+                                                                'UnicodeWarning': <class 'UnicodeWarning'>,
+                                                                'UserWarning': <class 'UserWarning'>,
+                                                                'ValueError': <class 'ValueError'>,
+                                                                'Warning': <class 'Warning'>,
+                                                                'WindowsError': <class 'OSError'>,
+                                                                'ZeroDivisionError': <class 'ZeroDivisionError'>,
+                                                                '__build_class__': <built-in function __build_class__>,
+                                                                '__debug__': True,
+                                                                '__doc__': 'Built-in '
+                                                                           'functions, '
+                                                                           'exceptions, '
+                                                                           'and '
+                                                                           'other '
+                                                                           'objects.\n'
+                                                                           '\n'
+                                                                           'Noteworthy: '
+                                                                           'None '
+                                                                           'is '
+                                                                           'the '
+                                                                           "`nil' "
+                                                                           'object; '
+                                                                           'Ellipsis '
+                                                                           'represents '
+                                                                           "`...' "
+                                                                           'in '
+                                                                           'slices.',
+                                                                '__import__': <built-in function __import__>,
+                                                                '__loader__': <class '_frozen_importlib.BuiltinImporter'>,
+                                                                '__name__': 'builtins',
+                                                                '__package__': '',
+                                                                '__spec__': ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>),
+                                                                'abs': <built-in function abs>,
+                                                                'all': <built-in function all>,
+                                                                'any': <built-in function any>,
+                                                                'ascii': <built-in function ascii>,
+                                                                'bin': <built-in function bin>,
+                                                                'bool': <class 'bool'>,
+                                                                'bytearray': <class 'bytearray'>,
+                                                                'bytes': <class 'bytes'>,
+                                                                'callable': <built-in function callable>,
+                                                                'chr': <built-in function chr>,
+                                                                'classmethod': <class 'classmethod'>,
+                                                                'compile': <built-in function compile>,
+                                                                'complex': <class 'complex'>,
+                                                                'copyright': Copyright (c) 2001-2017 Python Software Foundation.
+      All Rights Reserved.
+      
+      Copyright (c) 2000 BeOpen.com.
+      All Rights Reserved.
+      
+      Copyright (c) 1995-2001 Corporation for National Research Initiatives.
+      All Rights Reserved.
+      
+      Copyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.
+      All Rights Reserved.,
+                                                                'credits':     Thanks to CWI, CNRI, BeOpen.com, Zope Corporation and a cast of thousands
+          for supporting Python development.  See www.python.org for more information.,
+                                                                'delattr': <built-in function delattr>,
+                                                                'dict': <class 'dict'>,
+                                                                'dir': <built-in function dir>,
+                                                                'divmod': <built-in function divmod>,
+                                                                'enumerate': <class 'enumerate'>,
+                                                                'eval': <built-in function eval>,
+                                                                'exec': <built-in function exec>,
+                                                                'exit': Use exit() or Ctrl-Z plus Return to exit,
+                                                                'filter': <class 'filter'>,
+                                                                'float': <class 'float'>,
+                                                                'format': <built-in function format>,
+                                                                'frozenset': <class 'frozenset'>,
+                                                                'getattr': <built-in function getattr>,
+                                                                'globals': <built-in function globals>,
+                                                                'hasattr': <built-in function hasattr>,
+                                                                'hash': <built-in function hash>,
+                                                                'help': Type help() for interactive help, or help(object) for help about object.,
+                                                                'hex': <built-in function hex>,
+                                                                'id': <built-in function id>,
+                                                                'input': <built-in function input>,
+                                                                'int': <class 'int'>,
+                                                                'isinstance': <built-in function isinstance>,
+                                                                'issubclass': <built-in function issubclass>,
+                                                                'iter': <built-in function iter>,
+                                                                'len': <built-in function len>,
+                                                                'license': Type license() to see the full license text,
+                                                                'list': <class 'list'>,
+                                                                'locals': <built-in function locals>,
+                                                                'map': <class 'map'>,
+                                                                'max': <built-in function max>,
+                                                                'memoryview': <class 'memoryview'>,
+                                                                'min': <built-in function min>,
+                                                                'next': <built-in function next>,
+                                                                'object': <class 'object'>,
+                                                                'oct': <built-in function oct>,
+                                                                'open': <built-in function open>,
+                                                                'ord': <built-in function ord>,
+                                                                'pow': <built-in function pow>,
+                                                                'print': <built-in function print>,
+                                                                'property': <class 'property'>,
+                                                                'quit': Use quit() or Ctrl-Z plus Return to exit,
+                                                                'range': <class 'range'>,
+                                                                'repr': <built-in function repr>,
+                                                                'reversed': <class 'reversed'>,
+                                                                'round': <built-in function round>,
+                                                                'set': <class 'set'>,
+                                                                'setattr': <built-in function setattr>,
+                                                                'slice': <class 'slice'>,
+                                                                'sorted': <built-in function sorted>,
+                                                                'staticmethod': <class 'staticmethod'>,
+                                                                'str': <class 'str'>,
+                                                                'sum': <built-in function sum>,
+                                                                'super': <class 'super'>,
+                                                                'tuple': <class 'tuple'>,
+                                                                'type': <class 'type'>,
+                                                                'vars': <built-in function vars>,
+                                                                'zip': <class 'zip'>},
+                                               '_getattr_': <function safer_getattr at 0x06C93738>,
+                                               'abs': <built-in function abs>,
+                                               'asd': <function asd at 0x0728ECD8>,
+                                               'bool': <class 'bool'>,
+                                               'callable': <built-in function callable>,
+                                               'chr': <built-in function chr>,
+                                               'complex': <class 'complex'>,
+                                               'delattr': <function guarded_delattr at 0x06C936F0>,
+                                               'divmod': <built-in function divmod>,
+                                               'dsa': <function dsa at 0x0728EC90>,
+                                               'float': <class 'float'>,
+                                               'hash': <built-in function hash>,
+                                               'hex': <built-in function hex>,
+                                               'id': <built-in function id>,
+                                               'int': <class 'int'>,
+                                               'isinstance': <built-in function isinstance>,
+                                               'issubclass': <built-in function issubclass>,
+                                               'len': <built-in function len>,
+                                               'oct': <built-in function oct>,
+                                               'ord': <built-in function ord>,
+                                               'pow': <built-in function pow>,
+                                               'range': <class 'range'>,
+                                               'repr': <built-in function repr>,
+                                               'round': <built-in function round>,
+                                               'sda': <function sda at 0x0728EC00>,
+                                               'setattr': <function guarded_setattr at 0x06C93540>,
+                                               'slice': <class 'slice'>,
+                                               'str': <class 'str'>,
+                                               'tuple': <class 'tuple'>,
+                                               'zip': <class 'zip'>}},
+       'score_total': 0,
+       't': datetime.datetime(2018, 4, 12, 12, 14, 59, 920397, tzinfo=<DstTzInfo 'Asia/Bangkok' +07+7:00:00 STD>),
+       'test_case_count': 0,
+       'uploaded_to_file': <InMemoryUploadedFile: v1 - Copy (2).py (text/plain)>,
+       'write_mode': False}
+
+  File "./media/59340500018_uploaded_cccf_FRA141.py", line 15, in <module>
+    pass
+
+      Arguments: <module>()
+      Local variables:
+
+      {'ArithmeticError': <class 'ArithmeticError'>,
+       'AssertionError': <class 'AssertionError'>,
+       'AttributeError': <class 'AttributeError'>,
+       'BaseException': <class 'BaseException'>,
+       'BufferError': <class 'BufferError'>,
+       'BytesWarning': <class 'BytesWarning'>,
+       'DeprecationWarning': <class 'DeprecationWarning'>,
+       'EOFError': <class 'EOFError'>,
+       'EnvironmentError': <class 'OSError'>,
+       'Exception': <class 'Exception'>,
+       'False': False,
+       'FloatingPointError': <class 'FloatingPointError'>,
+       'FutureWarning': <class 'FutureWarning'>,
+       'GeneratorExit': <class 'GeneratorExit'>,
+       'IOError': <class 'OSError'>,
+       'ImportError': <class 'ImportError'>,
+       'ImportWarning': <class 'ImportWarning'>,
+       'IndentationError': <class 'IndentationError'>,
+       'IndexError': <class 'IndexError'>,
+       'KeyError': <class 'KeyError'>,
+       'KeyboardInterrupt': <class 'KeyboardInterrupt'>,
+       'LookupError': <class 'LookupError'>,
+       'MemoryError': <class 'MemoryError'>,
+       'NameError': <class 'NameError'>,
+       'None': None,
+       'NotImplementedError': <class 'NotImplementedError'>,
+       'OSError': <class 'OSError'>,
+       'OverflowError': <class 'OverflowError'>,
+       'PendingDeprecationWarning': <class 'PendingDeprecationWarning'>,
+       'ReferenceError': <class 'ReferenceError'>,
+       'RuntimeError': <class 'RuntimeError'>,
+       'RuntimeWarning': <class 'RuntimeWarning'>,
+       'StopIteration': <class 'StopIteration'>,
+       'SyntaxError': <class 'SyntaxError'>,
+       'SyntaxWarning': <class 'SyntaxWarning'>,
+       'SystemError': <class 'SystemError'>,
+       'SystemExit': <class 'SystemExit'>,
+       'TabError': <class 'TabError'>,
+       'True': True,
+       'TypeError': <class 'TypeError'>,
+       'UnboundLocalError': <class 'UnboundLocalError'>,
+       'UnicodeDecodeError': <class 'UnicodeDecodeError'>,
+       'UnicodeEncodeError': <class 'UnicodeEncodeError'>,
+       'UnicodeError': <class 'UnicodeError'>,
+       'UnicodeTranslateError': <class 'UnicodeTranslateError'>,
+       'UnicodeWarning': <class 'UnicodeWarning'>,
+       'UserWarning': <class 'UserWarning'>,
+       'ValueError': <class 'ValueError'>,
+       'Warning': <class 'Warning'>,
+       'ZeroDivisionError': <class 'ZeroDivisionError'>,
+       '__build_class__': <built-in function __build_class__>,
+       '__builtins__': {'ArithmeticError': <class 'ArithmeticError'>,
+                        'AssertionError': <class 'AssertionError'>,
+                        'AttributeError': <class 'AttributeError'>,
+                        'BaseException': <class 'BaseException'>,
+                        'BlockingIOError': <class 'BlockingIOError'>,
+                        'BrokenPipeError': <class 'BrokenPipeError'>,
+                        'BufferError': <class 'BufferError'>,
+                        'BytesWarning': <class 'BytesWarning'>,
+                        'ChildProcessError': <class 'ChildProcessError'>,
+                        'ConnectionAbortedError': <class 'ConnectionAbortedError'>,
+                        'ConnectionError': <class 'ConnectionError'>,
+                        'ConnectionRefusedError': <class 'ConnectionRefusedError'>,
+                        'ConnectionResetError': <class 'ConnectionResetError'>,
+                        'DeprecationWarning': <class 'DeprecationWarning'>,
+                        'EOFError': <class 'EOFError'>,
+                        'Ellipsis': Ellipsis,
+                        'EnvironmentError': <class 'OSError'>,
+                        'Exception': <class 'Exception'>,
+                        'False': False,
+                        'FileExistsError': <class 'FileExistsError'>,
+                        'FileNotFoundError': <class 'FileNotFoundError'>,
+                        'FloatingPointError': <class 'FloatingPointError'>,
+                        'FutureWarning': <class 'FutureWarning'>,
+                        'GeneratorExit': <class 'GeneratorExit'>,
+                        'IOError': <class 'OSError'>,
+                        'ImportError': <class 'ImportError'>,
+                        'ImportWarning': <class 'ImportWarning'>,
+                        'IndentationError': <class 'IndentationError'>,
+                        'IndexError': <class 'IndexError'>,
+                        'InterruptedError': <class 'InterruptedError'>,
+                        'IsADirectoryError': <class 'IsADirectoryError'>,
+                        'KeyError': <class 'KeyError'>,
+                        'KeyboardInterrupt': <class 'KeyboardInterrupt'>,
+                        'LookupError': <class 'LookupError'>,
+                        'MemoryError': <class 'MemoryError'>,
+                        'ModuleNotFoundError': <class 'ModuleNotFoundError'>,
+                        'NameError': <class 'NameError'>,
+                        'None': None,
+                        'NotADirectoryError': <class 'NotADirectoryError'>,
+                        'NotImplemented': NotImplemented,
+                        'NotImplementedError': <class 'NotImplementedError'>,
+                        'OSError': <class 'OSError'>,
+                        'OverflowError': <class 'OverflowError'>,
+                        'PendingDeprecationWarning': <class 'PendingDeprecationWarning'>,
+                        'PermissionError': <class 'PermissionError'>,
+                        'ProcessLookupError': <class 'ProcessLookupError'>,
+                        'RecursionError': <class 'RecursionError'>,
+                        'ReferenceError': <class 'ReferenceError'>,
+                        'ResourceWarning': <class 'ResourceWarning'>,
+                        'RuntimeError': <class 'RuntimeError'>,
+                        'RuntimeWarning': <class 'RuntimeWarning'>,
+                        'StopAsyncIteration': <class 'StopAsyncIteration'>,
+                        'StopIteration': <class 'StopIteration'>,
+                        'SyntaxError': <class 'SyntaxError'>,
+                        'SyntaxWarning': <class 'SyntaxWarning'>,
+                        'SystemError': <class 'SystemError'>,
+                        'SystemExit': <class 'SystemExit'>,
+                        'TabError': <class 'TabError'>,
+                        'TimeoutError': <class 'TimeoutError'>,
+                        'True': True,
+                        'TypeError': <class 'TypeError'>,
+                        'UnboundLocalError': <class 'UnboundLocalError'>,
+                        'UnicodeDecodeError': <class 'UnicodeDecodeError'>,
+                        'UnicodeEncodeError': <class 'UnicodeEncodeError'>,
+                        'UnicodeError': <class 'UnicodeError'>,
+                        'UnicodeTranslateError': <class 'UnicodeTranslateError'>,
+                        'UnicodeWarning': <class 'UnicodeWarning'>,
+                        'UserWarning': <class 'UserWarning'>,
+                        'ValueError': <class 'ValueError'>,
+                        'Warning': <class 'Warning'>,
+                        'WindowsError': <class 'OSError'>,
+                        'ZeroDivisionError': <class 'ZeroDivisionError'>,
+                        '__build_class__': <built-in function __build_class__>,
+                        '__debug__': True,
+                        '__doc__': 'Built-in functions, exceptions, and other '
+                                   'objects.\n'
+                                   '\n'
+                                   "Noteworthy: None is the `nil' object; "
+                                   "Ellipsis represents `...' in slices.",
+                        '__import__': <built-in function __import__>,
+                        '__loader__': <class '_frozen_importlib.BuiltinImporter'>,
+                        '__name__': 'builtins',
+                        '__package__': '',
+                        '__spec__': ModuleSpec(name='builtins', loader=<class '_frozen_importlib.BuiltinImporter'>),
+                        'abs': <built-in function abs>,
+                        'all': <built-in function all>,
+                        'any': <built-in function any>,
+                        'ascii': <built-in function ascii>,
+                        'bin': <built-in function bin>,
+                        'bool': <class 'bool'>,
+                        'bytearray': <class 'bytearray'>,
+                        'bytes': <class 'bytes'>,
+                        'callable': <built-in function callable>,
+                        'chr': <built-in function chr>,
+                        'classmethod': <class 'classmethod'>,
+                        'compile': <built-in function compile>,
+                        'complex': <class 'complex'>,
+                        'copyright': Copyright (c) 2001-2017 Python Software Foundation.
+      All Rights Reserved.
+      
+      Copyright (c) 2000 BeOpen.com.
+      All Rights Reserved.
+      
+      Copyright (c) 1995-2001 Corporation for National Research Initiatives.
+      All Rights Reserved.
+      
+      Copyright (c) 1991-1995 Stichting Mathematisch Centrum, Amsterdam.
+      All Rights Reserved.,
+                        'credits':     Thanks to CWI, CNRI, BeOpen.com, Zope Corporation and a cast of thousands
+          for supporting Python development.  See www.python.org for more information.,
+                        'delattr': <built-in function delattr>,
+                        'dict': <class 'dict'>,
+                        'dir': <built-in function dir>,
+                        'divmod': <built-in function divmod>,
+                        'enumerate': <class 'enumerate'>,
+                        'eval': <built-in function eval>,
+                        'exec': <built-in function exec>,
+                        'exit': Use exit() or Ctrl-Z plus Return to exit,
+                        'filter': <class 'filter'>,
+                        'float': <class 'float'>,
+                        'format': <built-in function format>,
+                        'frozenset': <class 'frozenset'>,
+                        'getattr': <built-in function getattr>,
+                        'globals': <built-in function globals>,
+                        'hasattr': <built-in function hasattr>,
+                        'hash': <built-in function hash>,
+                        'help': Type help() for interactive help, or help(object) for help about object.,
+                        'hex': <built-in function hex>,
+                        'id': <built-in function id>,
+                        'input': <built-in function input>,
+                        'int': <class 'int'>,
+                        'isinstance': <built-in function isinstance>,
+                        'issubclass': <built-in function issubclass>,
+                        'iter': <built-in function iter>,
+                        'len': <built-in function len>,
+                        'license': Type license() to see the full license text,
+                        'list': <class 'list'>,
+                        'locals': <built-in function locals>,
+                        'map': <class 'map'>,
+                        'max': <built-in function max>,
+                        'memoryview': <class 'memoryview'>,
+                        'min': <built-in function min>,
+                        'next': <built-in function next>,
+                        'object': <class 'object'>,
+                        'oct': <built-in function oct>,
+                        'open': <built-in function open>,
+                        'ord': <built-in function ord>,
+                        'pow': <built-in function pow>,
+                        'print': <built-in function print>,
+                        'property': <class 'property'>,
+                        'quit': Use quit() or Ctrl-Z plus Return to exit,
+                        'range': <class 'range'>,
+                        'repr': <built-in function repr>,
+                        'reversed': <class 'reversed'>,
+                        'round': <built-in function round>,
+                        'set': <class 'set'>,
+                        'setattr': <built-in function setattr>,
+                        'slice': <class 'slice'>,
+                        'sorted': <built-in function sorted>,
+                        'staticmethod': <class 'staticmethod'>,
+                        'str': <class 'str'>,
+                        'sum': <built-in function sum>,
+                        'super': <class 'super'>,
+                        'tuple': <class 'tuple'>,
+                        'type': <class 'type'>,
+                        'vars': <built-in function vars>,
+                        'zip': <class 'zip'>},
+       '_getattr_': <function safer_getattr at 0x06C93738>,
+       'abs': <built-in function abs>,
+       'asd': <function asd at 0x0728ECD8>,
+       'bool': <class 'bool'>,
+       'callable': <built-in function callable>,
+       'chr': <built-in function chr>,
+       'complex': <class 'complex'>,
+       'delattr': <function guarded_delattr at 0x06C936F0>,
+       'divmod': <built-in function divmod>,
+       'dsa': <function dsa at 0x0728EC90>,
+       'float': <class 'float'>,
+       'hash': <built-in function hash>,
+       'hex': <built-in function hex>,
+       'id': <built-in function id>,
+       'int': <class 'int'>,
+       'isinstance': <built-in function isinstance>,
+       'issubclass': <built-in function issubclass>,
+       'len': <built-in function len>,
+       'oct': <built-in function oct>,
+       'ord': <built-in function ord>,
+       'pow': <built-in function pow>,
+       'range': <class 'range'>,
+       'repr': <built-in function repr>,
+       'round': <built-in function round>,
+       'sda': <function sda at 0x0728EC00>,
+       'setattr': <function guarded_setattr at 0x06C93540>,
+       'slice': <class 'slice'>,
+       'str': <class 'str'>,
+       'tuple': <class 'tuple'>,
+       'zip': <class 'zip'>}
