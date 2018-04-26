@@ -59,7 +59,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     # email and password are require by default
     REQUIRED_FIELDS = ['email']
     def __str__(self):
-        return self.studentId + ' : ' + self.username
+        try:
+            return self.studentId + ' : ' + self.username
+        except Exception as e:
+            return e
 
     def get_full_name(self):
         if self.first_name or self.last_name:

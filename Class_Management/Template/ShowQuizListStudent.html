@@ -1,0 +1,27 @@
+{% extends "NavBar.html" %}
+{% block content %}
+{% load static %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
+
+    <div id="main">
+        <div class="center">
+            <h2>Information</h2>
+        </div>
+
+        <div class="back">
+            <table id="customers">
+                <tr>
+                    <th>Assignment Name</th>
+                </tr>
+                {%  for i in file_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'Class_Management:StudentQuizInfo' username quiz_id i.title%}">{{ i.title }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

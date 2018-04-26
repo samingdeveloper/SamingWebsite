@@ -55,10 +55,10 @@ def GenerateAssign(request):
         mode = request.POST.get('mode','')
         in_sys_file = OSS.save(asd.name, asd)
         in_sys_file = OSS.save(asdf.name, asdf)
-        f = open('D:/Life/PC TEMP/KMUTT_FIBO/241_Grading/SamingDev/media/'+asd.name, 'r')
+        f = open(os.getcwd()+'/media/'+asd.name, 'r')
         dab = f.read()
         f.close()
-        f = open('D:/Life/PC TEMP/KMUTT_FIBO/241_Grading/SamingDev/media/'+asdf.name, 'r')
+        f = open(os.getcwd()+'/media/'+asdf.name, 'r')
         dabb = f.read()
         f.close()
         os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
@@ -290,36 +290,45 @@ def uploadgrading(request, quiz_id):
                 #print("in_upload_submit")
                 uploaded_to_file = request.FILES['upload']
                 fileName = str(request.user.studentId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
-                OSS = OverwriteStorage()
-                in_sys_file = OSS.save(fileName, uploaded_to_file)
-                Upload.objects.get_or_create(title=fileName, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
+                #OSS = OverwriteStorage()
+                #in_sys_file = OSS.save(fileName, uploaded_to_file)
+                fuck_sake = Quiz.objects.get(id=quiz_id)
+                in_sys_file_location = os.getcwd()+"/media/"#+fuck_sake.classroom.className+'/'+request.user.studentId+'/'+fuck_sake.quizTitle+'/'
+                temp_test = fuck_sake.classroom.className+'/'+request.user.studentId+'/'+fuck_sake.quizTitle+'/'
+                sys.path.append(in_sys_file_location)
+                FSS = FileSystemStorage()#(location=in_sys_file_location,
+                                        #base_url=os.path.join(temp_test))
+                in_sys_file = FSS.save(fileName, uploaded_to_file)
+                in_sys_file_url = FSS.url(in_sys_file)
+                print(FSS.path(in_sys_file))
+                Upload.objects.get_or_create(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 write_mode = False
                 test_case_count = 0
                 Out_count = 0
                 score_total = 0
                 max_score = 0
                 # open file .txt. Address  file ???????? Now! change follow your PC
-                f = open('./media/' + fileName, 'r')
+                f = open(in_sys_file_location + in_sys_file, 'r')
                 code = f.read()
                 f.close()
                 try:
                     restricted_globals = dict(__builtins__=safe_builtins)
-                    byte_code = compile_restricted(code, filename='./media/' + fileName, mode='exec')
+                    byte_code = compile_restricted(code, filename='./media/' + in_sys_file, mode='exec')
                     #print(byte_code)
                     #print(safe_builtins)
                     exec(byte_code, safe_builtins, None)
                 except Exception as E:
                     raise SyntaxError(E)
-                if fileName[:-3] in sys.modules:
-                    del sys.modules[fileName[:-3]]
+                if in_sys_file[:-3] in sys.modules:
+                    del sys.modules[in_sys_file[:-3]]
                     #importlib.invalidate_caches()
-                    prob = importlib.import_module(fileName[:-3])
+                    prob = importlib.import_module(in_sys_file[:-3])
                     #importlib.reload(prob)
                 else:
-                    prob = importlib.import_module(fileName[:-3])
+                    prob = importlib.import_module(in_sys_file[:-3])
                     #importlib.reload(prob)
                 #print(prob)
-                f = open('./media/' + fileName, 'a')
+                f = open('./media/' + in_sys_file, 'a')
                 case = quiz.text_testcase_content
                 f.write("\n\n")
                 for case_line in case.splitlines():
@@ -331,7 +340,7 @@ def uploadgrading(request, quiz_id):
                     i += 1
                     globals()['test_case_out_%s' % i] = ""
                     globals()['out_%s' % i] = ""
-                f = open('./media/' + fileName, 'r')
+                f = open('./media/' + in_sys_file, 'r')
                 code = f.read()
                 f.close()
 
@@ -497,18 +506,18 @@ def uploadgrading(request, quiz_id):
                     globals()['score_%s' % i] = 0
                 test_case_count = 0
                 Out_count = 0
-                f = open('./media/' + fileName, 'r')
+                f = open('./media/' + in_sys_file, 'r')
                 temp_f = f.readlines()
                 f.close()
                 print(temp_f)
-                f = open('./media/' + fileName, 'w')
+                f = open('./media/' + in_sys_file, 'w')
                 for m in temp_f:
                     if "# Test case" in m:
                         break
                     else:
                         f.write(m)
                 f.close()
-                f = open('./media/' + fileName, 'r')
+                f = open('./media/' + in_sys_file, 'r')
                 try:
                     quiz_score = QuizScore.objects.get(quizId=quiz,
                                                        studentId=User.objects.get(studentId=request.user.studentId),

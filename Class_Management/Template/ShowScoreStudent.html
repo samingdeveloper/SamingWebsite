@@ -21,7 +21,7 @@
                 {%  for i in quiz %}
                 <tr>
                     <td>
-                        <a href="{% url 'Class_Management:StudentQuizInfo' u_id.user_name i.id %}">{{ i.quizTitle }}</a>
+                        <a href="{% url 'Class_Management:StudentQuizListInfo' u_id.user_name i.id %}">{{ i.quizTitle }}</a>
                     </td>
                     <td>{{ i.mode }}</td>
                     {% if i.mode == "Pass or Fail" %}

@@ -1,5 +1,7 @@
 from django.conf.urls import include,url
 from Class_Management.models import ClassRoom, Quiz
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 app_name = 'Assign_Management'
@@ -11,3 +13,5 @@ urlpatterns = [
     url(r'^AssignmentDetail/', views.AssignmentDetail, name='AssignmentDetail'),
     url(r'generate_assign/$', views.GenerateAssign, name='GenerateAssign'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

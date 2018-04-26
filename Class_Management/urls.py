@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^About/', views.About, name='About'),
     url(r'^StudentInfo/$', views.StudentInfo, name='StudentInfo'),
     url(r'^StudentInfo/(?P<username>[\w.@+-]+)/$', views.StudentScoreInfo, name='StudentScoreInfo'),
-    url(r'^StudentInfo/(?P<username>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/$', views.StudentQuizInfo, name='StudentQuizInfo'),
+    url(r'^StudentInfo/(?P<username>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/$', views.StudentQuizListInfo, name='StudentQuizListInfo'),
+    url(r'^StudentInfo/(?P<username>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/(?P<title>[\w.@+-]+)/$', views.StudentQuizInfo, name='StudentQuizInfo'),
     url(r'^Submit/$', views.Submit, name='SubmitRoom'),
 ]

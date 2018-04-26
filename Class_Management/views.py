@@ -155,38 +155,53 @@ def StudentScoreInfo(request,username):
             print('noe')
             return render(request, 'ShowScoreStudent.html')
 
+def StudentQuizListInfo(request,username,quiz_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    else:
+        file_list = Upload.objects.filter(user=User.objects.get(username=username),
+                                          quiz=Quiz.objects.get(pk=quiz_id),
+                                          classroom=Quiz.objects.get(pk=quiz_id).classroom
+                                          )
+        file_list = list(file_list)
+        context = {
+                    'mode': 0,
+                    'file_list': file_list,
+                    'username': username,
+                    'quiz_id': quiz_id
+                    }
+        return render(request,'ShowQuizListStudent.html',context)
 
-def StudentQuizInfo(request,username,quiz_id):
+def StudentQuizInfo(request,username,quiz_id,title):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
         if username != request.user.username and not request.user.is_admin:
             return HttpResponseRedirect("/ClassRoom/Home")
+        file = Upload.objects.get(user=User.objects.get(username=username),
+                                          quiz=Quiz.objects.get(pk=quiz_id),
+                                          classroom=Quiz.objects.get(pk=quiz_id).classroom,
+                                          title=title
+                                          )
         quiz_to_show = Quiz.objects.get(pk=quiz_id)
-        u_id = request.session['u_id']
-        #file_to_show = str(u_id[0]) + '_' + str(quiz_to_show.quizTitle.replace(' ','_')) + quiz_id + '_' + 'script' + '.py'
+        u_id = User.objects.get(username=request.session['u_id'][0]).studentId
         try:
-           # f = open('./media/'+file_to_show, 'r')
-            #x = Upload.objects.get(user=u_id[0], quiz=quiz_to_show.id, classroom=quiz_to_show.classroom)
-            code_to_show = QuizScore.objects.get(quizId=quiz_id, studentId=u_id[0], classroom=quiz_to_show.classroom,
-                                            ).code
-            #code_to_show = f.read()
-            #x.Uploadfile.open(mode="rb")
-            #code_to_show = x.Uploadfile.read()
-            #x.Uploadfile.close()
-            #f.close()
-        except:
+            file.Uploadfile.open(mode="r")
+            code_to_show = file.Uploadfile.read()
+            file.Uploadfile.close()
+        except Exception as e:
+            print(e)
             code_to_show = ""
-        #print(file_to_show)
-        #print(code_write_to_show)
         var = request.user.username
         context = {
             'var':User.objects.get(username=var).studentYear,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'User_objects':User.objects.all(),
-            'u_id': {'user_name': u_id[0]},
+            'u_id': {'user_name': u_id},
             'quiz_to_show':quiz_to_show,
             "code_to_show":code_to_show,
+            "upload_time":file.uploadTime,
+            "title":file.title,
         }
         return render(request,'ShowQuizStudent.html',context)
 

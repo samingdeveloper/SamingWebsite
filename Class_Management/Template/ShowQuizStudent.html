@@ -17,9 +17,11 @@
           <th>{{ u_id.user_name }}</th>
         </tr>
       </table>
-      <p>Assignment name: {{ quiz_to_show.quizTitle }}</p>
-      <p>Assignment detail: {{ quiz_to_show.quizDetail }}</p>
-      <p>Deadline: {{ quiz_to_show.deadline }}</p>
+      <p><strong>Assignment name:</strong> {{ quiz_to_show.quizTitle }}</p>
+      <p><strong>Assignment detail:</strong> {{ quiz_to_show.quizDetail }}</p>
+      <p><strong>File name:</strong> {{ title }}</p>
+      <p><strong>Uploadtime:</strong> {{ upload_time }}</p>
+      <p><strong>Deadline:</strong> {{ quiz_to_show.deadline }}</p>
 
       <label for="showcode">Code:</label>
       <textarea type="text" id="showcode" name="showcodedetail" placeholder="">{{ code_to_show }}</textarea>

@@ -7,12 +7,15 @@ from django.dispatch import receiver
 from django.core.files.storage import FileSystemStorage
 
 User = get_user_model()
+
+def callable_path(instance, filename):
+    return os.path.join('media/random', filename)
 # Create your models here.
 
 class Upload(models.Model):
     title = models.CharField(max_length=50)
-    fileUpload = models.FileField(upload_to='file_uploads')
-    Uploadfile = models.FileField(upload_to='file_uploads', storage=OverwriteStorage())
+    fileUpload = models.FileField(upload_to=callable_path)
+    Uploadfile = models.FileField(upload_to=callable_path)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
