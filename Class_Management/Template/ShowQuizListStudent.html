@@ -12,16 +12,43 @@
         <div class="back">
             <table id="customers">
                 <tr>
-                    <th>Assignment Name</th>
+                    <th>File Name</th>
+                    <th></th>
                 </tr>
                 {%  for i in file_list %}
                 <tr>
                     <td>
                         <a href="{% url 'Class_Management:StudentQuizInfo' username quiz_id i.title%}">{{ i.title }}</a>
                     </td>
+                    <form method="post"> {% csrf_token %}
+                    <td>
+                        <input type="checkbox" id="myCheck{{i.title}}" name="{{ i.title }}" value="{{ i.title }}" onclick="checkFile('{{i.title}}')">
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
+            <button type="submit" id="bbox" name="delete" style="display:none;">Delete</button>
+            </form>
         </div>
     </div>
+
+<script>
+    var x = 0;
+    var y = document.getElementById("bbox")
+    function checkFile(title){
+        var checkBox = document.getElementById("myCheck"+title);
+        if (checkBox.checked == true){
+            x += 1;
+            if ( x >= 1 ){
+                y.style.display = "block";
+            }
+        }
+        else {
+            x -= 1
+            if ( x==0 ){
+                y.style.display = "none";
+            }
+        }
+    }
+</script>
 {% endblock %}

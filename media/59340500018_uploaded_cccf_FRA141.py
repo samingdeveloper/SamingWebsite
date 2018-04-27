@@ -1,13 +1,15 @@
-a = [2,3,4,5]
-def asd(n):
-	a = n**2
-	return a
-
-def dsa(n):
-	b = n**3
-	return b
-
-def sda(n):
-	c = n**4
-	return c
-
+# Test case1
+prob.asd(2)
+# Out int(4)
+# Score 5.5
+# Break
+# Test case2
+prob.dsa(2)
+# Out int(8)
+# Score 3.8
+# Break
+# Test case3
+prob.sda(2)
+# Out int(16)
+# Score 4
+# Stop

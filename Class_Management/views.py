@@ -159,17 +159,22 @@ def StudentQuizListInfo(request,username,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
+        if request.method == 'POST':
+            title_list = []
+            for key in request.POST:
+                title_list.append(key)
+            print(title_list[1:-1])
+            Upload.objects.filter(title__in=title_list[1:]).delete()
         file_list = Upload.objects.filter(user=User.objects.get(username=username),
                                           quiz=Quiz.objects.get(pk=quiz_id),
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom
                                           )
         file_list = list(file_list)
         context = {
-                    'mode': 0,
-                    'file_list': file_list,
-                    'username': username,
-                    'quiz_id': quiz_id
-                    }
+            'file_list': file_list,
+            'username': username,
+            'quiz_id': quiz_id
+        }
         return render(request,'ShowQuizListStudent.html',context)
 
 def StudentQuizInfo(request,username,quiz_id,title):
