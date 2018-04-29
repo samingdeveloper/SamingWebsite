@@ -13,7 +13,7 @@
             <table id="customers">
                 <tr>
                     <th>File Name</th>
-                    <th></th>
+                    <th><input type="checkbox" name="chkall" id="chkall" onclick="chkall(this)" style="display:none"></th>
                 </tr>
                 {%  for i in file_list %}
                 <tr>
@@ -22,7 +22,7 @@
                     </td>
                     <form method="post"> {% csrf_token %}
                     <td>
-                        <input type="checkbox" id="myCheck{{i.title}}" name="{{ i.title }}" value="{{ i.title }}" onclick="checkFile('{{i.title}}')">
+                        <input type="checkbox" id="myCheck{{i.title}}" name="cb" value="{{ i.title }}" onclick="checkFile('{{i.title}}')">
                     </td>
                 </tr>
                 {% endfor %}
@@ -35,20 +35,43 @@
 <script>
     var x = 0;
     var y = document.getElementById("bbox")
+    var checkBoxes = document.getElementsByName("cb");
+    var temp = document.getElementById("chkall");
+    for(var c=0, n=checkBoxes.length;c<n;c++);
+    if (c>0){temp.style.display="block";}
     function checkFile(title){
         var checkBox = document.getElementById("myCheck"+title);
         if (checkBox.checked == true){
             x += 1;
-            if ( x >= 1 ){
-                y.style.display = "block";
-            }
+            if (x === c && x >= 1){ temp.checked = true; y.style.display = "block";}
+            //console.log("x:"+x+" c:"+c)
         }
-        else {
+        else{
             x -= 1
+            temp.checked = false;
             if ( x==0 ){
                 y.style.display = "none";
             }
+            //console.log("x:"+x+" c:"+c)
         }
+    }
+    function chkall(source){
+            checkBoxes = document.getElementsByName("cb");
+            x = 0
+            for(var i=0, n=checkBoxes.length;i<n;i++) {
+                x += 1
+                checkBoxes[i].checked = source.checked;
+            }
+            c = x;
+            if ( x==0 ){
+                y.style.display = "none";
+            }
+            else if (source.checked == false){
+                x = 0
+                y.style.display = "none";
+            }
+            else {y.style.display = "block";}
+            //console.log("x:"+x+" c:"+c)
     }
 </script>
 {% endblock %}

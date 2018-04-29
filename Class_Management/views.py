@@ -160,11 +160,9 @@ def StudentQuizListInfo(request,username,quiz_id):
         return HttpResponseRedirect('/LogOut')
     else:
         if request.method == 'POST':
-            title_list = []
-            for key in request.POST:
-                title_list.append(key)
-            print(title_list[1:-1])
-            Upload.objects.filter(title__in=title_list[1:]).delete()
+            title_list = request.POST.getlist("cb")
+            print(title_list)
+            Upload.objects.filter(title__in=title_list).delete()
         file_list = Upload.objects.filter(user=User.objects.get(username=username),
                                           quiz=Quiz.objects.get(pk=quiz_id),
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom
