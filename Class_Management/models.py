@@ -42,7 +42,8 @@ class QuizScore(models.Model):
     passOrFail = models.FloatField(blank=True, null=True)
     total_score = models.FloatField(blank=True, null=True)
     max_score = models.FloatField(blank=True, null=True)
-    code = models.TextField(blank=True, null=True)
+    #code = models.TextField(blank=True, null=True)
+    code = models.ForeignKey("Assign_Management.Upload", on_delete=models.CASCADE)
     def __str__(self):
         return str(self.studentId.studentId) + " : " + str(self.quizId) + " : " + self.classroom.className
 

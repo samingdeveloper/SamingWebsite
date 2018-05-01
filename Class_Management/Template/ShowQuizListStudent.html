@@ -13,6 +13,7 @@
             <table id="customers">
                 <tr>
                     <th>File Name</th>
+                    <th>Score</th>
                     <th><input type="checkbox" name="chkall" id="chkall" onclick="chkall(this)" style="display:none"></th>
                 </tr>
                 {%  for i in file_list %}
@@ -20,10 +21,16 @@
                     <td>
                         <a href="{% url 'Class_Management:StudentQuizInfo' username quiz_id i.title%}">{{ i.title }}</a>
                     </td>
+                    <td>
+                        {{ i.score }}
+                    </td>
                     <form method="post"> {% csrf_token %}
                     <td>
                         <input type="checkbox" id="myCheck{{i.title}}" name="cb" value="{{ i.title }}" onclick="checkFile('{{i.title}}')">
                     </td>
+                        {% if i.title == score_pointer %}
+                        <td>&#9989</td>
+                        {% endif %}
                 </tr>
                 {% endfor %}
             </table>
@@ -43,7 +50,10 @@
         var checkBox = document.getElementById("myCheck"+title);
         if (checkBox.checked == true){
             x += 1;
-            if (x === c && x >= 1){ temp.checked = true; y.style.display = "block";}
+            if (x >= 1){
+                if(x === c){ temp.checked = true;}
+                y.style.display = "block"; console.log("WHAT");
+            }
             //console.log("x:"+x+" c:"+c)
         }
         else{

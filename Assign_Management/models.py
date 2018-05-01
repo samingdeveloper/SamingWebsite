@@ -18,6 +18,7 @@ class Upload(models.Model):
     Uploadfile = models.FileField(upload_to=callable_path)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    score = models.FloatField(blank=True, null=True)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     uploadTime = models.DateTimeField(auto_now_add=True)
 

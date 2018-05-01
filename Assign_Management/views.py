@@ -522,20 +522,27 @@ def uploadgrading(request, quiz_id):
                     quiz_score = QuizScore.objects.get(quizId=quiz,
                                                        studentId=User.objects.get(studentId=request.user.studentId),
                                                        classroom=quiz.classroom)
-                    quiz_score.total_score = score_total
-                    quiz_score.passOrFail = result_model
-                    quiz_score.max_score = max_score
-                    quiz_score.code = f.read()
-                    quiz_score.save()
+                    if score_total >= quiz_score.total_score or result_model >= quiz_score.passOrFail:
+                        quiz_score.total_score = score_total
+                        quiz_score.passOrFail = result_model
+                        quiz_score.max_score = max_score
+                        quiz_score.code =  Upload.objects.get(title=in_sys_file) #f.read()
+                        quiz_score.save()
                 except ObjectDoesNotExist:
-                    QuizScore.objects.create(quizId=quiz,
+                    quiz_score = QuizScore.objects.create(quizId=quiz,
                                             studentId=User.objects.get(studentId=request.user.studentId),
                                             classroom=quiz.classroom,
                                             total_score=score_total,
                                             passOrFail=result_model,
-                                            max_score=max_score,
-                                            code=f.read(),
+                                                max_score=max_score,
+                                            code= Upload.objects.get(title=in_sys_file) #f.read(),
                                             )
+                upload_instance = Upload.objects.get(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
+                if quiz.mode == "Scoring":
+                    upload_instance.score = quiz_score.total_score
+                elif quiz.mode == "Pass or Fail":
+                    upload_instance.score = quiz_score.passOrFail
+                upload_instance.save(update_fields=["score"])
                 f.close()
                 #print(eval('dir()'))
             try:

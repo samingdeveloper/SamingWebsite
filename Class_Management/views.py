@@ -168,10 +168,18 @@ def StudentQuizListInfo(request,username,quiz_id):
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom
                                           )
         file_list = list(file_list)
+        try:
+            score_pointer = QuizScore.objects.get(quizId=Quiz.objects.get(pk=quiz_id),
+                                  studentId=User.objects.get(username=username)
+                                  )
+            score_pointer_render = score_pointer.code.title
+        except:
+            score_pointer_render = None
         context = {
             'file_list': file_list,
             'username': username,
-            'quiz_id': quiz_id
+            'quiz_id': quiz_id,
+            'score_pointer': score_pointer_render
         }
         return render(request,'ShowQuizListStudent.html',context)
 
