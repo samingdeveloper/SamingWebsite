@@ -117,6 +117,60 @@ def DeleteAssign(request, quiz_id):
     quiz.delete()
     return HttpResponseRedirect('/ClassRoom/Home')
 
+def regen(require_regen):
+    test_temp = Quiz.objects.create(
+        quizTitle=require_regen["quizTitle"],
+        quizDetail=require_regen["quizDetail"],
+        deadline=require_regen["deadline"],
+        hint=require_regen["hint"],
+        text_testcase_content=require_regen["text_testcase_content"],
+        text_template_content=require_regen["text_template_content"],
+        mode=require_regen["mode"],
+        classroom=require_regen["classroom"]
+    )
+    GenerateAssign_instance_temp = test_temp
+    get_tracker = QuizTracker.objects.filter(
+        classroom=GenerateAssign_instance_temp.classroom)  # reference at QuizTracker
+    for k in get_tracker:
+        QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
+                                            studentId=k.studentId,
+                                            classroom=GenerateAssign_instance_temp.classroom,
+                                            status=False,
+                                            )
+    print("k1 has passed")
+    try:
+        for k in get_tracker:
+            tracker = QuizTracker.objects.get(studentId=k.studentId,
+                                              classroom=GenerateAssign_instance_temp.classroom,
+                                              )
+            if tracker.quizDoneCount > 0:
+                tracker.quizDoneCount -= 1
+            tracker.save(update_fields=["quizDoneCount"])
+
+        if require_regen["Timer"] != '':
+            print("timeryes")
+            Timer_temp = ''
+            for i in require_regen["Timer"]:
+                if i == ' ':
+                    pass
+                else:
+                    Timer_temp += i
+            require_regen["Timer"] = Timer_temp
+            o = require_regen["Timer"].split(':')
+            x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
+            for j in get_tracker:
+                QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
+                                                   studentId=j.studentId,
+                                                   classroom=GenerateAssign_instance_temp.classroom,
+                                                   timer=x,
+                                                   )
+        print("k2 has passed")
+    except Exception as e:
+        print("k2 has failed")
+        print(e)
+        pass
+    return test_temp
+
 def EditAssign(request, quiz_id):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
@@ -144,84 +198,60 @@ def EditAssign(request, quiz_id):
         os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
         os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
         ### Define Section ###
-        quiz.quizTitle = Assignment
-        quiz.quizDetail = Assignment_Detail
-        quiz.deadline = Deadline
-        quiz.hint = Hint
-        quiz.text_testcase_content = dab
-        quiz.text_template_content = dabb
-        quiz.mode = mode
-        quiz.save()
-        GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail,
-                                                        deadline=Deadline, text_template_content=dabb,
-                                                        text_testcase_content=dab, hint=Hint, mode=mode,
-                                                        classroom=ClassRoom.objects.get(
-                                                            id=User.objects.get(username=var).studentYear))
-        get_tracker = QuizTracker.objects.filter(
-            classroom=GenerateAssign_instance_temp.classroom)  # reference at QuizTracker
-        if redo == "Yes":
-            try:
-                for k in get_tracker:
-                    status = QuizStatus.objects.get(quizId=GenerateAssign_instance_temp,
-                                                        studentId=k.studentId,
-                                                        classroom=GenerateAssign_instance_temp.classroom,
-                                                    )
-                    start = QuizTimer.objects.get(quizId=GenerateAssign_instance_temp,
-                                                  studentId=k.studentId,
-                                                  classroom=GenerateAssign_instance_temp.classroom,
+        #if (Assignment != quiz.quizTitle or dab != quiz.text_testcase_content:
+        quiz_old = {
+        "title":quiz.quizTitle,
+        "testcase":quiz.text_testcase_content,
+        }
+        if (redo == "Yes" or quiz_old["title"] != Assignment or quiz_old["testcase"] != dab):
+            quiz.delete()
+            require_regen = {"quizTitle":Assignment,
+                             "quizDetail":Assignment_Detail,
+                             "deadline":Deadline,
+                             "hint":Hint,
+                             "text_testcase_content":dab,
+                             "text_template_content":dabb,
+                             "mode":mode,
+                             "classroom":quiz.classroom,
+                             "Timer":Timer,
+                             }
+            regen(require_regen)
+            print("ppl=sh!t")
+
+        else:
+            get_tracker = QuizTracker.objects.filter(
+                classroom=quiz.classroom)  # reference at QuizTracker
+            quiz.quizTitle = Assignment
+            quiz.quizDetail = Assignment_Detail
+            quiz.deadline = Deadline
+            quiz.hint = Hint
+            quiz.text_testcase_content = dab
+            quiz.text_template_content = dabb
+            quiz.mode = mode
+            quiz.save()
+            if Timer != '':
+                # print("timeryes")
+                Timer_temp = ''
+                for i in Timer:
+                    if i == ' ':
+                        pass
+                    else:
+                        Timer_temp += i
+                Timer = Timer_temp
+                o = Timer.split(':')
+                x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
+                for j in get_tracker:
+                    timer = QuizTimer.objects.get(quizId=quiz_id,
+                                                  studentId=j.studentId,
+                                                  classroom=quiz.classroom,
                                                   )
-                    tracker = QuizTracker.objects.get(  studentId=k.studentId,
-                                                        classroom=GenerateAssign_instance_temp.classroom,
-                                                        )
-                    try:
-                        score = QuizScore.objects.get(quizId=GenerateAssign_instance_temp,
-                                                      studentId=k.studentId,
-                                                      classroom=GenerateAssign_instance_temp.classroom,
-                                                    )
-                    except ObjectDoesNotExist:
-                        QuizScore.objects.get_or_create(quizId=GenerateAssign_instance_temp,
-                                              studentId=k.studentId,
-                                              classroom=GenerateAssign_instance_temp.classroom,
-                                              )
-                        score = QuizScore.objects.get(quizId=GenerateAssign_instance_temp,
-                                                      studentId=k.studentId,
-                                                      classroom=GenerateAssign_instance_temp.classroom,
-                                                    )
-                    status.status = False
-                    start.start = False
-                    if tracker.quizDoneCount > 0:
-                        tracker.quizDoneCount -= 1
-                    score.passOrFail = 0
-                    score.total_score = 0
-                    score.max_score = 0
-                    score.code = ''
-                    status.save(update_fields=["status"])
-                    start.save(update_fields=["start"])
-                    tracker.save(update_fields=["quizDoneCount"])
-                    score.save(update_fields=["passOrFail","total_score","max_score","code"])
-                if Timer != '':
-                    #print("timeryes")
-                    Timer_temp = ''
-                    for i in Timer:
-                        if i == ' ':
-                            pass
-                        else:
-                            Timer_temp += i
-                    Timer = Timer_temp
-                    o = Timer.split(':')
-                    x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
-                    for j in get_tracker:
-                        timer = QuizTimer.objects.get(quizId=GenerateAssign_instance_temp,
-                                                      studentId=j.studentId,
-                                                      classroom=GenerateAssign_instance_temp.classroom,
-                                                      )
+                    if timer.start:
+                        timer.timer = x
+                        timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
+                    else:
                         timer.timer = x
                         timer.timer_stop = None
-                        timer.save(update_fields=["timer","timer_stop"])
-            except ObjectDoesNotExist:
-                pass
-
-
+                    timer.save(update_fields=["timer", "timer_stop"])
         return HttpResponseRedirect('/ClassRoom/Home')
 
     else:
