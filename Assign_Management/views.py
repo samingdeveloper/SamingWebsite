@@ -38,7 +38,7 @@ def AssignmentDetail(request):
 
 
 
-def GenerateAssign(request):
+def GenerateAssign(request,classroom):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST" and request.FILES['upload_testcase']:
@@ -63,8 +63,8 @@ def GenerateAssign(request):
         f.close()
         os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
         os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
-        GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
-        GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
+        GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+        GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
         get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
         for k in get_tracker:
             QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
@@ -90,12 +90,13 @@ def GenerateAssign(request):
                                          timer=x,
                                          )
 
-        return HttpResponseRedirect('/ClassRoom/Home')
+        return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
     else:
+        print("WTF")
         return render(request, 'CreateAssignment.html')
 
 
-def DeleteAssign(request, quiz_id):
+def DeleteAssign(request, classroom, quiz_id):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     quiz = Quiz.objects.get(pk=quiz_id)
@@ -115,7 +116,7 @@ def DeleteAssign(request, quiz_id):
         elif j.status is not True:
             pass
     quiz.delete()
-    return HttpResponseRedirect('/ClassRoom/Home')
+    return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
 def regen(require_regen):
     test_temp = Quiz.objects.create(
@@ -171,7 +172,7 @@ def regen(require_regen):
         pass
     return test_temp
 
-def EditAssign(request, quiz_id):
+def EditAssign(request, classroom, quiz_id):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST":
@@ -252,7 +253,7 @@ def EditAssign(request, quiz_id):
                         timer.timer = x
                         timer.timer_stop = None
                     timer.save(update_fields=["timer", "timer_stop"])
-        return HttpResponseRedirect('/ClassRoom/Home')
+        return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
     else:
         quiz = Quiz.objects.get(pk=quiz_id)
@@ -267,9 +268,12 @@ def EditAssign(request, quiz_id):
         return render(request, 'EditAssignment.html', context)
 
 #@timeout_decorator.timeout(5, use_signals=False)
-def uploadgrading(request, quiz_id):
+def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
+    elif request.user not in ClassRoom.objects.get(className=classroom).user.all():
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+
     global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
     t = timezone.localtime(timezone.now())  # offset-awared datetime
@@ -289,7 +293,7 @@ def uploadgrading(request, quiz_id):
         deadline.astimezone(timezone.utc).replace(tzinfo=None)
         timer_stop.astimezone(timezone.utc).replace(tzinfo=None)
         if t >= deadline or t >= timer_stop:
-            return HttpResponseRedirect('/ClassRoom/Home')
+            return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
     elif Timer is None:
         #print("Timer is None.")
         deadline =  timezone.localtime(quiz.deadline)
@@ -297,7 +301,7 @@ def uploadgrading(request, quiz_id):
         #print(t)
         #print(deadline)
         if t >= deadline:
-            return HttpResponseRedirect('/ClassRoom/Home')
+            return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
     try:
         if request.method == "POST" and 'time_left' in request.POST:

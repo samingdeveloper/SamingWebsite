@@ -1,7 +1,11 @@
-<h1>Welcome to {{quiz}}</h1>
-Select Quiz
+{% block content %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
 <ul>
-    {% for q in quiz.quiz_set.all %}
-    <li>{{q.quizDetail}}</li>
+    {% for class in list_class%}
+    <li>
+        <a href="{% url 'Class_Management:Home' class.className %}">{{class.className}}</a>
+    </li>
     {% endfor %}
 </ul>
+{% endblock %}

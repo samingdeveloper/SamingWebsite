@@ -22,19 +22,27 @@ def inside(request,className):
         raise Http404("Classroom does not exist")
     return render(request, 'Inside.html', {'quiz': quiz})
 
-def Home(request):
+def ClassSelect(request):
+    context={
+        "list_class": ClassRoom.objects.all()
+    }
+    return render(request, "Inside.html", context)
+
+def Home(request,classroom):
     add_status = 0
     var = request.user.username
     action = request.POST.get("action","")
-    user_group = {"teacher":User.objects.filter(groups__name=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + "Teacher"),
-             "ta":User.objects.filter(groups__name=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + "TA"),
-             }
+    request.session["classroom"] = classroom
+    user_group = {"teacher":User.objects.filter(groups__name=classroom + '_' + "Teacher"),
+                     "ta":User.objects.filter(groups__name=classroom + '_' + "TA"),
+                     }
+
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
     elif request.method == "POST" and action == 'add':
         email = request.POST.get("firstemail","")
-        status = ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + request.POST["country"]
+        status = classroom + '_' + request.POST["country"]
         try:
             user_obj = User.objects.get(email=email)
             add_status = 1
@@ -52,7 +60,7 @@ def Home(request):
 
     elif request.method == "POST" and action == 'delete':
         email = request.POST.get("firstemail","")
-        status = ClassRoom.objects.get(id=User.objects.get(username=var).studentYear).className + '_' + request.POST["country"]
+        status = classroom + '_' + request.POST["country"]
         try:
             user_obj = User.objects.get(email=email)
             add_status = 3
@@ -70,25 +78,24 @@ def Home(request):
         add_status = 3
         return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
 
-    elif User.objects.get(username=var).studentYear:
-
+    else:
+        print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
         context = {
-            'var':User.objects.get(username=var).studentYear,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
+            #'var':User.objects.get(username=var).studentYear,
+            'classname':classroom,
             'user_obj':User.objects.all(),
             'user_group': user_group,
-            #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)),
+            'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(className=request.session["classroom"])),
         }
         return render(request,'Home.html',context)
 
-
-def About(request):
+def About(request, classroom):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
         return render(request,'About.html')
 
-def StudentInfo(request):
+def StudentInfo(request,classroom):
     var = request.user.username
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -117,24 +124,27 @@ def StudentInfo(request):
             'var':User.objects.get(username=var).studentYear,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
             'user_year':user_year,
-            'User_objects':User.objects.all(),
+            'User_objects':ClassRoom.objects.get(className=classroom).user.all(),
             'quiz_count':quiz_count
             #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)),
         }
         return render(request,'ShowStudent.html',context)
 
 
-def StudentScoreInfo(request,username):
+def StudentScoreInfo(request,classroom,username):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
         request.session['u_id'] = [username]
         u_id = request.session['u_id']
         var = request.user.username
+        print(u_id[0])
         if username != var and not request.user.is_admin:
-            return HttpResponseRedirect("/ClassRoom/Home")
+            return HttpResponseRedirect("/ClassRoom/"+request.session["classroom"])
         try:
-            score = QuizScore.objects.filter(studentId=u_id[0], classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
+            print("try")
+            score = QuizScore.objects.filter(studentId=User.objects.get(username=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
+            quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom))
             x = 0
             y = 0
             for i in score:
@@ -144,18 +154,19 @@ def StudentScoreInfo(request,username):
                 y += i.max_score
             context = {
                 'var': User.objects.get(username=var).studentYear,
-                'classname': ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
+                'classname': classroom,
                 'User_objects': User.objects.all(),
                 'u_id': {'user_name': u_id[0]},
                 'totalscore': x,
                 'maxscore': y,
+                'quiz': quiz,
             }
             return render(request, 'ShowScoreStudent.html', context)
         except:
             print('noe')
             return render(request, 'ShowScoreStudent.html')
 
-def StudentQuizListInfo(request,username,quiz_id):
+def StudentQuizListInfo(request,classroom,username,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
@@ -183,7 +194,7 @@ def StudentQuizListInfo(request,username,quiz_id):
         }
         return render(request,'ShowQuizListStudent.html',context)
 
-def StudentQuizInfo(request,username,quiz_id,title):
+def StudentQuizInfo(request,classroom,username,quiz_id,title):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:

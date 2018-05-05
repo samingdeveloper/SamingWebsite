@@ -53,11 +53,11 @@
                 </div>
                 <div class="boxassign2">
                     {%  if request.user.is_admin %}
-                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' i.id %}', '{{ i.quizTitle }}')" >Delete</button>
-                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' i.id %}'">Edit</button>
-                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}'">View</button>
+                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
                     {%  else %}
-                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}'">Open</button>
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
                     {% endif %}
                     <div class="detail">
                         <p>Assignment name : {{ i.quizTitle }}</p>
@@ -74,7 +74,7 @@
                 <div class="tooltip">
                     <button1>
                         <span class="tooltiptext">Create Quiz</span>
-                        <a href="/ClassRoom/Assignment/generate_assign/">
+                        <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
                             <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
                         </a>
                     </button1>

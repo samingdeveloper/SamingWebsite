@@ -42,7 +42,7 @@ def LogIn_Auth(request):
             #if request.user_a.is_admin:
 
             #return render(request, 'SelectClassroom.html', context)
-            return HttpResponseRedirect("/ClassRoom/Home")
+            return HttpResponseRedirect("/ClassRoom/")
         else:
             messages.error(request, 'Sorry, userId or password is not valid.')
             return HttpResponse(template.render(context, request))

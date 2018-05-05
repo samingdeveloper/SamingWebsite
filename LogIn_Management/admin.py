@@ -12,10 +12,10 @@ User = get_user_model()
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
 
-class classNameInline(admin.StackedInline):
+'''class classNameInline(admin.StackedInline):
     model = ClassRoom
     can_delete = False
-    verbose_name_plural = 'ClassRoom'
+    verbose_name_plural = 'ClassRoom'''
 
 '''class extraauthInline(admin.StackedInline):
     model = extraauth
@@ -26,7 +26,7 @@ class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
-    inlines = (classNameInline,)
+    #inlines = (classNameInline,)
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
@@ -54,7 +54,6 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email','username')
     ordering = ('email',)
     #filter_horizontal = ()
-
 
 '''class UserAdmin(admin.ModelAdmin):
     search_fields = ['email']

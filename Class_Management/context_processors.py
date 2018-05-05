@@ -9,3 +9,4 @@ def quiz_processor(request):
         return {'quiz': quiz}
     else:
         return ''
+

@@ -5,7 +5,7 @@ User = get_user_model()
 
 # Create your models here.
 class ClassRoom(models.Model):
-    user = models.OneToOneField(User,on_delete=models.CASCADE,blank=True,null=True)
+    user = models.ManyToManyField(User)
     className = models.CharField(max_length=255)
 
     def __str__(self):

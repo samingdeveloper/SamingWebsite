@@ -48,12 +48,12 @@
     </div>
     <!-- input assignment -->
     <div id="mySidenav" class="sidenav">
-        <a href="{% url 'Class_Management:Home' %}">Home</a>
+        <a href="{% url 'Class_Management:Home' request.session.classroom %}">Home</a>
         {% if request.user.is_admin %}
-        <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' %}">CreateAssignment</a>
+        <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom%}">CreateAssignment</a>
         {% endif %}
         {%  for i in quiz %}
-            <a href="{% url 'Class_Management:Assign_Management:Uploadfile' i.id %}">{{ i.quizTitle }}</a>
+            <a href="{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}">{{ i.quizTitle }}</a>
         {% endfor %}
     </div>
     <!-- input data in main ex. text or etc f -->
@@ -165,7 +165,7 @@
                 clearInterval(mytime);
                 //console.log("hello unload");
                 alert("Time's up!");
-                location.href='{% url 'Class_Management:Home' %}';
+                location.href='{% url 'Class_Management:Home' request.session.classroom %}';
                 x = location.href;
             }
             /*String.prototype.toHHMMSS = function () {

@@ -19,7 +19,7 @@
                 {%  for i in file_list %}
                 <tr>
                     <td>
-                        <a href="{% url 'Class_Management:StudentQuizInfo' username quiz_id i.title%}">{{ i.title }}</a>
+                        <a href="{% url 'Class_Management:StudentQuizInfo' request.session.classroom username quiz_id i.title%}">{{ i.title }}</a>
                     </td>
                     <td>
                         {{ i.score }}

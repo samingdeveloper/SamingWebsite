@@ -20,10 +20,9 @@
           <th>Progress</th>
         </tr>
         {% for i in User_objects %}
-                  {% if i.studentYear == user_year %}
         <tr>
           <td>
-            <a href='{% url 'Class_Management:StudentScoreInfo' i.username %}'>{{ i.studentId }}</a>
+            <a href='{% url 'Class_Management:StudentScoreInfo' request.session.classroom i.username %}'>{{ i.studentId }}</a>
           </td>
           <td>{{ i.first_name }} {{ i.last_name }}</td>
             <td>{{ i.email }}</td>
@@ -55,7 +54,6 @@
         document.getElementById("{{ i.username }}progress").style.width = x.toFixed([0])+'%';
         document.getElementById("{{ i.username }}percent").innerHTML = x.toFixed([0])+' %';
     </script>
-            {% endif %}
           {% endfor %}
       </table>
     </div>
