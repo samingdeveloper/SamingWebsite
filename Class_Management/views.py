@@ -33,10 +33,9 @@ def Home(request,classroom):
     var = request.user.username
     action = request.POST.get("action","")
     request.session["classroom"] = classroom
-    user_group = {"teacher":User.objects.filter(groups__name=classroom + '_' + "Teacher"),
-                     "ta":User.objects.filter(groups__name=classroom + '_' + "TA"),
+    user_group = {"teacher":ClassRoom.objects.get(className=classroom).teacher.all(), #User.objects.filter(groups__name=classroom + '_' + "Teacher"),
+                     "ta":ClassRoom.objects.get(className=classroom).ta.all()    #User.objects.filter(groups__name=classroom + '_' + "TA"),
                      }
-
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
@@ -83,6 +82,7 @@ def Home(request,classroom):
         context = {
             #'var':User.objects.get(username=var).studentYear,
             'classname':classroom,
+            'classroom_creator':ClassRoom.objects.get(className=classroom).creator.get_full_name,
             'user_obj':User.objects.all(),
             'user_group': user_group,
             'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(className=request.session["classroom"])),
@@ -95,38 +95,59 @@ def About(request, classroom):
     else:
         return render(request,'About.html')
 
+def GenerateClassroom(request):
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponseRedirect('/LogOut')
+    elif request.method == "POST" and request.user.is_admin:
+        classname = request.POST["classname"]
+        ClassRoom.objects.create(className=classname,creator=request.user)
+        return HttpResponseRedirect('/ClassRoom')
+    else:
+        return render(request, 'CreateClassroom.html')
+
+def EditClassroom(request,classroom):
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponseRedirect('/LogOut')
+    elif request.method == "POST" and request.user.is_admin:
+        classroom_instance = ClassRoom.objects.get(className=classroom)
+        user_group = {"teacher": User.objects.filter(groups__name=classroom + '_' + "Teacher"),
+                      "ta": User.objects.filter(groups__name=classroom + '_' + "TA"),
+                      }
+        print(Group.objects.filter(name=classroom+"_Teacher"))
+        classname = request.POST["classname"]
+        creator = request.POST["creator"]
+        classroom_instance.className = classname
+        classroom_instance.creator = User.objects.get(first_name=creator)
+        classroom_instance.save()
+        return HttpResponseRedirect('/ClassRoom')
+    else:
+        context={
+            "classname":classroom,
+            "creator":User.objects.filter(admin=True)
+        }
+        return render(request, 'EditClassroom.html', context)
+
+def DeleteClassroom(request,classroom):
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponseRedirect('/LogOut')
+    else:
+        print(ClassRoom.objects.get(className=classroom))
+        ClassRoom.objects.get(className=classroom).delete()
+        return HttpResponseRedirect('/ClassRoom')
+
 def StudentInfo(request,classroom):
     var = request.user.username
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
-        #y = User.objects.all().values_list('year', flat=True)
-        '''z = extraauth.objects.all().values_list('studentId', flat=True)
-        x = User.objects.all()
-        for i in x:
-            if i.studentYear == 1:
-                print(i.studentYear)
-        #quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
-        print(z)'''
-        temp_class = ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)
-        if temp_class.className == "FRA141":
-            user_year = 1
-        elif temp_class.className == "FRA241":
-            user_year = 2
-        elif temp_class.className == "FRA341":
-            user_year = 3
-        elif temp_class.className == "FRA441":
-            user_year = 4
-        quiz_count = Quiz.objects.filter(classroom=temp_class).count()
+        quiz_count = Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)).count()
         if quiz_count == 0:
             quiz_count = 1
         context = {
-            'var':User.objects.get(username=var).studentYear,
+            #'var':User.objects.get(username=var).studentYear,
             'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
-            'user_year':user_year,
             'User_objects':ClassRoom.objects.get(className=classroom).user.all(),
             'quiz_count':quiz_count
-            #'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear)),
         }
         return render(request,'ShowStudent.html',context)
 
@@ -172,7 +193,7 @@ def StudentQuizListInfo(request,classroom,username,quiz_id):
     else:
         if request.method == 'POST':
             title_list = request.POST.getlist("cb")
-            print(title_list)
+            #print(title_list)
             Upload.objects.filter(title__in=title_list).delete()
         file_list = Upload.objects.filter(user=User.objects.get(username=username),
                                           quiz=Quiz.objects.get(pk=quiz_id),

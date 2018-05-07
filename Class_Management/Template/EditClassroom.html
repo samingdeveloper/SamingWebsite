@@ -1,0 +1,48 @@
+{% block content %}
+<!DOCTYPE html>
+{% load static %}
+<body lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="png" href="{% static 'grading_code/images/logo.png' %}" />
+    <title>Saming</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/style.css' %}">
+    <script src="{% static 'grading_code/js/navbar.js' %}"></script>
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet'
+        type='text/css'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/createassignment.css' %}">
+</head>
+
+<!-- input data in main ex. text or etc -->
+<body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
+    <div id="main" >
+        <div class="center">
+                <h3>Create Classroom</h3>
+        </div>
+        <div class="div">
+            <form action="{% url 'Class_Management:EditClassroom' classname %}" method="post" enctype="multipart/form-data"
+              > {% csrf_token %}
+                <label for="classname">Classname:</label>
+                <input type="text" id="classname" name="classname" placeholder="{{ classname }}">
+                <label for="creator">creator:</label>
+                    <select id="creator" name="creator">
+                        {% for i in creator %}
+                        <option value="{{ i.first_name }}"> {{ i.get_full_name }}</option>
+                        {% endfor %}
+                    </select>
+                <input type="submit" value="Create">
+            </form>
+        </div>
+    </div>
+</body>
+
+{% endblock %}
+</html>

@@ -2,7 +2,7 @@ from django.contrib import admin
 from Class_Management.models import *
 # Register your models here.
 class ClassRoomAdmin(admin.ModelAdmin):
-    filter_horizontal = ('user',)
+    filter_horizontal = ('user','teacher','ta')
 admin.site.register(ClassRoom,ClassRoomAdmin)
 admin.site.register(Quiz)
 admin.site.register(QuizStatus)

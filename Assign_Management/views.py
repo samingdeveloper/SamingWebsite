@@ -92,7 +92,6 @@ def GenerateAssign(request,classroom):
 
         return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
     else:
-        print("WTF")
         return render(request, 'CreateAssignment.html')
 
 
@@ -556,12 +555,23 @@ def uploadgrading(request, classroom, quiz_id):
                     quiz_score = QuizScore.objects.get(quizId=quiz,
                                                        studentId=User.objects.get(studentId=request.user.studentId),
                                                        classroom=quiz.classroom)
-                    if score_total >= quiz_score.total_score or result_model >= quiz_score.passOrFail:
-                        quiz_score.total_score = score_total
-                        quiz_score.passOrFail = result_model
-                        quiz_score.max_score = max_score
-                        quiz_score.code =  Upload.objects.get(title=in_sys_file) #f.read()
-                        quiz_score.save()
+                    if quiz.mode == "Scoring":
+                        if score_total >= quiz_score.total_score:
+                            print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
+                            print(str(score_total)+":"+str(result_model))
+                            #return None
+                            quiz_score.total_score = score_total
+                            quiz_score.passOrFail = result_model
+                            quiz_score.max_score = max_score
+                            quiz_score.code =  Upload.objects.get(title=in_sys_file) #f.read()
+                            quiz_score.save()
+                    else:
+                        if result_model >= quiz_score.passOrFail:
+                            quiz_score.total_score = score_total
+                            quiz_score.passOrFail = result_model
+                            quiz_score.max_score = max_score
+                            quiz_score.code = Upload.objects.get(title=in_sys_file)  # f.read()
+                            quiz_score.save()
                 except ObjectDoesNotExist:
                     quiz_score = QuizScore.objects.create(quizId=quiz,
                                             studentId=User.objects.get(studentId=request.user.studentId),
@@ -573,9 +583,9 @@ def uploadgrading(request, classroom, quiz_id):
                                             )
                 upload_instance = Upload.objects.get(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 if quiz.mode == "Scoring":
-                    upload_instance.score = quiz_score.total_score
+                    upload_instance.score = score_total
                 elif quiz.mode == "Pass or Fail":
-                    upload_instance.score = quiz_score.passOrFail
+                    upload_instance.score = result_model
                 upload_instance.save(update_fields=["score"])
                 f.close()
                 #print(eval('dir()'))
@@ -833,23 +843,43 @@ def uploadgrading(request, classroom, quiz_id):
                 f.close()
                 f = open('./media/' + fileName, 'r')
                 try:
-                    quiz_score = QuizScore.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
-                                          classroom=quiz.classroom)
-                    quiz_score.total_score = score_total
-                    quiz_score.passOrFail = result_model
-                    quiz_score.max_score = max_score
-                    quiz_score.code = f.read()
-                    quiz_score.save()
+                    quiz_score = QuizScore.objects.get(quizId=quiz,
+                                                       studentId=User.objects.get(studentId=request.user.studentId),
+                                                       classroom=quiz.classroom)
+                    if quiz.mode == "Scoring":
+                        if score_total >= quiz_score.total_score:
+                            print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
+                            print(str(score_total)+":"+str(result_model))
+                            #return None
+                            quiz_score.total_score = score_total
+                            quiz_score.passOrFail = result_model
+                            quiz_score.max_score = max_score
+                            quiz_score.code =  Upload.objects.get(title=in_sys_file) #f.read()
+                            quiz_score.save()
+                    else:
+                        if result_model >= quiz_score.passOrFail:
+                            quiz_score.total_score = score_total
+                            quiz_score.passOrFail = result_model
+                            quiz_score.max_score = max_score
+                            quiz_score.code = Upload.objects.get(title=in_sys_file)  # f.read()
+                            quiz_score.save()
                 except ObjectDoesNotExist:
-                    QuizScore.objects.create(quizId=quiz,
+                    quiz_score = QuizScore.objects.create(quizId=quiz,
                                             studentId=User.objects.get(studentId=request.user.studentId),
                                             classroom=quiz.classroom,
                                             total_score=score_total,
                                             passOrFail=result_model,
-                                            max_score=max_score,
-                                            code=f.read(),
+                                                max_score=max_score,
+                                            code= Upload.objects.get(title=in_sys_file) #f.read(),
                                             )
+                upload_instance = Upload.objects.get(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
+                if quiz.mode == "Scoring":
+                    upload_instance.score = score_total
+                elif quiz.mode == "Pass or Fail":
+                    upload_instance.score = result_model
+                upload_instance.save(update_fields=["score"])
                 f.close()
+                #print(eval('dir()'))
             try:
                 return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                        'quizDetail': quiz.quizDetail,

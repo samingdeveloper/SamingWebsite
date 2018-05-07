@@ -1,11 +1,35 @@
 {% block content %}
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
+<style>
+    body {
+    margin: 0;
+    background: white url("paper.png");
+    font-family: 'Lato', sans-serif;
+	font-size: 16px;
+    font-weight: 300;
+    overflow-y: auto;
+}
+</style>
+<body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
 <ul>
     {% for class in list_class%}
     <li>
+        <div>
         <a href="{% url 'Class_Management:Home' class.className %}">{{class.className}}</a>
+            <button class="delete" onclick="location.href='{% url 'Class_Management:EditClassroom' class.className %}'">Edit</button>
+            <button class="delete" onclick="location.href='{% url 'Class_Management:DeleteClassroom' class.className %}'">Delete</button>
+        </div>
     </li>
     {% endfor %}
 </ul>
+ <div class="tooltip">
+                    <button1>
+                        <span class="tooltiptext">Classroom</span>
+                        <a href="{% url 'Class_Management:GenerateClassroom' %}">
+                            <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                        </a>
+                    </button1>
+                </div>
+</body>
 {% endblock %}

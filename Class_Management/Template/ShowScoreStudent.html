@@ -26,7 +26,7 @@
                     <td>{{ i.mode }}</td>
                     {% if i.mode == "Pass or Fail" %}
                         <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
-                        <td></td>
+                        <td>{% u_score u_id.user_name i.classroom i "Max" %}</td>
                     {% elif i.mode == "Scoring" %}
                         <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
                         <td>{% u_score u_id.user_name i.classroom i "Max" %}</td>

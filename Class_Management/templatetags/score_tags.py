@@ -9,18 +9,21 @@ def u_score(studentId, classroom, quizId, mode):
     if mode == "Scoring":
         try:
             score = QuizScore.objects.get(studentId=studentId, classroom=classroom, quizId=quizId)
+            print(score)
             return score.total_score
         except ObjectDoesNotExist:
             return ''
     elif mode == "Max":
         try:
             score = QuizScore.objects.get(studentId=studentId, classroom=classroom, quizId=quizId)
+            print(score)
             return score.max_score
         except ObjectDoesNotExist:
             return ''
     elif mode == "Pass or Fail":
         try:
             score = QuizScore.objects.get(studentId=studentId, classroom=classroom, quizId=quizId)
+            print(score)
             return score.passOrFail
         except ObjectDoesNotExist:
             return ''

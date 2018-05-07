@@ -10,7 +10,7 @@
     <!-- input assignment -->
     <div class="banner">
         <div class="nameclass">{{ classname }}</div>
-        <div class="nameadmin">Bawornsak sakulkueakulsuk</div>
+        <div class="nameadmin">{{ classroom_creator }}</div>
     </div>
 
     <div id="main">
@@ -73,7 +73,7 @@
                 {%  if request.user.is_admin %}
                 <div class="tooltip">
                     <button1>
-                        <span class="tooltiptext">Create Quiz</span>
+                        <span class="tooltiptext">Quiz</span>
                         <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
                             <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
                         </a>

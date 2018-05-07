@@ -1,13 +1,20 @@
 from django.db import models
+from django.db.models import Max
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
+#from Assign_Management.models import Upload
+import math
 User = get_user_model()
 
 # Create your models here.
 class ClassRoom(models.Model):
     user = models.ManyToManyField(User)
+    teacher = models.ManyToManyField(User,related_name="teacher")
+    ta = models.ManyToManyField(User,related_name="ta")
     className = models.CharField(max_length=255)
-
+    creator = models.ForeignKey(User, related_name="creator", on_delete=models.DO_NOTHING, null=True, blank=True)
     def __str__(self):
         return self.className
 
@@ -43,7 +50,7 @@ class QuizScore(models.Model):
     total_score = models.FloatField(blank=True, null=True)
     max_score = models.FloatField(blank=True, null=True)
     #code = models.TextField(blank=True, null=True)
-    code = models.ForeignKey("Assign_Management.Upload", on_delete=models.CASCADE)
+    code = models.ForeignKey("Assign_Management.Upload", on_delete=models.SET_NULL,null=True)
     def __str__(self):
         return str(self.studentId.studentId) + " : " + str(self.quizId) + " : " + self.classroom.className
 
@@ -74,3 +81,4 @@ class AddTA(models.Model):
 
     def __str__(self):
         return self.Email + ' ' + '(' + self.title + ')'
+

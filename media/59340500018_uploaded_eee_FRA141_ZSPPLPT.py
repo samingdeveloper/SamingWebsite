@@ -1,6 +1,6 @@
 a = [2,3,4,5]
 def asd(n):
-	a = n**2
+	a = n**22
 	return a
 
 def dsa(n):
@@ -8,5 +8,6 @@ def dsa(n):
 	return b
 
 def sda(n):
-	c = n**4
+	c = n**45
 	return c
+
