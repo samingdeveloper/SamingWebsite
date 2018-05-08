@@ -10,6 +10,7 @@ import sys,os,datetime,importlib,unittest,ast,inspect,timeout_decorator
 from RestrictedPython import safe_builtins, utility_builtins, limited_builtins, compile_restricted
 from unittest import TextTestRunner
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
@@ -583,8 +584,12 @@ def uploadgrading(request, classroom, quiz_id):
                                             )
                 upload_instance = Upload.objects.get(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 if quiz.mode == "Scoring":
+                    if score_total == None:
+                        score_total = 0
                     upload_instance.score = score_total
                 elif quiz.mode == "Pass or Fail":
+                    if result_model == None:
+                        result_model = 0
                     upload_instance.score = result_model
                 upload_instance.save(update_fields=["score"])
                 f.close()
@@ -628,7 +633,8 @@ def uploadgrading(request, classroom, quiz_id):
                                                    'Deadtimestamp':deadline.timestamp()*1000,
                                                        })
             else:
-                fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ '.py'
+                rs = get_random_string(length=7)
+                fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className) + '_' + rs +'.py'
                 f = open('./media/' + fileName, 'w')
                 for debug_line in code:
                     #print(debug_line)
@@ -850,18 +856,19 @@ def uploadgrading(request, classroom, quiz_id):
                         if score_total >= quiz_score.total_score:
                             print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
                             print(str(score_total)+":"+str(result_model))
+                            print(fileName)
                             #return None
                             quiz_score.total_score = score_total
                             quiz_score.passOrFail = result_model
                             quiz_score.max_score = max_score
-                            quiz_score.code =  Upload.objects.get(title=in_sys_file) #f.read()
+                            quiz_score.code =  Upload.objects.get(title=fileName) #f.read()
                             quiz_score.save()
                     else:
                         if result_model >= quiz_score.passOrFail:
                             quiz_score.total_score = score_total
                             quiz_score.passOrFail = result_model
                             quiz_score.max_score = max_score
-                            quiz_score.code = Upload.objects.get(title=in_sys_file)  # f.read()
+                            quiz_score.code = Upload.objects.get(title=fileName)  # f.read()
                             quiz_score.save()
                 except ObjectDoesNotExist:
                     quiz_score = QuizScore.objects.create(quizId=quiz,
@@ -870,12 +877,16 @@ def uploadgrading(request, classroom, quiz_id):
                                             total_score=score_total,
                                             passOrFail=result_model,
                                                 max_score=max_score,
-                                            code= Upload.objects.get(title=in_sys_file) #f.read(),
+                                            code= Upload.objects.get(title=fileName) #f.read(),
                                             )
-                upload_instance = Upload.objects.get(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
+                upload_instance = Upload.objects.get(title=fileName, fileUpload=fileName ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 if quiz.mode == "Scoring":
+                    if score_total == None:
+                        score_total = 0
                     upload_instance.score = score_total
                 elif quiz.mode == "Pass or Fail":
+                    if result_model == None:
+                        result_model = 0
                     upload_instance.score = result_model
                 upload_instance.save(update_fields=["score"])
                 f.close()

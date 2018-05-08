@@ -1,13 +1,29 @@
-a = [2,3,4,5]
-def asd(n):
-	a = n**2
-	return a
+'''import urllib.parse
+import requests
 
-def dsa(n):
-	b = n**3
-	return b
+ywc_api = "https://ywc15.ywc.in.th/api/interview"
 
-def sda(n):
-	c = n**4
-	return c
+json_data = requests.get(ywc_api).json()
 
+for i in json_data:
+	print("asd")
+
+print()
+print(json_data)'''
+
+import urllib.request
+import json
+ywc_api = "https://ywc15.ywc.in.th/api/interview"
+
+response = urllib.request.urlopen(ywc_api).read()
+json_obj = str(response,'utf-8')
+data = json.loads(json_obj)
+
+
+
+def search(first_name):
+	for item in data:
+		if item['interviewRef'] == 'PG42':
+			return item
+
+print(search('PG43'))
