@@ -218,6 +218,19 @@ def StudentQuizListInfo(request,classroom,username,quiz_id):
 def StudentQuizInfo(request,classroom,username,quiz_id,title):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
+
+    elif request.method == 'POST' and request.user.is_admin:
+        score_pointer = QuizScore.objects.get(quizId=Quiz.objects.get(pk=quiz_id),
+                                              studentId=User.objects.get(username=username)
+                                              )
+        if Quiz.objects.get(pk=quiz_id).mode == "Scoring":
+            score_pointer.total_score = Upload.objects.get(title=title).score
+        else:
+            score_pointer.passOrFail = Upload.objects.get(title=title).score
+        score_pointer.code = Upload.objects.get(title=title)
+        score_pointer.save()
+        return HttpResponseRedirect("/ClassRoom/"+classroom+'/StudentInfo/'+username+'/'+quiz_id)
+
     else:
         if username != request.user.username and not request.user.is_admin:
             return HttpResponseRedirect("/ClassRoom/Home")
@@ -229,8 +242,8 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
         quiz_to_show = Quiz.objects.get(pk=quiz_id)
         u_id = User.objects.get(username=request.session['u_id'][0]).studentId
         try:
-            file.Uploadfile.open(mode="r")
-            code_to_show = file.Uploadfile.read()
+            file.Uploadfile.open(mode="rb")
+            code_to_show = file.Uploadfile.read().replace(b"\r\r\n",b"\r\n").decode()
             file.Uploadfile.close()
         except Exception as e:
             print(e)
@@ -238,9 +251,10 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
         var = request.user.username
         context = {
             'var':User.objects.get(username=var).studentYear,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
+            'classname':ClassRoom.objects.get(className=classroom),
             'User_objects':User.objects.all(),
-            'u_id': {'user_name': u_id},
+            'u_id': {'user_name': u_id, 'username': username},
+            'quiz_id': quiz_id,
             'quiz_to_show':quiz_to_show,
             "code_to_show":code_to_show,
             "upload_time":file.uploadTime,

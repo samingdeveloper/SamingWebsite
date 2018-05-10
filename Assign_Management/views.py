@@ -640,7 +640,7 @@ def uploadgrading(request, classroom, quiz_id):
                     #print(debug_line)
                     f.write(debug_line)
                 f.close()
-                Upload.objects.get_or_create(title=fileName, fileUpload=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
+                Upload.objects.get_or_create(title=fileName, Uploadfile=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
                 write_mode = False
                 test_case_count = 0
                 Out_count = 0
@@ -879,7 +879,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                 max_score=max_score,
                                             code= Upload.objects.get(title=fileName) #f.read(),
                                             )
-                upload_instance = Upload.objects.get(title=fileName, fileUpload=fileName ,user=request.user, quiz=quiz, classroom=quiz.classroom)
+                upload_instance = Upload.objects.get(title=fileName, Uploadfile=fileName ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 if quiz.mode == "Scoring":
                     if score_total == None:
                         score_total = 0

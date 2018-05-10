@@ -17,7 +17,7 @@ else:
     for debug_line in code:
         f.write(debug_line)
     f.close()
-    Upload.objects.get_or_create(title=fileName, fileUpload=fileName, user=request.user, quiz=quiz,
+    Upload.objects.get_or_create(title=fileName, Uploadfile=fileName, user=request.user, quiz=quiz,
                                  classroom=quiz.classroom)
     write_mode = False
     test_case_count = 0

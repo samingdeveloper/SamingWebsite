@@ -14,7 +14,6 @@ def callable_path(instance, filename):
 
 class Upload(models.Model):
     title = models.CharField(max_length=50)
-    fileUpload = models.FileField(upload_to=callable_path)
     Uploadfile = models.FileField(upload_to=callable_path)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     quiz = models.ForeignKey("Class_Management.Quiz", on_delete=models.CASCADE)
@@ -27,14 +26,12 @@ class Upload(models.Model):
 
 @receiver(post_delete, sender=Upload)
 def submission_delete(sender, instance, **kwargs):
-    instance.fileUpload.delete(False)
     instance.Uploadfile.delete(False)
     instance_var = {"classroom":instance.classroom,
                     "user":instance.user,
                     "quiz":instance.quiz
                     }
     try:
-        #print(instance.fileUpload)
         print("in try")
         list_upload_obj = Upload.objects.filter(classroom=instance_var["classroom"],
                                                 user=instance_var["user"],
