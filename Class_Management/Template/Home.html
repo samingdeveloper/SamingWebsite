@@ -20,11 +20,15 @@
         </script>
         {% elif add_status == 2 %}
         <script>
-            alert("Failed,Check your input email.");
+            alert("Failed,Check your input.");
         </script>
         {% elif add_status == 3 %}
         <script>
             alert("Deleted Success.");
+        </script>
+        {% elif add_status == 4 %}
+        <script>
+            alert("User not in class.");
         </script>
     {% endif %}
         <div class="row">
@@ -98,7 +102,7 @@
                     <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
 
                     <label for="test_case" id="t1" style="display:none">CSV:</label>
-                    <input type="file" name="upload_testcase" style="display:none" />
+                    <input type="file" name="upload_testcase" style="display:none" id="csv_file" />
                     <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" style="display:none" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
                     <input type="button" name="uploadbutton" id="t3" value="Choose File" style="display:none" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value">
 

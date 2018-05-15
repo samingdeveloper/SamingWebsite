@@ -271,7 +271,8 @@ def EditAssign(request, classroom, quiz_id):
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
-    elif request.user not in ClassRoom.objects.get(className=classroom).user.all():
+
+    elif ClassRoom.objects.get(className=classroom).user.filter(username=request.user.username).exists() != True:
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline, timer_stop

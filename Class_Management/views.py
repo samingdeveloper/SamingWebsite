@@ -44,16 +44,39 @@ def Home(request,classroom):
     elif request.method == "POST" and action == 'add':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
+        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True:
+            add_status = 4
+            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                                 'classname': classroom,
+                                                 'classroom_creator': ClassRoom.objects.get(
+                                                     className=classroom).creator.get_full_name,
+                                                 'user_obj': User.objects.all(),
+                                                 'user_group': user_group,
+                                                 'quiz': Quiz.objects.filter(
+                                                     classroom=ClassRoom.objects.get(className=classroom)),
+                                                 })
         try:
             if request.POST["country"] == "CSV" and request.user.is_admin:
-                add_status = 3
+                add_status = 1
                 csv_file = request.FILES.get('upload_testcase', False)
                 if not csv_file.name.endswith('.csv'):
-                    add_status = 3
-                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                    add_status = 2
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
                 elif csv_file.multiple_chunks():
-                    add_status = 3
-                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                    add_status = 2
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
                 for line in lines:
@@ -69,36 +92,83 @@ def Home(request,classroom):
                                                    staff=fields[6].capitalize(),
                                                    admin=fields[7].capitalize().rstrip())
                     except Exception as e:
-                        print(e)
+                        #print(e)
                         continue
-                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
             user_obj = User.objects.get(email=email)
             add_status = 1
             if request.POST["country"] == "Admin" and request.user.is_admin:
                 user_obj.admin = True
                 user_obj.save()
-                return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
             g = Group.objects.get(name=status)
             g.user_set.add(user_obj)
-            return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
         except Exception as e:
             print(e)
             add_status = 2
-            return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
 
     elif request.method == "POST" and action == 'delete':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
+        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True:
+            add_status = 4
+            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                                 'classname': classroom,
+                                                 'classroom_creator': ClassRoom.objects.get(
+                                                     className=classroom).creator.get_full_name,
+                                                 'user_obj': User.objects.all(),
+                                                 'user_group': user_group,
+                                                 'quiz': Quiz.objects.filter(
+                                                     classroom=ClassRoom.objects.get(className=classroom)),
+                                                 })
         try:
             if request.POST["country"] == "CSV" and request.user.is_admin:
                 add_status = 3
                 csv_file = request.FILES.get('upload_testcase', False)
                 if not csv_file.name.endswith('.csv'):
-                    add_status = 3
-                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                    add_status = 2
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
                 elif csv_file.multiple_chunks():
-                    add_status = 3
-                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                    add_status = 2
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
                 for line in lines:
@@ -113,24 +183,54 @@ def Home(request,classroom):
                                                    staff=fields[6].capitalize(),
                                                    admin=fields[7].capitalize().rstrip()).delete()
                     except Exception as e:
-                        print(e)
+                        #print(e)
                         continue
-                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
             user_obj = User.objects.get(email=email)
             add_status = 3
             if request.POST["country"] == "Admin" and request.user.is_admin:
                 user_obj.admin = False
                 user_obj.save()
-                return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
             g = Group.objects.get(name=status)
             g.user_set.remove(user_obj)
-            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
         except Exception as e:
             print(e)
             add_status = 2
-            return render(request, 'Home.html', {'add_status': add_status,'user_group': user_group})
+            return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
         add_status = 3
-        return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+        return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
 
     else:
         #print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
