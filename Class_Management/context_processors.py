@@ -5,8 +5,8 @@ User = get_user_model()
 def quiz_processor(request):
     if request.user.is_authenticated:
         var = request.user.username
-        quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
-        return {'quiz': quiz}
+        #quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(id=User.objects.get(username=var).studentYear))
+        #return {'quiz': quiz}
     else:
         return ''
 

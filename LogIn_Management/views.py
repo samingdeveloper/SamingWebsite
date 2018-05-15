@@ -16,8 +16,8 @@ def LogIn_Page(request):
         return HttpResponseRedirect('/LogOut')
     else:
         return render(request, 'LogIn_Page.html')
-def LogOut_Page(request):
 
+def LogOut_Page(request):
     return render(request, 'LogIn_Page.html')
 
 def LogIn_Auth(request):
@@ -89,3 +89,9 @@ def Forgot_Password(request):
          # if reason:
             # CSRF failed
            # raise PermissionException() # do what you need to do here'''
+
+def Admin_Panel(request):
+    if not request.user.is_authenticated or not request.user.is_admin:
+        return HttpResponseRedirect('/LogOut')
+    else:
+        return render(request, 'AdminPanel/AdminPanel.html')

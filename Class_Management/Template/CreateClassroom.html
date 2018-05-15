@@ -1,9 +1,10 @@
-{% extends 'NavBar.html' %}
+
 {% block content %}
 {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/createassignment.css' %}">
 
 <!-- input data in main ex. text or etc -->
+<body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
     <div id="main" >
         <div class="center">
                 <h3>Create Classroom</h3>
@@ -17,6 +18,6 @@
             </form>
         </div>
     </div>
-
+</body>
 
 {% endblock %}

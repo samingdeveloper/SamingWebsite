@@ -92,17 +92,23 @@
                 <h4>Add Admin</h4>
             </div>
             <div class="modal-body">
-                <form method="post"> {% csrf_token %}
+                <form method="post" enctype="multipart/form-data"> {% csrf_token %}
                     <br>
-                    <label for="email">Email:</label>
+                    <label for="email" id="e_mail">Email:</label>
                     <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
 
-                    <label for="country">Status:</label>
-                    <select id="country" name="country">
+                    <label for="test_case" id="t1" style="display:none">CSV:</label>
+                    <input type="file" name="upload_testcase" style="display:none" />
+                    <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" style="display:none" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
+                    <input type="button" name="uploadbutton" id="t3" value="Choose File" style="display:none" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value">
+
+                    <label for="country" id="status">Status:</label>
+                    <select id="country" name="country" onchange="validate();">
                         <option value="Teacher"> Teacher</option>
                         <option value="TA"> TA</option>
                         {% if request.user.is_admin %}
                         <option value="Admin"> Admin</option>
+                        <option value="CSV"> CSV User </option>
                         {% endif %}
                     </select>
 
@@ -157,5 +163,33 @@
                 window.close();
             }
         }
+    </script>
+    <script>
+        function validate(){
+             var ddl = document.getElementById("country");
+             var selectedValue = ddl.options[ddl.selectedIndex].value;
+             var one = document.getElementById("t1");
+             var two = document.getElementById("uploadtext_testcase");
+             var three = document.getElementById("t3");
+             var four = document.getElementById("e_mail");
+             var five = document.getElementById("email");
+             console.log(selectedValue);
+                if (selectedValue == "CSV")
+               {
+                one.style.display = "block";
+                two.style.display = "block";
+                three.style.display = "block";
+                four.style.display = "none";
+                five.style.display = "none";
+                //alert("Please select a card type");
+               }
+               else{
+                     one.style.display = "none";
+                     two.style.display = "none";
+                     three.style.display = "none";
+                     four.style.display = "block";
+                     five.style.display = "block";
+               }
+            }
     </script>
 {% endblock %}

@@ -30,15 +30,6 @@
         <div id="wrap">
             <div id="content">
                 <div class="tab">
-                    <button class="tablinks" onclick="location.href='/ClassRoom/{{request.session.classroom}}';"  id="defaultOpen">
-                        Steam
-                    </button>
-                    <button class="tablinks" onclick="location.href='{% url 'Class_Management:StudentInfo' request.session.classroom %}';">
-                        Student
-                    </button>
-                    <button class="tablinks" onclick="location.href='{% url 'Class_Management:About' request.session.classroom %}';">
-                        About
-                    </button>
                 </div>
                 <div id="steam" class="tabcontent"></div>
                 <div id="student" class="tabcontent"></div>
@@ -47,7 +38,7 @@
         </div>
 
         <div class="dropdown">
-            <button class="dropbtn">{{ request.user.first_name }} {{ request.user.last_name }}
+            <button class="dropbtn">{{ request.user.get_full_name }}
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content">
@@ -61,9 +52,9 @@
     <!-- input assignment -->
     <div id="mySidenav" class="sidenav">
         <a href="{% url 'Class_Management:select_class'%}">Select Class</a>
-        {%  for i in request.session.quiz %}
-            <a href={% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.pk %}>{{ i.fields.quizTitle }}</a>
-        {% endfor %}
+        <a href="#" >Classroom</a>
+        <a href="#" ></a>
+        <a href="#" ></a>
     </div>
     {% block content %}{% endblock content %}
 </body>

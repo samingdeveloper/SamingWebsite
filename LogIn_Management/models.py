@@ -50,7 +50,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255,  blank=True,default=' ')
     last_name = models.CharField(max_length=255, blank=True, default=' ')
     studentId = models.CharField(unique=True, max_length=255, null=True)
-    studentYear = models.SmallIntegerField(default=1, blank=True, null=True)
     active = models.BooleanField(default=True) #can login
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)

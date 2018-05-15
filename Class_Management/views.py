@@ -1,11 +1,13 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404
 from .models import *
 from Assign_Management.models import Upload
+from django.core import serializers
 from django.http import Http404
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 #from LogIn_Management.models import extraauth,Tracker
 from Assign_Management import views
+import json
 
 User = get_user_model()
 def index(request):
@@ -43,6 +45,33 @@ def Home(request,classroom):
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
         try:
+            if request.POST["country"] == "CSV" and request.user.is_admin:
+                add_status = 3
+                csv_file = request.FILES.get('upload_testcase', False)
+                if not csv_file.name.endswith('.csv'):
+                    add_status = 3
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                elif csv_file.multiple_chunks():
+                    add_status = 3
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                csv_data = csv_file.read().decode("utf-8")
+                lines = csv_data.split("\n")
+                for line in lines:
+                    fields = line.split(',')
+                    print(fields)
+                    try:
+                        User.objects.update_or_create(email=fields[0],
+                                                   username=fields[1],
+                                                   first_name=fields[2],
+                                                   last_name=fields[3],
+                                                   studentId=fields[4],
+                                                   active=fields[5].capitalize(),
+                                                   staff=fields[6].capitalize(),
+                                                   admin=fields[7].capitalize().rstrip())
+                    except Exception as e:
+                        print(e)
+                        continue
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
             user_obj = User.objects.get(email=email)
             add_status = 1
             if request.POST["country"] == "Admin" and request.user.is_admin:
@@ -61,6 +90,32 @@ def Home(request,classroom):
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
         try:
+            if request.POST["country"] == "CSV" and request.user.is_admin:
+                add_status = 3
+                csv_file = request.FILES.get('upload_testcase', False)
+                if not csv_file.name.endswith('.csv'):
+                    add_status = 3
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                elif csv_file.multiple_chunks():
+                    add_status = 3
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
+                csv_data = csv_file.read().decode("utf-8")
+                lines = csv_data.split("\n")
+                for line in lines:
+                    fields = line.split(',')
+                    try:
+                        User.objects.get(email=fields[0],
+                                                   username=fields[1],
+                                                   first_name=fields[2],
+                                                   last_name=fields[3],
+                                                   studentId=fields[4],
+                                                   active=fields[5].capitalize(),
+                                                   staff=fields[6].capitalize(),
+                                                   admin=fields[7].capitalize().rstrip()).delete()
+                    except Exception as e:
+                        print(e)
+                        continue
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
             user_obj = User.objects.get(email=email)
             add_status = 3
             if request.POST["country"] == "Admin" and request.user.is_admin:
@@ -78,14 +133,17 @@ def Home(request,classroom):
         return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group})
 
     else:
-        print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
+        #print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
+        x=Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom))
+        data = serializers.serialize('json',x)
+        request.session["quiz"]=json.loads(data)
         context = {
             #'var':User.objects.get(username=var).studentYear,
             'classname':classroom,
             'classroom_creator':ClassRoom.objects.get(className=classroom).creator.get_full_name,
             'user_obj':User.objects.all(),
             'user_group': user_group,
-            'quiz':Quiz.objects.filter(classroom=ClassRoom.objects.get(className=request.session["classroom"])),
+            'quiz':x,
         }
         return render(request,'Home.html',context)
 
@@ -145,7 +203,7 @@ def StudentInfo(request,classroom):
             quiz_count = 1
         context = {
             #'var':User.objects.get(username=var).studentYear,
-            'classname':ClassRoom.objects.get(id=User.objects.get(username=var).studentYear),
+            'classname':ClassRoom.objects.get(className=classroom),
             'User_objects':ClassRoom.objects.get(className=classroom).user.all(),
             'quiz_count':quiz_count
         }
@@ -174,7 +232,7 @@ def StudentScoreInfo(request,classroom,username):
                 x += i.total_score + i.passOrFail
                 y += i.max_score
             context = {
-                'var': User.objects.get(username=var).studentYear,
+                'var': User.objects.get(username=username),
                 'classname': classroom,
                 'User_objects': User.objects.all(),
                 'u_id': {'user_name': u_id[0]},
@@ -250,7 +308,7 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
             code_to_show = ""
         var = request.user.username
         context = {
-            'var':User.objects.get(username=var).studentYear,
+            'var':User.objects.get(username=username),
             'classname':ClassRoom.objects.get(className=classroom),
             'User_objects':User.objects.all(),
             'u_id': {'user_name': u_id, 'username': username},
