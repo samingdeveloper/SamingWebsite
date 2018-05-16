@@ -57,9 +57,12 @@ def submission_delete(sender, instance, **kwargs):
     except Exception as e:
         print("5555")
         print(e)
-        x = QuizScore.objects.get(classroom=instance_var["classroom"],studentId=instance_var["user"],quizId=instance_var["quiz"])
-        x.passOrFail = 0
-        x.total_score = 0
-        x.code = None
-        x.save()
+        try:
+            x = QuizScore.objects.get(classroom=instance_var["classroom"],studentId=instance_var["user"],quizId=instance_var["quiz"])
+            x.passOrFail = 0
+            x.total_score = 0
+            x.code = None
+            x.save()
+        except:
+            pass
         #return None

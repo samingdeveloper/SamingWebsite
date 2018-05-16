@@ -293,10 +293,65 @@ def DeleteClassroom(request,classroom):
         ClassRoom.objects.get(className=classroom).delete()
         return HttpResponseRedirect('/ClassRoom')
 
+def export_score_csv(classroom):
+    import csv
+    from django.utils.encoding import smart_str
+    from django.http import HttpResponse
+    obj_quiz = Quiz.objects.filter(classroom__className=classroom).order_by("quizTitle")
+    name_quiz = ["StudentId","Classroom"]
+    for i in obj_quiz:
+        name_quiz.append(i.quizTitle)
+    name_quiz.append("MaxScore")
+    obj_all = []
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Quiscore.csv'
+    writer = csv.writer(response, csv.excel)
+    response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
+    writer.writerow(
+        name_quiz
+    )
+    QuizScore_list = list(QuizScore.objects.filter(classroom__className=classroom).order_by("quizId__quizTitle", "studentId__studentId"))
+
+    for index, obj in enumerate(QuizScore_list):
+        try:
+            if QuizScore_list[index+1].studentId == QuizScore_list[index].studentId:
+                obj_all.append(obj.passOrFail+obj.total_score)
+                print(obj_all)
+                continue
+            else:
+                print("end")
+                obj_all.append(obj.passOrFail + obj.total_score)
+                if len(obj_quiz) - len(obj_all) != 0:
+                    for i in range(0, len(obj_quiz) - len(obj_all)):
+                        obj_all.append(0)
+                obj_all.append(sum(obj_all))
+                obj_all.insert(0, obj.classroom.className)
+                obj_all.insert(0, obj.studentId.studentId)
+                writer.writerow(smart_str(obj_all))
+                obj_all = []
+                continue
+        except Exception as E:
+            print(E)
+            obj_all.append(obj.passOrFail + obj.total_score)
+            if len(obj_quiz) - len(obj_all) != 0:
+                for i in range(0, len(obj_quiz) - len(obj_all)):
+                    obj_all.append(0)
+            obj_all.append(sum(obj_all))
+            obj_all.insert(0, obj.classroom.className)
+            obj_all.insert(0, obj.studentId.studentId)
+            writer.writerow(obj_all)
+            obj_all = []
+            continue
+    return response
+
 def StudentInfo(request,classroom):
     var = request.user.username
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
+
+    elif request.method == "POST":
+        return export_score_csv(classroom)
+
     else:
         quiz_count = Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)).count()
         if quiz_count == 0:

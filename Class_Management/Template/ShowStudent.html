@@ -13,6 +13,10 @@
 
     <div class="back">
       <table id="customers">
+        <form action="{% url 'Class_Management:StudentInfo' request.session.classroom %}" method="POST">
+          {% csrf_token %}
+        <input id="submit" type="submit" value="Click" />
+          </form>
         <tr>
           <th>Student ID</th>
           <th>Name</th>

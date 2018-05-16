@@ -46,9 +46,9 @@ class QuizScore(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     studentId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
-    passOrFail = models.FloatField(blank=True, null=True)
-    total_score = models.FloatField(blank=True, null=True)
-    max_score = models.FloatField(blank=True, null=True)
+    passOrFail = models.FloatField(blank=True, null=True, default=0.0)
+    total_score = models.FloatField(blank=True, null=True, default=0.0)
+    max_score = models.FloatField(blank=True, null=True, default=0.0)
     #code = models.TextField(blank=True, null=True)
     code = models.ForeignKey("Assign_Management.Upload", on_delete=models.SET_NULL,null=True)
     def __str__(self):
