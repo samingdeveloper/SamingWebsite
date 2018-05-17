@@ -35,8 +35,8 @@ def Home(request,classroom):
     var = request.user.username
     action = request.POST.get("action","")
     request.session["classroom"] = classroom
-    user_group = {"teacher":ClassRoom.objects.get(className=classroom).teacher.all(), #User.objects.filter(groups__name=classroom + '_' + "Teacher"),
-                     "ta":ClassRoom.objects.get(className=classroom).ta.all()    #User.objects.filter(groups__name=classroom + '_' + "TA"),
+    user_group = {"teacher":User.objects.filter(groups__name=classroom + '_' + "Teacher"),
+                     "ta":User.objects.filter(groups__name=classroom + '_' + "TA"),
                      }
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -271,11 +271,14 @@ def EditClassroom(request,classroom):
         user_group = {"teacher": User.objects.filter(groups__name=classroom + '_' + "Teacher"),
                       "ta": User.objects.filter(groups__name=classroom + '_' + "TA"),
                       }
-        print(Group.objects.filter(name=classroom+"_Teacher"))
         classname = request.POST["classname"]
         creator = request.POST["creator"]
+        group = Group.objects.get(name=classroom + "_Teacher")
+        Group.objects.filter(name=group.name).update(name=classname + "_Teacher")
+        group = Group.objects.get(name=classroom + "_TA")
+        Group.objects.filter(name=group.name).update(name=classname + "_TA")
         classroom_instance.className = classname
-        classroom_instance.creator = User.objects.get(first_name=creator)
+        classroom_instance.creator = User.objects.get(pk=creator)
         classroom_instance.save()
         return HttpResponseRedirect('/ClassRoom')
     else:

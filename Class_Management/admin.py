@@ -31,7 +31,7 @@ def export_csv(modeladmin, request, queryset):
 export_csv.short_description = u"Export CSV"
 
 class ClassRoomAdmin(admin.ModelAdmin):
-    filter_horizontal = ('user','teacher','ta')
+    filter_horizontal = ('user',)#'teacher','ta')
 
 class QuizScoreAdmin(admin.ModelAdmin):
     actions = [export_csv]

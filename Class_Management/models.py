@@ -1,8 +1,9 @@
 from django.db import models
 from django.db.models import Max
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, m2m_changed, post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.validators import MinValueValidator, MaxValueValidator
 #from Assign_Management.models import Upload
 import math
@@ -10,9 +11,9 @@ User = get_user_model()
 
 # Create your models here.
 class ClassRoom(models.Model):
-    user = models.ManyToManyField("LogIn_Management.User",related_name="user")
-    teacher = models.ManyToManyField("LogIn_Management.User",related_name="teacher")
-    ta = models.ManyToManyField("LogIn_Management.User",related_name="ta")
+    #teacher = models.ManyToManyField("LogIn_Management.User",related_name="teacher",blank=True)
+    #ta = models.ManyToManyField("LogIn_Management.User",related_name="ta",blank=True)
+    user = models.ManyToManyField("LogIn_Management.User", related_name="user", blank=True)
     className = models.CharField(max_length=255)
     creator = models.ForeignKey("LogIn_Management.User", related_name="creator", on_delete=models.DO_NOTHING, null=True, blank=True)
     def __str__(self):
@@ -82,3 +83,28 @@ class AddTA(models.Model):
     def __str__(self):
         return self.Email + ' ' + '(' + self.title + ')'
 
+# ClassRom receiver
+@receiver(m2m_changed,sender=ClassRoom.user.through)
+def classroom_user_changed(sender,instance,action,pk_set,**kwargs):
+    if action == "post_add":
+        QuizTracker.objects.bulk_create([
+            QuizTracker(classroom=instance,studentId=User.objects.get(pk=i)) for i in pk_set
+        ])
+    elif action == "post_remove":
+        for i in pk_set:
+            try:
+                print(action)
+                QuizTracker.objects.get(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+            except Exception as E:
+                print(E)
+                continue
+
+@receiver(post_save,sender=ClassRoom)
+def clasroom_created(sender,instance,**kwargs):
+    Group.objects.update_or_create(name=instance.className+"_Teacher")
+    Group.objects.update_or_create(name=instance.className+"_TA")
+
+@receiver(pre_delete,sender=ClassRoom)
+def clasroom_removed(sender,instance,**kwargs):
+    Group.objects.get(name=instance.className+"_Teacher").delete()
+    Group.objects.get(name=instance.className+"_TA").delete()
