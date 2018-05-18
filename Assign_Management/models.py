@@ -15,7 +15,7 @@ def callable_path(instance, filename):
 class Upload(models.Model):
     title = models.CharField(max_length=50)
     Uploadfile = models.FileField(upload_to=callable_path)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey("LogIn_Management.User", on_delete=models.CASCADE)
     quiz = models.ForeignKey("Class_Management.Quiz", on_delete=models.CASCADE)
     score = models.FloatField(blank=True, null=True, default=0.0)
     classroom = models.ForeignKey("Class_Management.ClassRoom", on_delete=models.CASCADE)
@@ -24,9 +24,8 @@ class Upload(models.Model):
     def __str__(self):
         return self.title
 
-@receiver(pre_delete, sender=Upload)
+@receiver(post_delete, sender=Upload)
 def submission_delete(sender, instance, **kwargs):
-    instance.Uploadfile.delete(False)
     instance_var = {"classroom":instance.classroom,
                     "user":instance.user,
                     "quiz":instance.quiz
@@ -66,3 +65,4 @@ def submission_delete(sender, instance, **kwargs):
         except:
             pass
         #return None
+    instance.Uploadfile.delete(False)

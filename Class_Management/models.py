@@ -90,11 +90,31 @@ def classroom_user_changed(sender,instance,action,pk_set,**kwargs):
         QuizTracker.objects.bulk_create([
             QuizTracker(classroom=instance,studentId=User.objects.get(pk=i)) for i in pk_set
         ])
+        for i in pk_set:
+            QuizStatus.objects.bulk_create([
+                QuizStatus(classroom=instance,studentId=User.objects.get(pk=i),quizId=y) for y in Quiz.objects.filter(classroom=instance)
+            ])
+
     elif action == "post_remove":
         for i in pk_set:
+            print(action)
             try:
-                print(action)
                 QuizTracker.objects.get(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+            except Exception as E:
+                print(E)
+                continue
+            try:
+                QuizStatus.objects.filter(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+            except Exception as E:
+                print(E)
+                continue
+            try:
+                QuizScore.objects.filter(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+            except Exception as E:
+                print(E)
+                continue
+            try:
+                QuizTimer.objects.filter(classroom=instance,studentId=User.objects.get(pk=i)).delete()
             except Exception as E:
                 print(E)
                 continue

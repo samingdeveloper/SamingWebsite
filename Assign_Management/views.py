@@ -305,6 +305,7 @@ def uploadgrading(request, classroom, quiz_id):
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
     try:
+        code_temp = ""
         if request.method == "POST" and 'time_left' in request.POST:
             #print("this?")
             time_left = request.POST.get("time_left",'')
@@ -621,7 +622,6 @@ def uploadgrading(request, classroom, quiz_id):
 
         elif request.method == 'POST' and 'code-form-submit' in request.POST:
             code = request.POST['code-form-comment']
-            global code_temp
             code_temp = code
             #print("in-code-form")
             if code == '':

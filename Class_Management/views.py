@@ -376,8 +376,6 @@ def StudentScoreInfo(request,classroom,username):
         u_id = request.session['u_id']
         var = request.user.username
         print(u_id[0])
-        if username != var and not request.user.is_admin:
-            return HttpResponseRedirect("/ClassRoom/"+request.session["classroom"])
         try:
             print("try")
             score = QuizScore.objects.filter(studentId=User.objects.get(username=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
@@ -407,10 +405,11 @@ def StudentQuizListInfo(request,classroom,username,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
-        if request.method == 'POST':
-            title_list = request.POST.getlist("cb")
-            #print(title_list)
-            Upload.objects.filter(title__in=title_list).delete()
+        if request.user.username == username or request.user.is_admin:
+            if request.method == 'POST':
+                title_list = request.POST.getlist("cb")
+                #print(title_list)
+                Upload.objects.filter(title__in=title_list).delete()
         file_list = Upload.objects.filter(user=User.objects.get(username=username),
                                           quiz=Quiz.objects.get(pk=quiz_id),
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom
@@ -435,7 +434,9 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif request.method == 'POST' and request.user.is_admin:
+    elif request.method == 'POST' and request.user.is_admin or request.method == 'POST' and request.user.username == username:
+        if username != request.user.username and not request.user.is_admin:
+            return HttpResponseRedirect("/ClassRoom/Home")
         score_pointer = QuizScore.objects.get(quizId=Quiz.objects.get(pk=quiz_id),
                                               studentId=User.objects.get(username=username)
                                               )
@@ -449,7 +450,7 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
 
     else:
         if username != request.user.username and not request.user.is_admin:
-            return HttpResponseRedirect("/ClassRoom/Home")
+            return HttpResponseRedirect("/ClassRoom/"+classroom)
         file = Upload.objects.get(user=User.objects.get(username=username),
                                           quiz=Quiz.objects.get(pk=quiz_id),
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom,
