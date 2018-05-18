@@ -43,16 +43,17 @@ def submission_delete(sender, instance, **kwargs):
         print(list_upload_obj[0])
         x = QuizScore.objects.get(classroom=instance_var["classroom"],studentId=instance_var["user"],quizId=instance_var["quiz"])
         print(x)
-        if instance_var["quiz"].mode is "Scoring":
-            x.passOrFail = 0
-            x.total_score = list_upload_obj[0].score
-        else:
-            x.passOrFail = list_upload_obj[0].score
-            x.total_score = 0
-        x.code = list_upload_obj[0]
-        #print(x.code)
-        x.save()
-        #return list_upload_obj[0]
+        if x.code == None:
+            if instance_var["quiz"].mode is "Scoring":
+                x.passOrFail = 0
+                x.total_score = list_upload_obj[0].score
+            else:
+                x.passOrFail = list_upload_obj[0].score
+                x.total_score = 0
+            x.code = list_upload_obj[0]
+            #print(x.code)
+            x.save()
+            #return list_upload_obj[0]
     except Exception as e:
         print("5555")
         print(e)
