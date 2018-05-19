@@ -185,6 +185,7 @@
                         console.log("Date.now() >= deadline");
                         myFunction()
                     }
+                    document.getElementById("nowtime").innerHTML = Date();
                 }
                 else if (Date.now() >= time_up || Date.now() >= deadline) {
                     console.log("Date.now() >= deadline++");
