@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.shortcuts import redirect
 from Class_Management.models import *
 # Register your models here.
 def export_csv(modeladmin, request, queryset):
@@ -30,11 +31,29 @@ def export_csv(modeladmin, request, queryset):
     return response
 export_csv.short_description = u"Export CSV"
 
+def moss(modeladmin, request, queryset):
+    import mosspy
+    userid = 367349587
+    m = mosspy.Moss(userid, "python")
+    for i in queryset:
+        try:
+            m.addFile(i.code.Uploadfile.path)
+        except Exception as E:
+            print(E)
+            continue
+    url = m.send()  # Submission Report URL
+    return redirect(url)
+    # Save report file
+    #m.saveWebPage(url, "media/report/report.html")
+    # Download whole report locally including code diff links
+    #mosspy.download_report(url, "media/report/", connections=8)
+moss.short_description = u"MOSS"
+
 class ClassRoomAdmin(admin.ModelAdmin):
-    filter_horizontal = ('user',)#'teacher','ta')
+    filter_horizontal = ('user',)
 
 class QuizScoreAdmin(admin.ModelAdmin):
-    actions = [export_csv]
+    actions = [export_csv,moss]
 
 
 admin.site.register(ClassRoom,ClassRoomAdmin)

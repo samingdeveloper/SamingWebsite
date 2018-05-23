@@ -232,6 +232,7 @@ def Home(request,classroom):
                                              'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
                                              })
 
+
     else:
         #print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
         x=Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom))
@@ -348,11 +349,11 @@ def export_score_csv(classroom):
     return response
 
 def StudentInfo(request,classroom):
-    var = request.user.username
+    #var = request.user.username
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif request.method == "POST":
+    elif request.method == "POST" and 'csv' in request.POST:
         return export_score_csv(classroom)
 
     else:
@@ -374,8 +375,8 @@ def StudentScoreInfo(request,classroom,username):
     else:
         request.session['u_id'] = [username]
         u_id = request.session['u_id']
-        var = request.user.username
-        print(u_id[0])
+        #var = request.user.username
+        #print(u_id[0])
         try:
             print("try")
             score = QuizScore.objects.filter(studentId=User.objects.get(username=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
@@ -436,7 +437,7 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
 
     elif request.method == 'POST' and request.user.is_admin or request.method == 'POST' and request.user.username == username:
         if username != request.user.username and not request.user.is_admin:
-            return HttpResponseRedirect("/ClassRoom/Home")
+            return HttpResponseRedirect("/ClassRoom/"+classroom)
         score_pointer = QuizScore.objects.get(quizId=Quiz.objects.get(pk=quiz_id),
                                               studentId=User.objects.get(username=username)
                                               )

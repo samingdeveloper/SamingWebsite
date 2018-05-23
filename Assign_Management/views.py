@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, redirect
 #from django.http import HttpResponse
 #from django.template import loader
 #from django.middleware.csrf import CsrfViewMiddleware
@@ -6,7 +6,7 @@ from Class_Management.models import *
 from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
-import sys,os,datetime,importlib,unittest,ast,inspect,timeout_decorator
+import sys,os,datetime,importlib,unittest,ast,inspect,timeout_decorator,mosspy
 from RestrictedPython import safe_builtins, utility_builtins, limited_builtins, compile_restricted
 from unittest import TextTestRunner
 from django.utils import timezone
@@ -966,3 +966,19 @@ def uploadgrading(request, classroom, quiz_id):
                                                    'exception': e,
                                                    'Deadtimestamp': deadline.timestamp() * 1000,
                                                    })
+
+def moss(request, classroom, quiz_id):
+    if request.user.is_admin:
+        userid = 367349587
+        m = mosspy.Moss(userid, "python")
+        for i in QuizScore.objects.filter(quizId__pk=quiz_id):
+            try:
+                m.addFile(i.code.Uploadfile.path)
+            except Exception as E:
+                print(E)
+                continue
+        url = m.send()  # Submission Report URL
+        print("Report Url: " + url)
+        return redirect(url)
+    else:
+        return HttpResponseRedirect("/ClassRoom/"+classroom)
