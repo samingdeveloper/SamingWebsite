@@ -1,5 +1,3 @@
-import math, osmath.floor(5.5)
-#os.listdir('/')
 a = [2,3,4,5]
 def asd(n):
 	a = n**2
@@ -12,6 +10,3 @@ def dsa(n):
 def sda(n):
 	c = n**4
 	return c
-#print(sda(5))
-#print(dsa(5))
-

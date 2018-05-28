@@ -7,7 +7,9 @@ from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
 import sys,os,datetime,importlib,unittest,ast,inspect,timeout_decorator,mosspy
-from RestrictedPython import safe_builtins, utility_builtins, limited_builtins, compile_restricted
+from RestrictedPython import compile_restricted,utility_builtins,PrintCollector
+from RestrictedPython.Guards import full_write_guard,safe_builtins
+from RestrictedPython.custom_builtins import custom_safe_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -275,6 +277,7 @@ def uploadgrading(request, classroom, quiz_id):
     elif ClassRoom.objects.get(className=classroom).user.filter(username=request.user.username).exists() != True:
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
+    from autograder_sandbox import AutograderSandbox
     global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
     t = timezone.localtime(timezone.now())  # offset-awared datetime
@@ -344,17 +347,19 @@ def uploadgrading(request, classroom, quiz_id):
                 score_total = 0
                 max_score = 0
                 # open file .txt. Address  file ???????? Now! change follow your PC
-                f = open(in_sys_file_location + in_sys_file, 'r')
-                code = f.read()
-                f.close()
+                with open(in_sys_file_location + in_sys_file, 'r+') as f:
+                    code_final = code = f.read()
+                    f.seek(0, 0)
+                    for line in quiz.text_testcase_content.splitlines():
+                        if "# Lib" in line:
+                            f.write("import ".rstrip('\r\n') + line[6:].rstrip('\r\n') + '\n' + code)
+                            break
                 try:
                     restricted_globals = dict(__builtins__=safe_builtins)
                     byte_code = compile_restricted(code, filename='./media/' + in_sys_file, mode='exec')
-                    #print(byte_code)
-                    #print(safe_builtins)
-                    exec(byte_code, safe_builtins, None)
+                    exec(byte_code,restricted_globals,{})
                 except Exception as E:
-                    raise SyntaxError(E)
+                    pass
                 if in_sys_file[:-3] in sys.modules:
                     del sys.modules[in_sys_file[:-3]]
                     #importlib.invalidate_caches()
@@ -364,7 +369,7 @@ def uploadgrading(request, classroom, quiz_id):
                     prob = importlib.import_module(in_sys_file[:-3])
                     #importlib.reload(prob)
                 #print(prob)
-                f = open('./media/' + in_sys_file, 'a')
+                f = open(in_sys_file_location + in_sys_file, 'a')
                 case = quiz.text_testcase_content
                 f.write("\n\n")
                 for case_line in case.splitlines():
@@ -376,20 +381,19 @@ def uploadgrading(request, classroom, quiz_id):
                     i += 1
                     globals()['test_case_out_%s' % i] = ""
                     globals()['out_%s' % i] = ""
-                f = open('./media/' + in_sys_file, 'r')
-                code = f.read()
-                f.close()
+                with open(in_sys_file_location + in_sys_file, 'r') as f:
+                    code = f.read()
 
                 for line in code.splitlines():
                     if "# Stop" in line:
                         #print("stop")
                         write_mode = False
-                    if write_mode:
+                    elif write_mode:
                         if "# Out" in line:
-                            globals()['out_%s' % test_case_num] = eval(line[6:],{'__builtins__': safe_builtins},{})
+                            globals()['out_%s' % test_case_num] = eval(line[6:])
                         elif "# Score" in line:
                             #print("SOCREEEE")
-                            globals()['score_%s' % test_case_num] = float(eval(line[8:],{'__builtins__': safe_builtins},{}))
+                            globals()['score_%s' % test_case_num] = float(eval(line[8:]))
                         elif "# Break" in line:
                             #print("Break!")
                             write_mode = False
@@ -412,7 +416,7 @@ def uploadgrading(request, classroom, quiz_id):
                             print(E)
                             continue
 
-                    if "# Test case" in line:
+                    elif "# Test case" in line:
                         #print("in testcase  ")
                         test_case_num = str(line[11])
                         write_mode = True
@@ -542,18 +546,9 @@ def uploadgrading(request, classroom, quiz_id):
                     globals()['score_%s' % i] = 0
                 test_case_count = 0
                 Out_count = 0
-                f = open('./media/' + in_sys_file, 'r')
-                temp_f = f.readlines()
-                f.close()
-                print(temp_f)
-                f = open('./media/' + in_sys_file, 'w')
-                for m in temp_f:
-                    if "# Test case" in m:
-                        break
-                    else:
-                        f.write(m)
-                f.close()
-                f = open('./media/' + in_sys_file, 'r')
+                with open(in_sys_file_location + in_sys_file, 'w') as f:
+                    f.write(code_final)
+                f = open(in_sys_file_location + in_sys_file, 'r')
                 try:
                     quiz_score = QuizScore.objects.get(quizId=quiz,
                                                        studentId=User.objects.get(studentId=request.user.studentId),
@@ -648,16 +643,19 @@ def uploadgrading(request, classroom, quiz_id):
                 score_total = 0
                 max_score = 0
                 # open file .txt. Address  file ???????? Now! change follow your PC
-                f = open('./media/' + fileName, 'r')
-                code = f.read()
-                f.close()
+                with open('./media/' + fileName, 'r+') as f:
+                    code = f.read()
+                    f.seek(0, 0)
+                    for line in quiz.text_testcase_content.splitlines():
+                        if "# Lib" in line:
+                            f.write("import ".rstrip('\r\n') + line[6:].rstrip('\r\n') + '\n' + code)
+                            break
                 try:
+                    restricted_globals = dict(__builtins__=safe_builtins)
                     byte_code = compile_restricted(code, filename='./media/' + fileName, mode='exec')
-                    # print(byte_code)
-                    # print(safe_builtins)
-                    exec(byte_code, safe_builtins, None)
+                    exec(byte_code, restricted_globals, {})
                 except Exception as E:
-                    raise RuntimeError(E)
+                    pass
                 if fileName[:-3] in sys.modules:
                     del sys.modules[fileName[:-3]]
                     # importlib.invalidate_caches()
@@ -845,9 +843,8 @@ def uploadgrading(request, classroom, quiz_id):
                     globals()['score_%s' % i] = 0
                 test_case_count = 0
                 Out_count = 0
-                f = open('./media/' + fileName, 'w')
-                f.write(code_temp)
-                f.close()
+                with open('./media/' + fileName, 'w') as f:
+                    f.write(code_temp)
                 f = open('./media/' + fileName, 'r')
                 try:
                     quiz_score = QuizScore.objects.get(quizId=quiz,

@@ -1,4 +1,4 @@
-import math, osmath.floor(5.5)
+math.floor(5.5)
 #os.listdir('/')
 a = [2,3,4,5]
 def asd(n):

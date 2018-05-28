@@ -4,5 +4,8 @@ uWSGI
 django-mathfilters
 pytz
 django-bootstrap4
-RestrictedPython==4.0b2
+RestrictedPython==4.0b4
 timeout-decorator
+docker
+redis
+autograder-sandbox
