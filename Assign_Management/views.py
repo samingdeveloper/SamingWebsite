@@ -269,7 +269,7 @@ def EditAssign(request, classroom, quiz_id):
                   }
         return render(request, 'EditAssignment.html', context)
 
-#@timeout_decorator.timeout(5, use_signals=False)
+@timeout_decorator.timeout(5, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
