@@ -88,23 +88,13 @@
                 <div class="result">
                     {{ version }}
                     {{ exception }}
-                    {% if Case_Count > 0 %}
-                        CASE 1: {{ display.pass_or_fail.case1 }}<br><br>
-                    {% endif %}
-                    {% if Case_Count > 1 %}
-                        CASE 2: {{ display.pass_or_fail.case2 }}<br><br>
-                    {% endif %}
-                    {% if Case_Count > 2 %}
-                        CASE 3: {{ display.pass_or_fail.case3 }}<br><br>
-                    {% endif %}
-                    {% if Case_Count > 3 %}
-                        CASE 4: {{ display.pass_or_fail.case4 }}<br><br>
-                    {% endif %}
-                    {% if Case_Count > 4 %}
-                        CASE 5: {{ display.pass_or_fail.case5 }}<br><br>
-                    {% endif %}
+                    {% for i,value in display.result.items %}
+                        {% if i != "result" %}
+                            CASE {{ forloop.counter }}: {{ value }}<br><br>
+                        {% endif %}
+                    {% endfor %}
                     {% if mode == "Pass or Fail" %}
-                        RESULT: {{ display.pass_or_fail.result }}
+                        RESULT: {{ display.result.result }}
                         {% elif mode == "Scoring" %}
                         RESULT: {{ display.scoring.total_score }} SCORE.
                     {% endif %}

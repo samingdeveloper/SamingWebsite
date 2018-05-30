@@ -23,7 +23,8 @@ User = get_user_model()
 sys.path.append(os.getcwd()+"/media")
 
 ####################### Utility #######################
-
+def str_to_class(str):
+    return getattr(sys.modules[__name__], str)
 
 ####################### url #######################
 
@@ -269,7 +270,7 @@ def EditAssign(request, classroom, quiz_id):
                   }
         return render(request, 'EditAssignment.html', context)
 
-@timeout_decorator.timeout(5, use_signals=False)
+#@timeout_decorator.timeout(5, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -375,6 +376,7 @@ def uploadgrading(request, classroom, quiz_id):
                 for case_line in case.splitlines():
                     if (case_line[:11] == "# Test case"):
                         test_case_count += 1
+                        globals()['case_%s_result' % str(test_case_count)] = ""
                         Out_count += 1
                     f.write(case_line + "\n")
                 for i in range(test_case_count):
@@ -420,86 +422,38 @@ def uploadgrading(request, classroom, quiz_id):
                         #print("in testcase  ")
                         test_case_num = str(line[11])
                         write_mode = True
-
-                global case_1_result
-                case_1_result = ""
-                global case_2_result
-                case_2_result = ""
-                global case_3_result
-                case_3_result = ""
-                global case_4_result
-                case_4_result = ""
-                global case_5_result
-                case_5_result = ""
+                #define
                 for i in range(test_case_count):
                     i += 1
                     max_score += + globals()['score_%s' % i]
                 # unittest process.
-                class MyTestCase(unittest.TestCase):
-
-                    if (test_case_count > 0):
-                        def test_text(self):
-                            global case_1_result
-                            self.text_1 = test_case_out_1
-                            self.mt_1 = out_1
-                            if self.text_1 == self.mt_1:
-                                case_1_result = "PASS"
-                            else:
-                                case_1_result = "FAIL"
-                                globals()['score_1'] = 0
-                            self.assertEquals(self.text_1, self.mt_1)
-
-                    if (test_case_count > 1):
-                        def test_text_two(self):
-                            global case_2_result
-                            self.text_2 = test_case_out_2
-                            self.mt_2 = out_2
-                            if self.text_2 == self.mt_2:
-                                case_2_result = "PASS"
-                            else:
-                                case_2_result = "FAIL"
-                                globals()['score_2'] = 0
-                            self.assertEqual(self.text_2, self.mt_2)
-
-                    if (test_case_count > 2):
-                        def test_text_three(self):
-                            global case_3_result
-                            self.text_3 = test_case_out_3
-                            self.mt_3 = out_3
-                            if self.text_3 == self.mt_3:
-                                case_3_result = "PASS"
-                            else:
-                                case_3_result = "FAIL"
-                                globals()['score_3'] = 0
-                            self.assertEqual(self.text_3, self.mt_3)
-
-                    if (test_case_count > 3):
-                        def test_text_three(self):
-                            global case_4_result
-                            self.text_4 = test_case_out_4
-                            self.mt_4 = out_4
-                            if self.text_4 == self.mt_4:
-                                case_4_result = "PASS"
-                            else:
-                                case_4_result = "FAIL"
-                                globals()['score_4'] = 0
-                            self.assertEqual(self.text_4, self.mt_4)
-
-                    if (test_case_count > 4):
-                        def test_text_three(self):
-                            global case_5_result
-                            self.text_5 = test_case_out_5
-                            self.mt_5 = out_5
-                            if self.text_5 == self.mt_5:
-                                case_5_result = "PASS"
-                            else:
-                                case_5_result = "FAIL"
-                                globals()['score_5'] = 0
-                            self.assertEqual(self.text_5, self.mt_5)
-
+                class MyTestCase(unittest.TestCase): pass
+                case_result = {}
+                for i in range(1, test_case_count + 1, 1):
+                    string = "def test_text_{0}(self):\n" \
+                                  "    self.text_{0} = test_case_out_{0}\n" \
+                                  "    self.mt_{0} = out_{0}\n" \
+                                  "    if self.text_{0} == self.mt_{0}:\n" \
+                                  "        globals()['case_{0}_result'] = 'PASS'\n" \
+                                  "    else:\n" \
+                                  "        globals()['case_{0}_result'] = 'FAIL'\n" \
+                                  "        globals()['score_{0}'] = 0\n" \
+                                  "    self.assertEquals(self.text_{0}, self.mt_{0})\n".format(i)
+                    eval(compile(string, '<string>', 'exec'), globals())
+                    setattr(MyTestCase, "test_text_{0}".format(i), str_to_class('test_text_{0}'.format(i)))
+                    #case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
+                    #from types import MethodType
+                    #MyTestCase.test_text_1 = MethodType(test_text_1,MyTestCase)
+                    #print(eval("'test_text_{0}'.format(i)"))
+                    #method_list = [func for func in dir(MyTestCase) if
+                                   #callable(getattr(MyTestCase, func)) and not func.startswith("__")]
+                    #print(method_list)
                 test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
                 test_result = TextTestRunner().run(test_suite)
                 x = len(test_result.failures)
+                for i in range(1, test_case_count + 1, 1):
+                    case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
+                print(case_result)
                 if quiz.mode == "Pass or Fail" and x == 0:
                     result = "PASS"
                     result_model = 10
@@ -517,12 +471,10 @@ def uploadgrading(request, classroom, quiz_id):
                 else:
                     result = "FAIL"
                     result_model = 0
-                #print(score_total)
-                result_set = {'pass_or_fail':{'case1':case_1_result,'case2':case_2_result,'case3':case_3_result,
-                                              'case4':case_4_result,'case5':case_5_result,'result':result,},
+                case_result["result"] = result
+                result_set = {'result':case_result,
                               'scoring':{'total_score':score_total,'max_score':max_score}
                               }
-
                 if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId), classroom=quiz.classroom).status == False:
                     QuizTracker.objects.update_or_create(
                         studentId=User.objects.get(studentId=request.user.studentId),
@@ -671,6 +623,7 @@ def uploadgrading(request, classroom, quiz_id):
                 for case_line in case.splitlines():
                     if (case_line[:11] == "# Test case"):
                         test_case_count += 1
+                        globals()['case_%s_result' % str(test_case_count)] = ""
                         Out_count += 1
                     f.write(case_line + "\n")
                 f.close()
@@ -722,80 +675,36 @@ def uploadgrading(request, classroom, quiz_id):
                         test_case_num = str(line[11])
                         write_mode = True
 
-                case_1_result = ""
-                case_2_result = ""
-                case_3_result = ""
-                case_4_result = ""
-                case_5_result = ""
                 for i in range(test_case_count):
                     i += 1
                     max_score += + globals()['score_%s' % i]
                 # unittest process.
-                class MyTestCase(unittest.TestCase):
-
-                    if (test_case_count > 0):
-                        def test_text(self):
-                            global case_1_result
-                            self.text_1 = test_case_out_1
-                            self.mt_1 = out_1
-                            if self.text_1 == self.mt_1:
-                                case_1_result = "PASS"
-                            else:
-                                case_1_result = "FAIL"
-                                globals()['score_1'] = 0
-                            self.assertEquals(self.text_1, self.mt_1)
-
-                    if (test_case_count > 1):
-                        def test_text_two(self):
-                            global case_2_result
-                            self.text_2 = test_case_out_2
-                            self.mt_2 = out_2
-                            if self.text_2 == self.mt_2:
-                                case_2_result = "PASS"
-                            else:
-                                case_2_result = "FAIL"
-                                globals()['score_2'] = 0
-                            self.assertEqual(self.text_2, self.mt_2)
-
-                    if (test_case_count > 2):
-                        def test_text_three(self):
-                            global case_3_result
-                            self.text_3 = test_case_out_3
-                            self.mt_3 = out_3
-                            if self.text_3 == self.mt_3:
-                                case_3_result = "PASS"
-                            else:
-                                case_3_result = "FAIL"
-                                globals()['score_3'] = 0
-                            self.assertEqual(self.text_3, self.mt_3)
-
-                    if (test_case_count > 3):
-                        def test_text_three(self):
-                            global case_4_result
-                            self.text_4 = test_case_out_4
-                            self.mt_4 = out_4
-                            if self.text_4 == self.mt_4:
-                                case_4_result = "PASS"
-                            else:
-                                case_4_result = "FAIL"
-                                globals()['score_4'] = 0
-                            self.assertEqual(self.text_4, self.mt_4)
-
-                    if (test_case_count > 4):
-                        def test_text_three(self):
-                            global case_5_result
-                            self.text_5 = test_case_out_5
-                            self.mt_5 = out_5
-                            if self.text_5 == self.mt_5:
-                                case_5_result = "PASS"
-                            else:
-                                case_5_result = "FAIL"
-                                globals()['score_5'] = 0
-                            self.assertEqual(self.text_5, self.mt_5)
+                class MyTestCase(unittest.TestCase): pass
+                case_result = {}
+                for i in range(1, test_case_count + 1, 1):
+                    string = "def test_text_{0}(self):\n" \
+                             "    self.text_{0} = test_case_out_{0}\n" \
+                             "    self.mt_{0} = out_{0}\n" \
+                             "    if self.text_{0} == self.mt_{0}:\n" \
+                             "        globals()['case_{0}_result'] = 'PASS'\n" \
+                             "    else:\n" \
+                             "        globals()['case_{0}_result'] = 'FAIL'\n" \
+                             "        globals()['score_{0}'] = 0\n" \
+                             "    self.assertEquals(self.text_{0}, self.mt_{0})\n".format(i)
+                    eval(compile(string, '<string>', 'exec'), globals())
+                    setattr(MyTestCase, "test_text_{0}".format(i), str_to_class('test_text_{0}'.format(i)))
+                    # from types import MethodType
+                    # MyTestCase.test_text_1 = MethodType(test_text_1,MyTestCase)
+                    # print(eval("'test_text_{0}'.format(i)"))
+                    # method_list = [func for func in dir(MyTestCase) if
+                    # callable(getattr(MyTestCase, func)) and not func.startswith("__")]
+                    # print(method_list)
 
                 test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
                 test_result = TextTestRunner().run(test_suite)
                 x = len(test_result.failures)
+                for i in range(1, test_case_count + 1, 1):
+                    case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
                 if quiz.mode == "Pass or Fail" and x == 0:
                     result = "PASS"
                     result_model = 10
@@ -813,12 +722,11 @@ def uploadgrading(request, classroom, quiz_id):
                 else:
                     result = "FAIL"
                     result_model = 0
-                #print(score_total)
-                result_set = {'pass_or_fail': {'case1': case_1_result, 'case2': case_2_result, 'case3': case_3_result,
-                                               'case4': case_4_result, 'case5': case_5_result, 'result': result, },
-                              'scoring': {'total_score': score_total,'max_score': max_score}
+                case_result["result"] = result
+                result_set = {'result': case_result,
+                              'scoring': {'total_score': score_total, 'max_score': max_score}
                               }
-
+                print(case)
                 if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
                                           classroom=quiz.classroom).status == False:
                     QuizTracker.objects.update_or_create(
