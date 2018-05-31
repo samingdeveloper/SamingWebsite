@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 import sys,os,datetime,importlib,unittest,ast,inspect,timeout_decorator,mosspy
 from RestrictedPython import compile_restricted,utility_builtins,PrintCollector
 from RestrictedPython.Guards import full_write_guard,safe_builtins
-from RestrictedPython.custom_builtins import custom_safe_builtins
+#from RestrictedPython.custom_builtins import custom_safe_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
 from django.utils.crypto import get_random_string

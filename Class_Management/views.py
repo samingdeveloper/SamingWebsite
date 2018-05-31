@@ -44,7 +44,7 @@ def Home(request,classroom):
     elif request.method == "POST" and action == 'add':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
-        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True:
+        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True and request.POST["country"] != "CSV":
             add_status = 4
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                                  'classname': classroom,
@@ -78,12 +78,13 @@ def Home(request,classroom):
                                              'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
                                              })
                 csv_data = csv_file.read().decode("utf-8")
+                #print(csv_data)
                 lines = csv_data.split("\n")
                 for line in lines:
-                    fields = line.split(',')
-                    print(fields)
+                    fields = line.replace(',','\t').split('\t')
+                    #print(fields)
                     try:
-                        User.objects.update_or_create(email=fields[0],
+                        u,created = User.objects.update_or_create(email=fields[0],
                                                    username=fields[1],
                                                    first_name=fields[2],
                                                    last_name=fields[3],
@@ -91,6 +92,11 @@ def Home(request,classroom):
                                                    active=fields[5].capitalize(),
                                                    staff=fields[6].capitalize(),
                                                    admin=fields[7].capitalize().rstrip())
+                        if created:
+                            u.set_password("FIBO")
+                        else:
+                            pass
+                        u.save()
                     except Exception as e:
                         #print(e)
                         continue
@@ -136,7 +142,7 @@ def Home(request,classroom):
     elif request.method == "POST" and action == 'delete':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
-        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True:
+        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True and request.POST["country"] != "CSV":
             add_status = 4
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                                  'classname': classroom,
@@ -172,7 +178,8 @@ def Home(request,classroom):
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
                 for line in lines:
-                    fields = line.split(',')
+                    fields = line.replace(',', '\t').split('\t')
+                    #print(fields)
                     try:
                         User.objects.get(email=fields[0],
                                                    username=fields[1],
