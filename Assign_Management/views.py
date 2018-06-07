@@ -6,10 +6,9 @@ from Class_Management.models import *
 from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
-import sys,os,datetime,importlib,unittest,ast,inspect,timeout_decorator,mosspy
-from RestrictedPython import compile_restricted,utility_builtins,PrintCollector
+import sys,os,datetime,importlib,unittest,timeout_decorator,mosspy
+from RestrictedPython import compile_restricted
 from RestrictedPython.Guards import full_write_guard,safe_builtins
-#from RestrictedPython.custom_builtins import custom_safe_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -141,7 +140,7 @@ def regen(require_regen):
                                             classroom=GenerateAssign_instance_temp.classroom,
                                             status=False,
                                             )
-    print("k1 has passed")
+    #print("k1 has passed")
     try:
         for k in get_tracker:
             tracker = QuizTracker.objects.get(studentId=k.studentId,
@@ -152,7 +151,7 @@ def regen(require_regen):
             tracker.save(update_fields=["quizDoneCount"])
 
         if require_regen["Timer"] != '':
-            print("timeryes")
+            #print("timeryes")
             Timer_temp = ''
             for i in require_regen["Timer"]:
                 if i == ' ':
@@ -168,10 +167,10 @@ def regen(require_regen):
                                                    classroom=GenerateAssign_instance_temp.classroom,
                                                    timer=x,
                                                    )
-        print("k2 has passed")
+        #print("k2 has passed")
     except Exception as e:
-        print("k2 has failed")
-        print(e)
+        #print("k2 has failed")
+        #print(e)
         pass
     return test_temp
 
@@ -220,7 +219,7 @@ def EditAssign(request, classroom, quiz_id):
                              "Timer":Timer,
                              }
             regen(require_regen)
-            print("ppl=sh!t")
+            #print("ppl=sh!t")
 
         else:
             get_tracker = QuizTracker.objects.filter(
@@ -340,7 +339,7 @@ def uploadgrading(request, classroom, quiz_id):
                                         #base_url=os.path.join(temp_test))
                 in_sys_file = FSS.save(fileName, uploaded_to_file)
                 in_sys_file_url = FSS.url(in_sys_file)
-                print(FSS.path(in_sys_file))
+                #print(FSS.path(in_sys_file))
                 Upload.objects.get_or_create(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 write_mode = False
                 test_case_count = 0
@@ -415,7 +414,7 @@ def uploadgrading(request, classroom, quiz_id):
                             globals()['test_case_out_%s' % test_case_num] = eval(command)
 
                         except Exception as E:
-                            print(E)
+                            #print(E)
                             continue
 
                     elif "# Test case" in line:
@@ -453,7 +452,7 @@ def uploadgrading(request, classroom, quiz_id):
                 x = len(test_result.failures)
                 for i in range(1, test_case_count + 1, 1):
                     case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
-                print(case_result)
+                #print(case_result)
                 if quiz.mode == "Pass or Fail" and x == 0:
                     result = "PASS"
                     result_model = 10
@@ -507,8 +506,8 @@ def uploadgrading(request, classroom, quiz_id):
                                                        classroom=quiz.classroom)
                     if quiz.mode == "Scoring":
                         if score_total >= quiz_score.total_score:
-                            print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
-                            print(str(score_total)+":"+str(result_model))
+                            #print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
+                            #print(str(score_total)+":"+str(result_model))
                             #return None
                             quiz_score.total_score = score_total
                             quiz_score.passOrFail = result_model
@@ -667,7 +666,7 @@ def uploadgrading(request, classroom, quiz_id):
 
 
                         except Exception as E:
-                            print(E)
+                            #print(E)
                             continue
 
                     if "# Test case" in line:
@@ -726,7 +725,7 @@ def uploadgrading(request, classroom, quiz_id):
                 result_set = {'result': case_result,
                               'scoring': {'total_score': score_total, 'max_score': max_score}
                               }
-                print(case)
+                #print(case)
                 if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
                                           classroom=quiz.classroom).status == False:
                     QuizTracker.objects.update_or_create(
@@ -760,9 +759,9 @@ def uploadgrading(request, classroom, quiz_id):
                                                        classroom=quiz.classroom)
                     if quiz.mode == "Scoring":
                         if score_total >= quiz_score.total_score:
-                            print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
-                            print(str(score_total)+":"+str(result_model))
-                            print(fileName)
+                            #print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
+                            #print(str(score_total)+":"+str(result_model))
+                            #print(fileName)
                             #return None
                             quiz_score.total_score = score_total
                             quiz_score.passOrFail = result_model
@@ -809,7 +808,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                        'Timer':timer_stop.timestamp()*1000,
                                                        'Deadtimestamp':deadline.timestamp()*1000,})
             except Exception as e:
-                print(e)
+                #print(e)
                 return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                        'quizDetail': quiz.quizDetail,
                                                        'Deadline': quiz.deadline,
@@ -849,7 +848,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                     'Deadtimestamp':deadline.timestamp()*1000,
                 })
     except Exception as e:
-        print(e)
+        #print(e)
         try:
             if request.method == 'POST' and 'upload_submit' in request.POST:
                 code_temp = ''
@@ -880,10 +879,10 @@ def moss(request, classroom, quiz_id):
             try:
                 m.addFile(i.code.Uploadfile.path)
             except Exception as E:
-                print(E)
+                #print(E)
                 continue
         url = m.send()  # Submission Report URL
-        print("Report Url: " + url)
+        #print("Report Url: " + url)
         return redirect(url)
     else:
         return HttpResponseRedirect("/ClassRoom/"+classroom)

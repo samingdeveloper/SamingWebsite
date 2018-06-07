@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         try:
             return self.studentId + ' : ' + self.username
         except Exception as e:
-            return e
+            return self.email
 
     def get_full_name(self):
         if self.first_name or self.last_name:

@@ -6,6 +6,7 @@ pytz
 django-bootstrap4
 RestrictedPython==4.0b4
 timeout-decorator
-docker
-redis
-autograder-sandbox
+#docker
+#redis
+#autograder-sandbox
+psycopg2

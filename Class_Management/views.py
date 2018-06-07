@@ -129,7 +129,7 @@ def Home(request,classroom):
                                              'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
                                              })
         except Exception as e:
-            print(e)
+            #print(e)
             add_status = 2
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
@@ -221,7 +221,7 @@ def Home(request,classroom):
                                              'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
                                              })
         except Exception as e:
-            print(e)
+            #print(e)
             add_status = 2
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
@@ -300,7 +300,7 @@ def DeleteClassroom(request,classroom):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     else:
-        print(ClassRoom.objects.get(className=classroom))
+        #print(ClassRoom.objects.get(className=classroom))
         ClassRoom.objects.get(className=classroom).delete()
         return HttpResponseRedirect('/ClassRoom')
 
@@ -327,10 +327,10 @@ def export_score_csv(classroom):
         try:
             if QuizScore_list[index+1].studentId == QuizScore_list[index].studentId:
                 obj_all.append(obj.passOrFail+obj.total_score)
-                print(obj_all)
+                #print(obj_all)
                 continue
             else:
-                print("end")
+                #print("end")
                 obj_all.append(obj.passOrFail + obj.total_score)
                 if len(obj_quiz) - len(obj_all) != 0:
                     for i in range(0, len(obj_quiz) - len(obj_all)):
@@ -342,7 +342,7 @@ def export_score_csv(classroom):
                 obj_all = []
                 continue
         except Exception as E:
-            print(E)
+            #print(E)
             obj_all.append(obj.passOrFail + obj.total_score)
             if len(obj_quiz) - len(obj_all) != 0:
                 for i in range(0, len(obj_quiz) - len(obj_all)):
@@ -385,7 +385,7 @@ def StudentScoreInfo(request,classroom,username):
         #var = request.user.username
         #print(u_id[0])
         try:
-            print("try")
+            #print("try")
             score = QuizScore.objects.filter(studentId=User.objects.get(username=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
             quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom))
             x = 0
@@ -406,7 +406,7 @@ def StudentScoreInfo(request,classroom,username):
             }
             return render(request, 'ShowScoreStudent.html', context)
         except:
-            print('noe')
+            #print('noe')
             return render(request, 'ShowScoreStudent.html')
 
 def StudentQuizListInfo(request,classroom,username,quiz_id):
@@ -471,7 +471,7 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
             code_to_show = file.Uploadfile.read().replace(b"\r\r\n",b"\r\n").decode()
             file.Uploadfile.close()
         except Exception as e:
-            print(e)
+            #print(e)
             code_to_show = ""
         var = request.user.username
         context = {
