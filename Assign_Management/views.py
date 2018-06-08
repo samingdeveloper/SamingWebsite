@@ -202,11 +202,11 @@ def EditAssign(request, classroom, quiz_id):
         os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
         ### Define Section ###
         #if (Assignment != quiz.quizTitle or dab != quiz.text_testcase_content:
-        quiz_old = {
-        "title":quiz.quizTitle,
-        "testcase":quiz.text_testcase_content,
-        }
-        if (redo == "Yes" or quiz_old["title"] != Assignment or quiz_old["testcase"] != dab):
+        #quiz_old = {
+        #"title":quiz.quizTitle,
+        #"testcase":quiz.text_testcase_content,
+        #}
+        if (redo == "Yes"): #or quiz_old["title"] != Assignment or quiz_old["testcase"] != dab):
             quiz.delete()
             require_regen = {"quizTitle":Assignment,
                              "quizDetail":Assignment_Detail,
@@ -308,7 +308,7 @@ def uploadgrading(request, classroom, quiz_id):
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
     try:
-        code_temp = ""
+        code_temp = quiz.text_template_content
         if request.method == "POST" and 'time_left' in request.POST:
             #print("this?")
             time_left = request.POST.get("time_left",'')
@@ -849,27 +849,15 @@ def uploadgrading(request, classroom, quiz_id):
                 })
     except Exception as e:
         #print(e)
-        try:
-            if request.method == 'POST' and 'upload_submit' in request.POST:
-                code_temp = ''
-            return render(request, 'Upload.html',{'quizTitle':quiz.quizTitle,
-                                                       'quizDetail':quiz.quizDetail,
-                                                       'Deadline':quiz.deadline,
-                                                       'Hint':quiz.hint,
-                                                        'Timer':False,
-                                                        'exception':e,
-                                                        'code':code_temp,
-                                                        'Deadtimestamp':deadline.timestamp()*1000,
-                                                  })
-        except Exception as e:
-            return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
-                                                   'quizDetail': quiz.quizDetail,
-                                                   'Deadline': quiz.deadline,
-                                                   'Hint': quiz.hint,
-                                                   'Timer': False,
-                                                   'exception': e,
-                                                   'Deadtimestamp': deadline.timestamp() * 1000,
-                                                   })
+        return render(request, 'Upload.html',{'quizTitle':quiz.quizTitle,
+                                                'quizDetail':quiz.quizDetail,
+                                                'Deadline':quiz.deadline,
+                                                'Hint':quiz.hint,
+                                                'Timer':False,
+                                                'exception':e,
+                                                'code':code_temp,
+                                                'Deadtimestamp':deadline.timestamp()*1000,
+                                            })
 
 def moss(request, classroom, quiz_id):
     if request.user.is_admin:

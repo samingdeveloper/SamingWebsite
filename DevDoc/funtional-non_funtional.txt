@@ -1,0 +1,17 @@
+﻿Functional
+อัพโหลดหลาย Testcase ใน 1 File
+อัพโหลด Code Template 
+Online Text Editor, Upload py file
+ตรวจโค้ดภาษา Python
+สามารถสร้างและอนุญาติ User เข้า Class
+Create, Edit, Delete Quiz
+MoSS (Measure of Software Similarity)
+เก็บเฉาพาะ submit คะแนนสูงสุดลงระบบ
+Export คะแนนในแต่ละ Class ออกมาเป็น CSV ได้
+Forget & Change Password
+
+Non-Functional
+กำหนด Role ของแต่ละ User ในแต่ละคลาส
+เพิ่ม User เข้า DB ได้ด้วยไฟล์ CSV
+สามารถ Track ความคืบหน้าในการทำ Quiz ของนักศึกษาในแต่ละ class ได้
+สามารถดูและเลือกได้ว่าจะส่งไฟล์ไหนที่ submit เข้ามา

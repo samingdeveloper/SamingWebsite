@@ -33,15 +33,16 @@
 				<h2>Log In</h2>
 			</div>-->
         <div class="div">
-            <form action="/LogIn_Auth/" method="post">
+            <form method="post">
                 {% csrf_token %}
                             {% if messages %}
                 <div class="row">
                     <div class='col-sm-6 col-sm-offset-3'>
                 {% for message in messages %}
                 <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}{% endif %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
                     {{ message }}
+                    {% endif %}
                 </p>
                 {% endfor %}
                     </div>

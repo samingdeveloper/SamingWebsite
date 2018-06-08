@@ -14,14 +14,8 @@ def LogIn_Page(request):
     #check_csrf(request)
     if request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
-    else:
-        return render(request, 'LogIn_Page.html')
 
-def LogOut_Page(request):
-    return render(request, 'LogIn_Page.html')
-
-def LogIn_Auth(request):
-    if request.method=="POST":
+    elif request.method=="POST":
         username = request.POST.get('username','')
         password = request.POST.get('password','')
         template = loader.get_template('LogIn_Page.html')
@@ -43,9 +37,15 @@ def LogIn_Auth(request):
 
             #return render(request, 'SelectClassroom.html', context)
             return HttpResponseRedirect("/ClassRoom/")
+
         else:
             messages.error(request, 'Sorry, userId or password is not valid.')
             return HttpResponse(template.render(context, request))
+    else:
+        return render(request, 'LogIn_Page.html')
+
+def LogOut_Page(request):
+    return render(request, 'LogIn_Page.html')
 
 def Change_Password(request):
     if request.method == "POST":

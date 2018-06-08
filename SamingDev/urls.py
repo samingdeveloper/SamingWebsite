@@ -23,6 +23,7 @@ from LogIn_Management import views
 
 
 urlpatterns = [
+    url(r'^$', views.LogIn_Page),
     url(r'^admin/', admin.site.urls),
     url(r'^admin_panel/', views.Admin_Panel, name='admin_panel'),
     url(r'^reset/password_reset/$', auth_views.password_reset, name='reset_password_reset1'),
@@ -31,7 +32,7 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
     url(r'^accounts/login/$', views.LogIn_Page, name='Login'),
     url(r'^LogIn_Page/$', views.LogIn_Page),
-    url(r'^LogIn_Auth/$', views.LogIn_Auth),
+    #url(r'^LogIn_Auth/$', views.LogIn_Auth),
     url(r'^ClassRoom/', include('Class_Management.urls')),
     url(r'^Change_Password/$', views.Change_Password),
     url(r'^Forgot_Password/$', views.Forgot_Password),
