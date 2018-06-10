@@ -266,7 +266,9 @@ def GenerateClassroom(request):
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST" and request.user.is_admin:
         classname = request.POST["classname"]
-        ClassRoom.objects.create(className=classname,creator=request.user)
+        classroom_instance = ClassRoom.objects.create(className=classname,creator=request.user)
+        classroom_instance.user.add(request.user)
+        classroom_instance.save()
         return HttpResponseRedirect('/ClassRoom')
     else:
         return render(request, 'CreateClassroom.html')

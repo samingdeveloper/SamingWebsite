@@ -3,10 +3,11 @@ uWSGI
 #gunicorn==19.7.1
 django-mathfilters
 pytz
-django-bootstrap4
+#django-bootstrap4
 RestrictedPython==4.0b4
 timeout-decorator
 #docker
 #redis
 #autograder-sandbox
 psycopg2
+mosspy

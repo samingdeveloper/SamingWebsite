@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'LogIn_Management.apps.LoginManagementConfig',
-    'bootstrap4',
     'Class_Management.apps.ClassManagementConfig',
     'Assign_Management.apps.AssignManagementConfig',
     'mathfilters'
@@ -91,11 +90,11 @@ WSGI_APPLICATION = 'SamingDev.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'SamingDev',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'pengza78',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'HOST': 'db',
+        'PORT': 5432
     }
     #'default': {
     #    'ENGINE': 'django.db.backends.sqlite3',

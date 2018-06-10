@@ -62,6 +62,17 @@
                             <option value="Yes"> Yes </option>
                     </select>
                         <input type="submit" value="Update">
+                    {% if messages %}
+                {% for message in messages %}
+                <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <script>
+                        alert("{{ message }}");
+                    </script>
+                    {% endif %}
+                </p>
+    {% endfor %}
+                {% endif %}
                 </form>
             </div>
     </div>

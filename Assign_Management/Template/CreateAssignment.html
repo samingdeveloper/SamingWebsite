@@ -58,6 +58,17 @@
                 <input type="text" name="dateInput" id="dateInput" placeholder="ex.2017-11-29 07:07:32">
 
                     <input type="submit" value="Create">
+                {% if messages %}
+                {% for message in messages %}
+                <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <script>
+                        alert("{{ message }}");
+                    </script>
+                    {% endif %}
+                </p>
+    {% endfor %}
+                {% endif %}
             </form>
         </div>
     </div>

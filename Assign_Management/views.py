@@ -44,56 +44,61 @@ def AssignmentDetail(request):
 def GenerateAssign(request,classroom):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
-    elif request.method == "POST" and request.FILES['upload_testcase']:
-        OSS = OverwriteStorage()
-        var = request.user.username
-        Assignment = request.POST.get('asname', '')
-        Assignment_Detail = request.POST.get('asdetail', '')
-        Deadline = request.POST.get('dateInput','')
-        Hint = request.POST.get('hint','')
-        Timer = request.POST.get('timer','')
-        #dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
-        asd = request.FILES.get('upload_testcase',False)
-        asdf = request.FILES.get('upload_template',False)
-        mode = request.POST.get('mode','')
-        in_sys_file = OSS.save(asd.name, asd)
-        in_sys_file = OSS.save(asdf.name, asdf)
-        f = open(os.getcwd()+'/media/'+asd.name, 'r')
-        dab = f.read()
-        f.close()
-        f = open(os.getcwd()+'/media/'+asdf.name, 'r')
-        dabb = f.read()
-        f.close()
-        os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
-        os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
-        GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
-        GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
-        get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
-        for k in get_tracker:
-            QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                                studentId=k.studentId,
-                                                classroom=GenerateAssign_instance_temp.classroom,
-                                                status=False,
-                                                )
-        if Timer != '':
-            #print("timeryes")
-            Timer_temp = ''
-            for i in Timer:
-                if i == ' ':
-                    pass
-                else:
-                    Timer_temp += i
-            Timer = Timer_temp
-            o = Timer.split(':')
-            x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
-            for j in get_tracker:
-                QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                         studentId=j.studentId,
-                                         classroom=GenerateAssign_instance_temp.classroom,
-                                         timer=x,
-                                         )
+    elif request.method == "POST": #and request.FILES['upload_testcase']:
+        try:
+            OSS = OverwriteStorage()
+            var = request.user.username
+            Assignment = request.POST.get('asname', '')
+            Assignment_Detail = request.POST.get('asdetail', '')
+            Deadline = request.POST.get('dateInput','')
+            Hint = request.POST.get('hint','')
+            Timer = request.POST.get('timer','')
+            #dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
+            asd = request.FILES.get('upload_testcase',False)
+            asdf = request.FILES.get('upload_template',False)
+            mode = request.POST.get('mode','')
+            in_sys_file = OSS.save(asd.name, asd)
+            in_sys_file = OSS.save(asdf.name, asdf)
+            f = open(os.getcwd()+'/media/'+asd.name, 'r')
+            dab = f.read()
+            f.close()
+            f = open(os.getcwd()+'/media/'+asdf.name, 'r')
+            dabb = f.read()
+            f.close()
+            os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
+            os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
+            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
+            for k in get_tracker:
+                QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
+                                                    studentId=k.studentId,
+                                                    classroom=GenerateAssign_instance_temp.classroom,
+                                                    status=False,
+                                                    )
+            if Timer != '':
+                #print("timeryes")
+                Timer_temp = ''
+                for i in Timer:
+                    if i == ' ':
+                        pass
+                    else:
+                        Timer_temp += i
+                Timer = Timer_temp
+                o = Timer.split(':')
+                x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
+                for j in get_tracker:
+                    QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
+                                             studentId=j.studentId,
+                                             classroom=GenerateAssign_instance_temp.classroom,
+                                             timer=x,
+                                             )
 
-        return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+            return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+        except Exception as E:
+            from django.contrib import messages
+            messages.error(request, E)
+            return render(request,"CreateAssignment.html")
     else:
         return render(request, 'CreateAssignment.html')
 
@@ -178,84 +183,90 @@ def EditAssign(request, classroom, quiz_id):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST":
-        quiz = Quiz.objects.get(pk=quiz_id)
-        OSS = OverwriteStorage()
-        var = request.user.username
-        Assignment = request.POST.get('asname', '')
-        Assignment_Detail = request.POST.get('asdetail', '')
-        Deadline = request.POST.get('dateInput', '')
-        Hint = request.POST.get('hint', '')
-        Timer = request.POST.get('timer', '')
-        asd = request.FILES.get('upload_testcase', False)
-        asdf = request.FILES.get('upload_template', False)
-        mode = request.POST.get('mode', '')
-        redo = request.POST.get('redo', '')
-        in_sys_file = OSS.save(asd.name, asd)
-        in_sys_file = OSS.save(asdf.name, asdf)
-        f = open(os.getcwd()+"/media/" + asd.name, 'r')
-        dab = f.read()
-        f.close()
-        f = open(os.getcwd()+"/media/" + asdf.name, 'r')
-        dabb = f.read()
-        f.close()
-        os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
-        os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
-        ### Define Section ###
-        #if (Assignment != quiz.quizTitle or dab != quiz.text_testcase_content:
-        #quiz_old = {
-        #"title":quiz.quizTitle,
-        #"testcase":quiz.text_testcase_content,
-        #}
-        if (redo == "Yes"): #or quiz_old["title"] != Assignment or quiz_old["testcase"] != dab):
-            quiz.delete()
-            require_regen = {"quizTitle":Assignment,
-                             "quizDetail":Assignment_Detail,
-                             "deadline":Deadline,
-                             "hint":Hint,
-                             "text_testcase_content":dab,
-                             "text_template_content":dabb,
-                             "mode":mode,
-                             "classroom":quiz.classroom,
-                             "Timer":Timer,
-                             }
-            regen(require_regen)
-            #print("ppl=sh!t")
+        try:
+            quiz = Quiz.objects.get(pk=quiz_id)
+            OSS = OverwriteStorage()
+            var = request.user.username
+            Assignment = request.POST.get('asname', '')
+            Assignment_Detail = request.POST.get('asdetail', '')
+            Deadline = request.POST.get('dateInput', '')
+            Hint = request.POST.get('hint', '')
+            Timer = request.POST.get('timer', '')
+            asd = request.FILES.get('upload_testcase', False)
+            asdf = request.FILES.get('upload_template', False)
+            mode = request.POST.get('mode', '')
+            redo = request.POST.get('redo', '')
+            in_sys_file = OSS.save(asd.name, asd)
+            in_sys_file = OSS.save(asdf.name, asdf)
+            f = open(os.getcwd()+"/media/" + asd.name, 'r')
+            dab = f.read()
+            f.close()
+            f = open(os.getcwd()+"/media/" + asdf.name, 'r')
+            dabb = f.read()
+            f.close()
+            os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
+            os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
+            ### Define Section ###
+            #if (Assignment != quiz.quizTitle or dab != quiz.text_testcase_content:
+            #quiz_old = {
+            #"title":quiz.quizTitle,
+            #"testcase":quiz.text_testcase_content,
+            #}
+            if (redo == "Yes"): #or quiz_old["title"] != Assignment or quiz_old["testcase"] != dab):
+                quiz.delete()
+                require_regen = {"quizTitle":Assignment,
+                                 "quizDetail":Assignment_Detail,
+                                 "deadline":Deadline,
+                                 "hint":Hint,
+                                 "text_testcase_content":dab,
+                                 "text_template_content":dabb,
+                                 "mode":mode,
+                                 "classroom":quiz.classroom,
+                                 "Timer":Timer,
+                                 }
+                regen(require_regen)
+                #print("ppl=sh!t")
 
-        else:
-            get_tracker = QuizTracker.objects.filter(
-                classroom=quiz.classroom)  # reference at QuizTracker
-            quiz.quizTitle = Assignment
-            quiz.quizDetail = Assignment_Detail
-            quiz.deadline = Deadline
-            quiz.hint = Hint
-            quiz.text_testcase_content = dab
-            quiz.text_template_content = dabb
-            quiz.mode = mode
-            quiz.save()
-            if Timer != '':
-                # print("timeryes")
-                Timer_temp = ''
-                for i in Timer:
-                    if i == ' ':
-                        pass
-                    else:
-                        Timer_temp += i
-                Timer = Timer_temp
-                o = Timer.split(':')
-                x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
-                for j in get_tracker:
-                    timer = QuizTimer.objects.get(quizId=quiz_id,
-                                                  studentId=j.studentId,
-                                                  classroom=quiz.classroom,
-                                                  )
-                    if timer.start:
-                        timer.timer = x
-                        timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
-                    else:
-                        timer.timer = x
-                        timer.timer_stop = None
-                    timer.save(update_fields=["timer", "timer_stop"])
-        return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+            else:
+                get_tracker = QuizTracker.objects.filter(
+                    classroom=quiz.classroom)  # reference at QuizTracker
+                quiz.quizTitle = Assignment
+                quiz.quizDetail = Assignment_Detail
+                quiz.deadline = Deadline
+                quiz.hint = Hint
+                quiz.text_testcase_content = dab
+                quiz.text_template_content = dabb
+                quiz.mode = mode
+                quiz.save()
+                if Timer != '':
+                    # print("timeryes")
+                    Timer_temp = ''
+                    for i in Timer:
+                        if i == ' ':
+                            pass
+                        else:
+                            Timer_temp += i
+                    Timer = Timer_temp
+                    o = Timer.split(':')
+                    x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
+                    for j in get_tracker:
+                        timer = QuizTimer.objects.get(quizId=quiz_id,
+                                                      studentId=j.studentId,
+                                                      classroom=quiz.classroom,
+                                                      )
+                        if timer.start:
+                            timer.timer = x
+                            timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
+                        else:
+                            timer.timer = x
+                            timer.timer_stop = None
+                        timer.save(update_fields=["timer", "timer_stop"])
+            return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+        except Exception as E:
+            from django.contrib import messages
+            messages.error(request, E)
+            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/EditAssign/' + quiz_id)
+
 
     else:
         quiz = Quiz.objects.get(pk=quiz_id)
@@ -269,7 +280,7 @@ def EditAssign(request, classroom, quiz_id):
                   }
         return render(request, 'EditAssignment.html', context)
 
-#@timeout_decorator.timeout(5, use_signals=False)
+@timeout_decorator.timeout(5, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -277,7 +288,6 @@ def uploadgrading(request, classroom, quiz_id):
     elif ClassRoom.objects.get(className=classroom).user.filter(username=request.user.username).exists() != True:
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
-    from autograder_sandbox import AutograderSandbox
     global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
     t = timezone.localtime(timezone.now())  # offset-awared datetime
