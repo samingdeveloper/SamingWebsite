@@ -19,9 +19,9 @@ class UserManager(BaseUserManager):
             username = username,
         )
         user_obj.set_password(password)
-        user_obj.active = is_active
-        user_obj.staff = is_staff
-        user_obj.admin = is_admin
+        user_obj.is_active = True
+        user_obj.is_staff = True
+        user_obj.is_admin = True
         user_obj.save(using=self._db)
         return user_obj
 
@@ -50,9 +50,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255,  blank=True,default=' ')
     last_name = models.CharField(max_length=255, blank=True, default=' ')
     studentId = models.CharField(unique=True, max_length=255, null=True)
-    active = models.BooleanField(default=True) #can login
-    staff = models.BooleanField(default=False)
-    admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True) #can login
+    is_staff = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
     objects = UserManager()
     USERNAME_FIELD =  'username' #username
     # email and password are require by default
@@ -74,17 +74,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     def has_module_perms(self, app_label):
         return True
 
-    @property
-    def is_staff(self):
-        return self.staff
 
     @property
-    def is_admin(self):
-        return self.admin
+    def staff(self):
+        return self.is_staff
 
     @property
-    def is_active(self):
-        return self.active
+    def admin(self):
+        return self.is_admin
+
+    @property
+    def active(self):
+        return self.is_active
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

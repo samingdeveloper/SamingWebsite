@@ -89,9 +89,9 @@ def Home(request,classroom):
                                                    first_name=fields[2],
                                                    last_name=fields[3],
                                                    studentId=fields[4],
-                                                   active=fields[5].capitalize(),
-                                                   staff=fields[6].capitalize(),
-                                                   admin=fields[7].capitalize().rstrip())
+                                                   is_active=fields[5].capitalize(),
+                                                   is_staff=fields[6].capitalize(),
+                                                   is_admin=fields[7].capitalize().rstrip())
                         if created:
                             u.set_password("FIBO")
                         else:
@@ -110,7 +110,7 @@ def Home(request,classroom):
             user_obj = User.objects.get(email=email)
             add_status = 1
             if request.POST["country"] == "Admin" and request.user.is_admin:
-                user_obj.admin = True
+                user_obj.is_admin = True
                 user_obj.save()
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
@@ -186,9 +186,9 @@ def Home(request,classroom):
                                                    first_name=fields[2],
                                                    last_name=fields[3],
                                                    studentId=fields[4],
-                                                   active=fields[5].capitalize(),
-                                                   staff=fields[6].capitalize(),
-                                                   admin=fields[7].capitalize().rstrip()).delete()
+                                                   is_active=fields[5].capitalize(),
+                                                   is_staff=fields[6].capitalize(),
+                                                   is_admin=fields[7].capitalize().rstrip()).delete()
                     except Exception as e:
                         #print(e)
                         continue
@@ -202,7 +202,7 @@ def Home(request,classroom):
             user_obj = User.objects.get(email=email)
             add_status = 3
             if request.POST["country"] == "Admin" and request.user.is_admin:
-                user_obj.admin = False
+                user_obj.is_admin = False
                 user_obj.save()
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
@@ -294,7 +294,7 @@ def EditClassroom(request,classroom):
     else:
         context={
             "classname":classroom,
-            "creator":User.objects.filter(admin=True)
+            "creator":User.objects.filter(is_admin=True)
         }
         return render(request, 'EditClassroom.html', context)
 

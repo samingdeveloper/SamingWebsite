@@ -5,13 +5,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nginx
+    container_name: docker_django_nginx
+    restart: always
     ports:
-      - "8080:80"
+      - "80:80"
+    volumes:
+      - ./static:/code/static
+      - ./media:/code/media
+      - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - web
 
   db:
     image: postgres:9.6-alpine
+    container_name: docker_django_db
     restart: always
     expose:
       - "5432"
@@ -28,15 +35,18 @@ services:
       context: .
       dockerfile: Dockerfile
     image: docker_django_image #image name
-    #stdin_open: true
-    #tty: true
     #command: python manage.py runserver 0.0.0.0:8000
-    command: uwsgi --ini SamingDev.ini
+    restart: always
+    #command: uwsgi --ini SamingDev.ini
+    command: bash -c "gunicorn SamingDev.wsgi -b 0.0.0.0:8000 --workers 3"
     volumes:
       - .:/code
-      - ./static:/static
+      #- ./static:/code/static
+      #- ./media:/code/media
       #- C:/Program Files/Python36/Lib:/code
-    ports:
-    - "8000:8000"
+    #ports:
+    #- "8000:8000"
+    expose:
+      - "8000"
     depends_on:
     - db
