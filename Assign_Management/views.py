@@ -280,7 +280,7 @@ def EditAssign(request, classroom, quiz_id):
                   }
         return render(request, 'EditAssignment.html', context)
 
-@timeout_decorator.timeout(5, use_signals=False)
+#@timeout_decorator.timeout(5, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -420,6 +420,8 @@ def uploadgrading(request, classroom, quiz_id):
                             except Exception as E:
                                 print(E)
                                 continue'''
+                        elif "# Mode" in line:
+                            globals()['mode_%s' % test_case_num] = eval(line[7:])
                         try:
                             globals()['test_case_out_%s' % test_case_num] = eval(command)
 
@@ -434,20 +436,35 @@ def uploadgrading(request, classroom, quiz_id):
                 #define
                 for i in range(test_case_count):
                     i += 1
-                    max_score += + globals()['score_%s' % i]
+                    max_score +=  globals()['score_%s' % i]
                 # unittest process.
                 class MyTestCase(unittest.TestCase): pass
                 case_result = {}
                 for i in range(1, test_case_count + 1, 1):
                     string = "def test_text_{0}(self):\n" \
-                                  "    self.text_{0} = test_case_out_{0}\n" \
-                                  "    self.mt_{0} = out_{0}\n" \
-                                  "    if self.text_{0} == self.mt_{0}:\n" \
-                                  "        globals()['case_{0}_result'] = 'PASS'\n" \
-                                  "    else:\n" \
-                                  "        globals()['case_{0}_result'] = 'FAIL'\n" \
-                                  "        globals()['score_{0}'] = 0\n" \
-                                  "    self.assertEquals(self.text_{0}, self.mt_{0})\n".format(i)
+                             "    self.text_{0} = test_case_out_{0}\n" \
+                             "    self.mt_{0} = out_{0}\n" \
+                             "    try:\n" \
+                             "        self.assertEquals(self.text_{0}, self.mt_{0})\n" \
+                             "        globals()['case_{0}_result'] = 'PASS'\n" \
+                             "    except Exception:\n" \
+                             "        globals()['case_{0}_result'] = 'FAIL'\n" \
+                             "        globals()['score_{0}'] = 0\n" \
+                             "        raise".format(i)
+                    try:
+                        eval("'unittest.TestCase.'+str(str_to_class('mode_{0}'.format(i)))")
+                        mode = str(str_to_class("mode_{0}".format(i)))
+                        one_arg = ["assertTrue", "assertFalse", "assertIsNone", "assertIsNotNone"]
+                        if mode in one_arg:
+                            args = "(self.text_{0})".format(i)
+                        else:
+                            args = "(self.text_{0}, self.mt_{0})".format(i)
+                        string = string.splitlines()
+                        string[4] = "        " + "self." + mode + args
+                        string = '\n'.join(string)
+                        print(string)
+                    except Exception as e:
+                        pass
                     eval(compile(string, '<string>', 'exec'), globals())
                     setattr(MyTestCase, "test_text_{0}".format(i), str_to_class('test_text_{0}'.format(i)))
                     #case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
@@ -466,11 +483,9 @@ def uploadgrading(request, classroom, quiz_id):
                 if quiz.mode == "Pass or Fail" and x == 0:
                     result = "PASS"
                     result_model = 10
-                    max_score = 10
                 elif quiz.mode == "Pass or Fail" and x != 0:
                     result = "FAIL"
                     result_model = 0
-                    max_score = 10
                 elif quiz.mode == "Scoring":
                     for i in range(test_case_count):
                         i += 1
@@ -501,10 +516,14 @@ def uploadgrading(request, classroom, quiz_id):
                     quizStatus.save()
                 #print(str(test_case_count) + ' ' + str(Out_count))
                 for i in range(test_case_count):
-                    i += 1
-                    globals()['test_case_out_%s' % i] = ""
-                    globals()['out_%s' % i] = ""
-                    globals()['score_%s' % i] = 0
+                    try:
+                        i += 1
+                        del globals()['test_case_out_%s' % i]
+                        del globals()['out_%s' % i]
+                        del globals()['score_%s' % i]
+                        del globals()['mode_%s' % i]
+                    except:
+                        continue
                 test_case_count = 0
                 Out_count = 0
                 with open(in_sys_file_location + in_sys_file, 'w') as f:
@@ -658,7 +677,7 @@ def uploadgrading(request, classroom, quiz_id):
                         elif "# Break" in line:
                             #print("Break!")
                             write_mode = False
-                        if "prob." in line:
+                        elif "prob." in line:
                             command = line
                             # print("command this line")
                             # print(command)
@@ -670,10 +689,10 @@ def uploadgrading(request, classroom, quiz_id):
                             except Exception as E:
                                 print(E)
                                 continue'''
-
+                        elif "# Mode" in line:
+                            globals()['mode_%s' % test_case_num] = line[7:]
                         try:
                             globals()['test_case_out_%s' % test_case_num] = eval(command)
-
 
                         except Exception as E:
                             #print(E)
@@ -686,7 +705,7 @@ def uploadgrading(request, classroom, quiz_id):
 
                 for i in range(test_case_count):
                     i += 1
-                    max_score += + globals()['score_%s' % i]
+                    max_score += globals()['score_%s' % i]
                 # unittest process.
                 class MyTestCase(unittest.TestCase): pass
                 case_result = {}
@@ -694,12 +713,28 @@ def uploadgrading(request, classroom, quiz_id):
                     string = "def test_text_{0}(self):\n" \
                              "    self.text_{0} = test_case_out_{0}\n" \
                              "    self.mt_{0} = out_{0}\n" \
-                             "    if self.text_{0} == self.mt_{0}:\n" \
+                             "    try:\n" \
+                             "        self.assertEquals(self.text_{0}, self.mt_{0})\n" \
                              "        globals()['case_{0}_result'] = 'PASS'\n" \
-                             "    else:\n" \
+                             "    except Exception:\n" \
                              "        globals()['case_{0}_result'] = 'FAIL'\n" \
                              "        globals()['score_{0}'] = 0\n" \
-                             "    self.assertEquals(self.text_{0}, self.mt_{0})\n".format(i)
+                             "        raise".format(i)
+                    try:
+                        eval("'unittest.TestCase.'+str(str_to_class('mode_{0}'.format(i)))")
+                        mode = str(str_to_class("mode_{0}".format(i)))
+                        one_arg = ["assertTrue", "assertFalse", "assertIsNone", "assertIsNotNone"]
+                        if mode in one_arg:
+                            args = "(self.text_{0})".format(i)
+                        else:
+                            args = "(self.text_{0}, self.mt_{0})".format(i)
+                        string = string.splitlines()
+                        string[4] = "        " + "self." + mode + args
+                        string = '\n'.join(string)
+                        print(string)
+                    except Exception as e:
+                        pass
+                        #print(e)
                     eval(compile(string, '<string>', 'exec'), globals())
                     setattr(MyTestCase, "test_text_{0}".format(i), str_to_class('test_text_{0}'.format(i)))
                     # from types import MethodType
@@ -716,16 +751,13 @@ def uploadgrading(request, classroom, quiz_id):
                     case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
                 if quiz.mode == "Pass or Fail" and x == 0:
                     result = "PASS"
-                    result_model = 10
-                    max_score = 10
+                    result_model = max_score
                 elif quiz.mode == "Pass or Fail" and x != 0:
                     result = "FAIL"
                     result_model = 0
-                    max_score = 10
                 elif quiz.mode == "Scoring":
                     for i in range(test_case_count):
-                        i += 1
-                        score_total = score_total + globals()['score_%s' % i]
+                        score_total = score_total + globals()['score_%s' % i+1]
                     result = "PASS"
                     result_model = 0
                 else:
@@ -754,10 +786,15 @@ def uploadgrading(request, classroom, quiz_id):
                     quizStatus.save()
                 #print(str(test_case_count) + ' ' + str(Out_count))
                 for i in range(test_case_count):
-                    i += 1
-                    globals()['test_case_out_%s' % i] = ""
-                    globals()['out_%s' % i] = ""
-                    globals()['score_%s' % i] = 0
+                    try:
+                        i += 1
+                        del globals()['test_case_out_%s' % i]
+                        del globals()['out_%s' % i]
+                        del globals()['score_%s' % i]
+                        del globals()['mode_%s' % i]
+                    except:
+                        continue
+
                 test_case_count = 0
                 Out_count = 0
                 with open('./media/' + fileName, 'w') as f:
