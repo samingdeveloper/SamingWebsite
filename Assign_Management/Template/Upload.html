@@ -90,7 +90,9 @@
                     {{ exception }}
                     {% for i,value in display.result.items %}
                         {% if i != "result" %}
+                            {% if value != "Hidden" %}
                             CASE {{ forloop.counter }}: {{ value }}<br><br>
+                            {% endif %}
                         {% endif %}
                     {% endfor %}
                     {% if mode == "Pass or Fail" %}
@@ -120,6 +122,11 @@
             </div>
         </div>
 
+    {% if message %}
+    <script>
+        alert("Size of file must be less than or equal to 1 mb\nand must endswith .py");
+    </script>
+    {% endif %}
 
     <script>
         var editor = CodeMirror.fromTextArea(document.getElementById("code-form-comment"), {
@@ -149,7 +156,6 @@
             document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
         }
     </script>
-
     <script>
         function myFunction() {
                 clearInterval(mytime);

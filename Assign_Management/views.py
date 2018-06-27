@@ -338,6 +338,16 @@ def uploadgrading(request, classroom, quiz_id):
             if request.FILES['upload']:
                 #print("in_upload_submit")
                 uploaded_to_file = request.FILES['upload']
+                if uploaded_to_file._size > 1048576 or not uploaded_to_file.name.endswith(".py"):
+                    return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
+                                                           'quizDetail': quiz.quizDetail,
+                                                           'Deadline': quiz.deadline,
+                                                           'Hint': quiz.hint,
+                                                           'Timer': False,
+                                                           'message': True,
+                                                           'code': code_temp,
+                                                           'Deadtimestamp': deadline.timestamp() * 1000,
+                                                           })
                 fileName = str(request.user.studentId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
                 #OSS = OverwriteStorage()
                 #in_sys_file = OSS.save(fileName, uploaded_to_file)
@@ -402,6 +412,8 @@ def uploadgrading(request, classroom, quiz_id):
                     elif write_mode:
                         if "# Out" in line:
                             globals()['out_%s' % test_case_num] = eval(line[6:])
+                        elif "# Hide" in line:
+                            globals()['hide_%s' % test_case_num] = True
                         elif "# Score" in line:
                             #print("SOCREEEE")
                             globals()['score_%s' % test_case_num] = float(eval(line[8:]))
@@ -421,7 +433,7 @@ def uploadgrading(request, classroom, quiz_id):
                                 print(E)
                                 continue'''
                         elif "# Mode" in line:
-                            globals()['mode_%s' % test_case_num] = eval(line[7:])
+                            globals()['mode_%s' % test_case_num] = line[7:]
                         try:
                             globals()['test_case_out_%s' % test_case_num] = eval(command)
 
@@ -446,9 +458,17 @@ def uploadgrading(request, classroom, quiz_id):
                              "    self.mt_{0} = out_{0}\n" \
                              "    try:\n" \
                              "        self.assertEquals(self.text_{0}, self.mt_{0})\n" \
-                             "        globals()['case_{0}_result'] = 'PASS'\n" \
-                             "    except Exception:\n" \
-                             "        globals()['case_{0}_result'] = 'FAIL'\n" \
+                             "        try:\n" \
+                             "            globals()['hide_{0}']\n" \
+                             "            globals()['case_{0}_result'] = 'Hidden'\n" \
+                             "        except:\n" \
+                             "            globals()['case_{0}_result'] = 'PASS'\n" \
+                             "    except:\n" \
+                             "        try:\n" \
+                             "            globals()['hide_{0}']\n" \
+                             "            globals()['case_{0}_result'] = 'Hidden'\n" \
+                             "        except:\n" \
+                             "            globals()['case_{0}_result'] = 'FAIL'\n" \
                              "        globals()['score_{0}'] = 0\n" \
                              "        raise".format(i)
                     try:
@@ -465,6 +485,7 @@ def uploadgrading(request, classroom, quiz_id):
                         print(string)
                     except Exception as e:
                         pass
+                        # print(e)
                     eval(compile(string, '<string>', 'exec'), globals())
                     setattr(MyTestCase, "test_text_{0}".format(i), str_to_class('test_text_{0}'.format(i)))
                     #case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
@@ -482,7 +503,7 @@ def uploadgrading(request, classroom, quiz_id):
                 #print(case_result)
                 if quiz.mode == "Pass or Fail" and x == 0:
                     result = "PASS"
-                    result_model = 10
+                    result_model = max_score
                 elif quiz.mode == "Pass or Fail" and x != 0:
                     result = "FAIL"
                     result_model = 0
@@ -515,19 +536,29 @@ def uploadgrading(request, classroom, quiz_id):
                     quizStatus.status = True
                     quizStatus.save()
                 #print(str(test_case_count) + ' ' + str(Out_count))
-                for i in range(test_case_count):
-                    try:
-                        i += 1
-                        del globals()['test_case_out_%s' % i]
-                        del globals()['out_%s' % i]
-                        del globals()['score_%s' % i]
-                        del globals()['mode_%s' % i]
-                    except:
-                        continue
-                test_case_count = 0
-                Out_count = 0
                 with open(in_sys_file_location + in_sys_file, 'w') as f:
                     f.write(code_final)
+                with open(in_sys_file_location + in_sys_file, 'a') as f:
+                    f.write('\n\n')
+                    for i in range(test_case_count):
+                        try:
+                            i += 1
+                            try:
+                                globals()['hide_%s' % i]
+                            except:
+                                f.write("CASE {0}: ".format(i) + str(globals()['score_%s' % i]) + '\n')
+                            del globals()['test_case_out_%s' % i]
+                            del globals()['out_%s' % i]
+                            del globals()['score_%s' % i]
+                            del globals()['hide_%s' % i]
+                        except:
+                            continue
+                        try:
+                            del globals()['mode_%s' % i]
+                        except:
+                            continue
+                test_case_count = 0
+                Out_count = 0
                 f = open(in_sys_file_location + in_sys_file, 'r')
                 try:
                     quiz_score = QuizScore.objects.get(quizId=quiz,
@@ -671,6 +702,8 @@ def uploadgrading(request, classroom, quiz_id):
                         if "# Out" in line:
                             #print("Out")
                             globals()['out_%s' % test_case_num] = eval(line[6:],{'__builtins__': safe_builtins},{})
+                        elif "# Hide" in line:
+                            globals()['hide_%s' % test_case_num] = True
                         elif "# Score" in line:
                             #print("SOCREEEE")
                             globals()['score_%s' % test_case_num] = float(eval(line[8:],{'__builtins__': safe_builtins},{}))
@@ -715,9 +748,17 @@ def uploadgrading(request, classroom, quiz_id):
                              "    self.mt_{0} = out_{0}\n" \
                              "    try:\n" \
                              "        self.assertEquals(self.text_{0}, self.mt_{0})\n" \
-                             "        globals()['case_{0}_result'] = 'PASS'\n" \
-                             "    except Exception:\n" \
-                             "        globals()['case_{0}_result'] = 'FAIL'\n" \
+                             "        try:\n" \
+                             "            globals()['hide_{0}']\n" \
+                             "            globals()['case_{0}_result'] = 'Hidden'\n" \
+                             "        except:\n" \
+                             "            globals()['case_{0}_result'] = 'PASS'\n" \
+                             "    except:\n" \
+                             "        try:\n" \
+                             "            globals()['hide_{0}']\n" \
+                             "            globals()['case_{0}_result'] = 'Hidden'\n" \
+                             "        except:\n" \
+                             "            globals()['case_{0}_result'] = 'FAIL'\n" \
                              "        globals()['score_{0}'] = 0\n" \
                              "        raise".format(i)
                     try:
@@ -785,20 +826,29 @@ def uploadgrading(request, classroom, quiz_id):
                     quizStatus.status = True
                     quizStatus.save()
                 #print(str(test_case_count) + ' ' + str(Out_count))
-                for i in range(test_case_count):
-                    try:
-                        i += 1
-                        del globals()['test_case_out_%s' % i]
-                        del globals()['out_%s' % i]
-                        del globals()['score_%s' % i]
-                        del globals()['mode_%s' % i]
-                    except:
-                        continue
-
-                test_case_count = 0
-                Out_count = 0
                 with open('./media/' + fileName, 'w') as f:
                     f.write(code_temp)
+                with open('./media/' + fileName, 'a') as f:
+                    f.write('\n\n')
+                    for i in range(test_case_count):
+                        try:
+                            i += 1
+                            try:
+                                globals()['hide_%s' % i]
+                            except:
+                                f.write("CASE {0}: ".format(i) + str(globals()['score_%s' % i]) + '\n')
+                            del globals()['test_case_out_%s' % i]
+                            del globals()['out_%s' % i]
+                            del globals()['score_%s' % i]
+                            del globals()['hide_%s' % i]
+                        except:
+                            continue
+                        try:
+                            del globals()['mode_%s' % i]
+                        except:
+                            continue
+                test_case_count = 0
+                Out_count = 0
                 f = open('./media/' + fileName, 'r')
                 try:
                     quiz_score = QuizScore.objects.get(quizId=quiz,
