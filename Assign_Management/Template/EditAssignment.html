@@ -19,20 +19,16 @@
                 <form action="{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom quizedit.id %}" method="post" enctype="multipart/form-data"
                   > {% csrf_token %}
                     <label for="assignmentname">Assignment name:</label>
-                    <input type="text" id="assignmentname" name="asname" placeholder="{{ quizedit.quizTitle }}">
+                    <input type="text" id="assignmentname" name="asname" value="{{ quizedit.quizTitle }}">
 
                     <label for="assignmentdetail">Assignment detail:</label>
-                    <textarea type="text" id="assignmentdetail" name="asdetail" placeholder="{{ quizedit.quizDetail }}"></textarea>
+                    <textarea type="text" id="assignmentdetail" name="asdetail">{{ quizedit.quizDetail }}</textarea>
 
                     <label for="test_case">Test case:</label>
-                    <input type="file" name="upload_testcase" style="display:none" />
-                    <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
-                    <input type="button" name="uploadbutton" value="Choose File" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value">
+                    <textarea type="text" id="test_case" name="upload_testcase">{{ quizedit.text_testcase_content }}</textarea>
 
                     <label for="upload_template">Code template:</label>
-                    <input type="file" name="upload_template" style="display:none" />
-                    <input type="text" name="uploadtext_template" onkeydown="upload_template.value=uploadtext_template.value ">
-                    <input type="button" name="uploadbutton" value="Choose File" onclick="upload_template.click()" onmouseout="uploadtext_template.value=upload_template.value">
+                    <textarea type="text" id="upload_template" name="upload_template">{{ quizedit.text_template_content }}</textarea>
 
                     <label for="mode">Mode:</label>
                     <select name="mode">
@@ -41,7 +37,7 @@
                     </select>
 
                     <label for="hint">Hint:</label>
-                    <input type="text" id="lhint" name="hint" placeholder="{{ quizedit.hint }}">
+                    <input type="text" id="lhint" name="hint" value="{{ quizedit.hint }}">
 
                     <label for="timer">Timer:</label>
                     <input type="text" id="ltimer" name="timer" placeholder="{{ quiztedit.timer }}">

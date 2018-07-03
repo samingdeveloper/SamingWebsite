@@ -86,20 +86,18 @@
             </div>
             <div class="column side">
                 <div class="result">
-                    {{ version }}
-                    {{ exception }}
-                    {% for i,value in display.result.items %}
-                        {% if i != "result" %}
-                            {% if value != "Hidden" %}
-                            CASE {{ forloop.counter }}: {{ value }}<br><br>
-                            {% endif %}
+                    {% for case_result in display.case %}
+                        {% if case_result == 'PASS' %}
+                            <span style="color:#00ff00"> CASE {{ forloop.counter }}: {{ case_result }} </span><br><br>
+                        {% else %}
+                            <span style="color:#ff0000"> CASE {{ forloop.counter }}: {{ case_result }} </span><br><br>
                         {% endif %}
                     {% endfor %}
-                    {% if mode == "Pass or Fail" %}
-                        RESULT: {{ display.result.result }}
-                        {% elif mode == "Scoring" %}
-                        RESULT: {{ display.scoring.total_score }} SCORE.
-                    {% endif %}
+                        {% if display.status == 'PASS' %}
+                            <span style="color:#00ff00"> RESULT: {{ display.status }} </span><br><br>
+                        {% elif display.status == 'FAIL' %}
+                            <span style="color:#ff0000"> RESULT: {{ display.status }} </span><br><br>
+                        {% endif %}
                 </div>
                 <!-- I don't know solotion in modified Browse file. You try it. -->
                 <form method="post" enctype="multipart/form-data">

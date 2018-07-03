@@ -54,21 +54,11 @@ def GenerateAssign(request,classroom):
             Hint = request.POST.get('hint','')
             Timer = request.POST.get('timer','')
             #dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
-            asd = request.FILES.get('upload_testcase',False)
-            asdf = request.FILES.get('upload_template',False)
+            test_case = request.POST.get('upload_testcase','')
+            code_template = request.POST.get('upload_template','')
             mode = request.POST.get('mode','')
-            in_sys_file = OSS.save(asd.name, asd)
-            in_sys_file = OSS.save(asdf.name, asdf)
-            f = open(os.getcwd()+'/media/'+asd.name, 'r')
-            dab = f.read()
-            f.close()
-            f = open(os.getcwd()+'/media/'+asdf.name, 'r')
-            dabb = f.read()
-            f.close()
-            os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
-            os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
-            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
-            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=dabb ,text_testcase_content=dab  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=code_template ,text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=code_template ,text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
             get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
             for k in get_tracker:
                 QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
@@ -196,16 +186,8 @@ def EditAssign(request, classroom, quiz_id):
             asdf = request.FILES.get('upload_template', False)
             mode = request.POST.get('mode', '')
             redo = request.POST.get('redo', '')
-            in_sys_file = OSS.save(asd.name, asd)
-            in_sys_file = OSS.save(asdf.name, asdf)
-            f = open(os.getcwd()+"/media/" + asd.name, 'r')
-            dab = f.read()
-            f.close()
-            f = open(os.getcwd()+"/media/" + asdf.name, 'r')
-            dabb = f.read()
-            f.close()
-            os.remove(os.path.join(settings.MEDIA_ROOT, asd.name))
-            os.remove(os.path.join(settings.MEDIA_ROOT, asdf.name))
+            test_case = request.POST.get('upload_testcase', False)
+            code_template = request.POST.get('upload_template', False)
             ### Define Section ###
             #if (Assignment != quiz.quizTitle or dab != quiz.text_testcase_content:
             #quiz_old = {
@@ -218,8 +200,8 @@ def EditAssign(request, classroom, quiz_id):
                                  "quizDetail":Assignment_Detail,
                                  "deadline":Deadline,
                                  "hint":Hint,
-                                 "text_testcase_content":dab,
-                                 "text_template_content":dabb,
+                                 "text_testcase_content":test_case,
+                                 "text_template_content":code_template,
                                  "mode":mode,
                                  "classroom":quiz.classroom,
                                  "Timer":Timer,
@@ -234,8 +216,8 @@ def EditAssign(request, classroom, quiz_id):
                 quiz.quizDetail = Assignment_Detail
                 quiz.deadline = Deadline
                 quiz.hint = Hint
-                quiz.text_testcase_content = dab
-                quiz.text_template_content = dabb
+                quiz.text_testcase_content = test_case
+                quiz.text_template_content = code_template
                 quiz.mode = mode
                 quiz.save()
                 if Timer != '':
@@ -287,6 +269,10 @@ def uploadgrading(request, classroom, quiz_id):
 
     elif ClassRoom.objects.get(className=classroom).user.filter(username=request.user.username).exists() != True:
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+
+    from .Lib import py
+    module = sys.modules[__name__]
+    setattr(module, 'py', py)
 
     global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
@@ -422,16 +408,6 @@ def uploadgrading(request, classroom, quiz_id):
                             write_mode = False
                         elif "prob." in line:
                             command = line
-                            #print("command this line")
-                            #print(command)
-                            '''try:
-                                exec_command = inspect.getsource(eval(command[:-4]))
-                                byte_code = compile_restricted(exec_command, '<inline>', 'exec')
-                                print(byte_code)
-                                exec(byte_code, {'__builtins__': utility_builtins}, {})
-                            except Exception as E:
-                                print(E)
-                                continue'''
                         elif "# Mode" in line:
                             globals()['mode_%s' % test_case_num] = line[7:]
                         try:
@@ -488,13 +464,6 @@ def uploadgrading(request, classroom, quiz_id):
                         # print(e)
                     eval(compile(string, '<string>', 'exec'), globals())
                     setattr(MyTestCase, "test_text_{0}".format(i), str_to_class('test_text_{0}'.format(i)))
-                    #case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
-                    #from types import MethodType
-                    #MyTestCase.test_text_1 = MethodType(test_text_1,MyTestCase)
-                    #print(eval("'test_text_{0}'.format(i)"))
-                    #method_list = [func for func in dir(MyTestCase) if
-                                   #callable(getattr(MyTestCase, func)) and not func.startswith("__")]
-                    #print(method_list)
                 test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
                 test_result = TextTestRunner().run(test_suite)
                 x = len(test_result.failures)
@@ -642,31 +611,30 @@ def uploadgrading(request, classroom, quiz_id):
             else:
                 rs = get_random_string(length=7)
                 fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className) + '_' + rs +'.py'
-                f = open('./media/' + fileName, 'w')
-                for debug_line in code:
-                    #print(debug_line)
-                    f.write(debug_line)
-                f.close()
+                with open('./media/' + fileName, 'w') as f:
+                    for debug_line in code:
+                        #print(debug_line)
+                        f.write(debug_line)
                 Upload.objects.get_or_create(title=fileName, Uploadfile=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
-                write_mode = False
-                test_case_count = 0
-                Out_count = 0
-                score_total = 0
-                max_score = 0
+                # global dict variable for each user
+                global name
+                name = request.user.username
+                result = {
+                            'max_score':0,
+                            'score':0,
+                            'case':[],
+                          }
+                globals()[name] = result
+                ####################################
                 # open file .txt. Address  file ???????? Now! change follow your PC
                 with open('./media/' + fileName, 'r+') as f:
                     code = f.read()
-                    f.seek(0, 0)
-                    for line in quiz.text_testcase_content.splitlines():
-                        if "# Lib" in line:
-                            f.write("import ".rstrip('\r\n') + line[6:].rstrip('\r\n') + '\n' + code)
-                            break
-                try:
                     restricted_globals = dict(__builtins__=safe_builtins)
-                    byte_code = compile_restricted(code, filename='./media/' + fileName, mode='exec')
-                    exec(byte_code, restricted_globals, {})
-                except Exception as E:
-                    pass
+                    eval(compile_restricted(code, filename='./media/' + fileName, mode='exec'), restricted_globals, {})
+                    f.seek(0, 0)
+                    if "# Lib" in quiz.text_testcase_content.splitlines()[0]:
+                        f.write("import ".rstrip('\r\n') + quiz.text_testcase_content.splitlines()[0][6:].rstrip('\r\n') + '\n' + code)
+
                 if fileName[:-3] in sys.modules:
                     del sys.modules[fileName[:-3]]
                     # importlib.invalidate_caches()
@@ -676,138 +644,63 @@ def uploadgrading(request, classroom, quiz_id):
                     prob = importlib.import_module(fileName[:-3])
                     # importlib.reload(prob)
                     # print(prob)
-                f = open('./media/' + fileName, 'a')
-                case = quiz.text_testcase_content
-                f.write("\n\n")
-                for case_line in case.splitlines():
-                    if (case_line[:11] == "# Test case"):
-                        test_case_count += 1
-                        globals()['case_%s_result' % str(test_case_count)] = ""
-                        Out_count += 1
-                    f.write(case_line + "\n")
-                f.close()
-                for i in range(test_case_count):
-                    i += 1
-                    globals()['test_case_out_%s' % i] = ""
-                    globals()['out_%s' % i] = ""
-                f = open('./media/' + fileName, 'r')
-                code_a = f.read()
-                f.close()
-                for line in code_a.splitlines():
-                    if "# Stop" in line:
-                        #print("stop")
-                        write_mode = False
+                setattr(module, 'prob', prob)
+                with open('./media/' + fileName, 'a') as f:
+                    case = quiz.text_testcase_content
+                    for case_line in case.splitlines():
+                        f.write(case_line + "\n")
+                with open('./media/' + fileName, 'r') as f:
+                    code = f.read()
 
-                    if write_mode:
-                        if "# Out" in line:
-                            #print("Out")
-                            globals()['out_%s' % test_case_num] = eval(line[6:],{'__builtins__': safe_builtins},{})
-                        elif "# Hide" in line:
-                            globals()['hide_%s' % test_case_num] = True
-                        elif "# Score" in line:
-                            #print("SOCREEEE")
-                            globals()['score_%s' % test_case_num] = float(eval(line[8:],{'__builtins__': safe_builtins},{}))
-                        elif "# Break" in line:
-                            #print("Break!")
-                            write_mode = False
-                        elif "prob." in line:
-                            command = line
-                            # print("command this line")
-                            # print(command)
-                            '''try:
-                                exec_command = inspect.getsource(eval(command[:-4]))
-                                byte_code = compile_restricted(exec_command, '<inline>', 'exec')
-                                print(byte_code)
-                                exec(byte_code, {'__builtins__': utility_builtins}, {})
-                            except Exception as E:
-                                print(E)
-                                continue'''
-                        elif "# Mode" in line:
-                            globals()['mode_%s' % test_case_num] = line[7:]
-                        try:
-                            globals()['test_case_out_%s' % test_case_num] = eval(command)
-
-                        except Exception as E:
-                            #print(E)
-                            continue
-
-                    if "# Test case" in line:
-                        #print("in testcase  ")
-                        test_case_num = str(line[11])
-                        write_mode = True
-
-                for i in range(test_case_count):
-                    i += 1
-                    max_score += globals()['score_%s' % i]
                 # unittest process.
                 class MyTestCase(unittest.TestCase): pass
-                case_result = {}
-                for i in range(1, test_case_count + 1, 1):
-                    string = "def test_text_{0}(self):\n" \
-                             "    self.text_{0} = test_case_out_{0}\n" \
-                             "    self.mt_{0} = out_{0}\n" \
+                def assert_equal(actual, expected, points, hidden=False):
+                    rand_string = get_random_string(length=7)
+                    string = "def test_{0}(self):\n" \
+                             "    self.actual = {1}\n" \
+                             "    self.expected = {2}\n" \
+                             "    self.points = {3}\n" \
+                             "    self.hidden = {4}\n" \
+                             "    globals()[name]['max_score'] += self.points\n" \
                              "    try:\n" \
-                             "        self.assertEquals(self.text_{0}, self.mt_{0})\n" \
-                             "        try:\n" \
-                             "            globals()['hide_{0}']\n" \
-                             "            globals()['case_{0}_result'] = 'Hidden'\n" \
-                             "        except:\n" \
-                             "            globals()['case_{0}_result'] = 'PASS'\n" \
+                             "        self.assertEquals(self.actual, self.expected)\n" \
+                             "        if self.hidden != True:\n" \
+                             "            globals()[name]['case'].append('PASS')\n" \
+                             "        globals()[name]['score'] += self.points\n" \
                              "    except:\n" \
-                             "        try:\n" \
-                             "            globals()['hide_{0}']\n" \
-                             "            globals()['case_{0}_result'] = 'Hidden'\n" \
-                             "        except:\n" \
-                             "            globals()['case_{0}_result'] = 'FAIL'\n" \
-                             "        globals()['score_{0}'] = 0\n" \
-                             "        raise".format(i)
-                    try:
-                        eval("'unittest.TestCase.'+str(str_to_class('mode_{0}'.format(i)))")
-                        mode = str(str_to_class("mode_{0}".format(i)))
-                        one_arg = ["assertTrue", "assertFalse", "assertIsNone", "assertIsNotNone"]
-                        if mode in one_arg:
-                            args = "(self.text_{0})".format(i)
-                        else:
-                            args = "(self.text_{0}, self.mt_{0})".format(i)
-                        string = string.splitlines()
-                        string[4] = "        " + "self." + mode + args
-                        string = '\n'.join(string)
-                        print(string)
-                    except Exception as e:
-                        pass
-                        #print(e)
-                    eval(compile(string, '<string>', 'exec'), globals())
-                    setattr(MyTestCase, "test_text_{0}".format(i), str_to_class('test_text_{0}'.format(i)))
-                    # from types import MethodType
-                    # MyTestCase.test_text_1 = MethodType(test_text_1,MyTestCase)
-                    # print(eval("'test_text_{0}'.format(i)"))
-                    # method_list = [func for func in dir(MyTestCase) if
-                    # callable(getattr(MyTestCase, func)) and not func.startswith("__")]
-                    # print(method_list)
-
+                             "        if self.hidden != True:\n" \
+                             "            globals()[name]['case'].append('FAIL')\n" \
+                             "        raise".format(rand_string,actual,expected,points,hidden)
+                    #print(locals())
+                    eval(compile(string, 'defstr', 'exec'),globals(),locals())
+                    #print(str(actual)+str(expected)+str(points)+str(hidden))
+                    #print(string)
+                    #print(globals())
+                    #print(globals()[name]['params'])
+                    #print(str_to_class('test_{0}'.format(rand_string)))
+                    setattr(MyTestCase, "test_{0}".format(rand_string),locals()['test_{0}'.format(rand_string)])
+                    #setattr(MyTestCase, "test_{0}".format(rand_string), str_to_class('test_{0}'.format(rand_string)))
+                    #method_list = [func for func in dir(MyTestCase) if callable(getattr(MyTestCase, func)) and not func.startswith("__")]
+                    #print(method_list)
+                # Exec
+                eval(compile(code,'gradingstr', 'exec'))
+                #return None
                 test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
                 test_result = TextTestRunner().run(test_suite)
-                x = len(test_result.failures)
-                for i in range(1, test_case_count + 1, 1):
-                    case_result["test_text_{0}".format(i)] = globals()['case_{0}_result'.format(i)]
-                if quiz.mode == "Pass or Fail" and x == 0:
-                    result = "PASS"
-                    result_model = max_score
-                elif quiz.mode == "Pass or Fail" and x != 0:
-                    result = "FAIL"
-                    result_model = 0
-                elif quiz.mode == "Scoring":
-                    for i in range(test_case_count):
-                        score_total = score_total + globals()['score_%s' % i+1]
-                    result = "PASS"
-                    result_model = 0
+                #fail = len(test_result.failures)
+                result = globals()[name]
+                print(result)
+                del globals()[name]
+                del name
+                if quiz.mode == "Pass or Fail" and test_result.wasSuccessful():
+                    result['status'] = "PASS"
+                elif quiz.mode == "Pass or Fail" and test_result.wasSuccessful() == False:
+                    result['status'] = "FAIL"
+                    result['score'] = 0
+                elif quiz.mode == "Scoring" and any(result['case']) == True:
+                    result['status'] = "PASS"
                 else:
-                    result = "FAIL"
-                    result_model = 0
-                case_result["result"] = result
-                result_set = {'result': case_result,
-                              'scoring': {'total_score': score_total, 'max_score': max_score}
-                              }
+                    result['status'] = "FAIL"
                 #print(case)
                 if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
                                           classroom=quiz.classroom).status == False:
@@ -830,66 +723,50 @@ def uploadgrading(request, classroom, quiz_id):
                     f.write(code_temp)
                 with open('./media/' + fileName, 'a') as f:
                     f.write('\n\n')
-                    for i in range(test_case_count):
-                        try:
-                            i += 1
-                            try:
-                                globals()['hide_%s' % i]
-                            except:
-                                f.write("CASE {0}: ".format(i) + str(globals()['score_%s' % i]) + '\n')
-                            del globals()['test_case_out_%s' % i]
-                            del globals()['out_%s' % i]
-                            del globals()['score_%s' % i]
-                            del globals()['hide_%s' % i]
-                        except:
-                            continue
-                        try:
-                            del globals()['mode_%s' % i]
-                        except:
-                            continue
-                test_case_count = 0
-                Out_count = 0
+                    for c,i in enumerate(result['case']):
+                        f.write("CASE {0}: ".format(c+1) + i + '\n')
+                    f.write("RESULT: %s" % result['status'])
                 f = open('./media/' + fileName, 'r')
                 try:
                     quiz_score = QuizScore.objects.get(quizId=quiz,
                                                        studentId=User.objects.get(studentId=request.user.studentId),
                                                        classroom=quiz.classroom)
                     if quiz.mode == "Scoring":
-                        if score_total >= quiz_score.total_score:
+                        if result['score'] >= quiz_score.total_score:
                             #print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
                             #print(str(score_total)+":"+str(result_model))
                             #print(fileName)
                             #return None
-                            quiz_score.total_score = score_total
-                            quiz_score.passOrFail = result_model
-                            quiz_score.max_score = max_score
+                            quiz_score.total_score = result['score']
+                            quiz_score.passOrFail = 0
+                            quiz_score.max_score = result['max_score']
                             quiz_score.code =  Upload.objects.get(title=fileName) #f.read()
                             quiz_score.save()
                     else:
-                        if result_model >= quiz_score.passOrFail:
-                            quiz_score.total_score = score_total
-                            quiz_score.passOrFail = result_model
-                            quiz_score.max_score = max_score
+                        if result['max_score'] >= quiz_score.passOrFail:
+                            quiz_score.total_score = 0
+                            quiz_score.passOrFail = result['max_score']
+                            quiz_score.max_score = result['max_score']
                             quiz_score.code = Upload.objects.get(title=fileName)  # f.read()
                             quiz_score.save()
                 except ObjectDoesNotExist:
                     quiz_score = QuizScore.objects.create(quizId=quiz,
                                             studentId=User.objects.get(studentId=request.user.studentId),
                                             classroom=quiz.classroom,
-                                            total_score=score_total,
-                                            passOrFail=result_model,
-                                                max_score=max_score,
+                                            total_score=result['score'],
+                                            passOrFail=result['max_score'],
+                                                max_score=result['max_score'],
                                             code= Upload.objects.get(title=fileName) #f.read(),
                                             )
                 upload_instance = Upload.objects.get(title=fileName, Uploadfile=fileName ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 if quiz.mode == "Scoring":
-                    if score_total == None:
-                        score_total = 0
-                    upload_instance.score = score_total
+                    if result['score'] == None:
+                        result['score'] = 0
+                    upload_instance.score = result['score']
                 elif quiz.mode == "Pass or Fail":
-                    if result_model == None:
-                        result_model = 0
-                    upload_instance.score = result_model
+                    if result['max_score'] == None:
+                        result['max_score'] = 0
+                    upload_instance.score = result['max_score']
                 upload_instance.save(update_fields=["score"])
                 f.close()
                 #print(eval('dir()'))
@@ -898,7 +775,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                        'quizDetail': quiz.quizDetail,
                                                        'Deadline': quiz.deadline,
                                                        'Hint': quiz.hint,
-                                                       'display': result_set,
+                                                       'display': result,
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
                                                        'code': code_temp,
@@ -910,7 +787,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                        'quizDetail': quiz.quizDetail,
                                                        'Deadline': quiz.deadline,
                                                        'Hint': quiz.hint,
-                                                       'display': result_set,
+                                                       'display': result,
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
                                                        'code': code_temp,
