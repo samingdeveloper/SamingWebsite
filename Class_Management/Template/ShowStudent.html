@@ -1,7 +1,8 @@
 {% extends "NavBar.html" %}
 {% block content %}
 {% load static %}
-    {% load mathfilters %}
+{% load mathfilters %}
+{% load prgress_tags %}
 
   <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
 
@@ -36,13 +37,14 @@
           <td>
             <div class="container">
                 <div id={{ i.username }}progress>
-                    <div id={{ i.username }}percent><center>{{ i.quiztracker_set.all.0.quizDoneCount|div:quiz_count|mul:100 }} %</center></div>
+                    <div id={{ i.username }}percent><center>{% u_progress i request.session.classroom %}%</center></div>
                 </div>
             </div>
           </td>
         </tr>
                       <script>
-                      var x = {{ i.quiztracker_set.all.0.quizDoneCount|div:quiz_count|mul:100 }}
+
+                      var x = {% u_progress i request.session.classroom %}
         function change_qp_classname() {
             if (x >= 80 && x <= 100){
                 document.getElementById("{{ i.username }}progress").className = "skills html";

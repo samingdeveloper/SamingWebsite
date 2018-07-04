@@ -6,7 +6,7 @@ def asd(n):
 	return a
 
 def dsa(n):
-	b = n**3
+	b = n**32
 	return b
 
 def sda(n):
@@ -17,14 +17,5 @@ def sda(n):
 
 
 
-CASE 1: PASS
-CASE 2: PASS
-CASE 3: PASS
-CASE 4: PASS
-CASE 5: PASS
-CASE 6: PASS
-CASE 7: PASS
-CASE 8: PASS
-CASE 9: PASS
-CASE 10: PASS
-RESULT: PASS
+CASE 1: FAIL
+RESULT: FAIL
