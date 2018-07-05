@@ -18,7 +18,6 @@
         <form action="{% url 'Class_Management:StudentInfo' request.session.classroom %}" method="POST">
           {% csrf_token %}
         <input id="submit_csv" type="submit" name="csv" value="Export" />
-          <input id="submit_moss" type="submit" name="moss" value="MOSS" />
           </form>
         {% endif %}
         <tr>

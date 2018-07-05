@@ -2,9 +2,11 @@ from django.contrib import admin
 #from django.contrib.auth.models import User
 from Class_Management.models import ClassRoom
 from .models import *
+from django.conf.urls import url
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.shortcuts import HttpResponseRedirect
 from .forms import UserAdminCreationForm, UserAdminChangeForm
 User = get_user_model()
 
@@ -26,6 +28,7 @@ class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
+    change_list_template = "./user_changelist.html"
     #inlines = (classNameInline,)
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
@@ -54,6 +57,65 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email','username')
     ordering = ('email',)
     #filter_horizontal = ()
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            url(r'^import_user/', self.import_user),
+        ]
+        return my_urls + urls
+
+    def import_user(self, request):
+        if request.method == 'POST' and request.user.is_admin:
+            try:
+                from django.contrib import messages
+                csv_file = request.FILES.get('upload_testcase', False)
+                if not csv_file.name.endswith('.csv'):
+                    self.message_user(request, "file must endswith '.csv'", level=messages.ERROR)
+                    return HttpResponseRedirect("../")
+                elif csv_file.multiple_chunks():
+                    self.message_user(request, "select a single file.", level=messages.ERROR)
+                    return HttpResponseRedirect("../")
+                csv_data = csv_file.read().decode("utf-8")
+                lines = csv_data.split("\n")
+                counter = 0
+                for line in lines:
+                    fields = line.replace(',', '\t').split('\t')
+                    # print(fields)
+                    try:
+                        if request.POST.get('text') == "import":
+                            u, created = User.objects.update_or_create(email=fields[0],
+                                                                       username=fields[1],
+                                                                       first_name=fields[2],
+                                                                       last_name=fields[3],
+                                                                       studentId=fields[4],
+                                                                       is_active=fields[5].capitalize(),
+                                                                       is_staff=fields[6].capitalize(),
+                                                                       is_admin=fields[7].capitalize().rstrip())
+                            if created:
+                                u.set_password("FIBO")
+                                counter += 1
+                            else:
+                                pass
+                            u.save()
+                        elif request.POST.get('text') == "delete":
+                            User.objects.get(email=fields[0],
+                                                 username=fields[1],
+                                                 first_name=fields[2],
+                                                 last_name=fields[3],
+                                                 studentId=fields[4].rstrip()).delete()
+                            counter += 1
+                    except Exception as e:
+                        # print(e)
+                        continue
+                if request.POST.get('text') == "import":
+                    status = " users were imported."
+                else:
+                    status = " users were deleted."
+                self.message_user(request, str(counter)+status)
+                return HttpResponseRedirect("../")
+            except Exception as e:
+                self.message_user(request, e, level=messages.ERROR)
+                return HttpResponseRedirect("../")
 
 '''class UserAdmin(admin.ModelAdmin):
     search_fields = ['email']

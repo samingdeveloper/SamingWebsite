@@ -1,0 +1,31 @@
+{% extends 'admin/change_list.html' %}
+
+{% block object-tools %}
+    <div>
+        <form action="import_user/" method="POST" id="form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="text" name="text" style="display:none" id="text"/>
+            <input type="file" name="upload_testcase"  id="csv_file" />
+            <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" style="display:none" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()"/>
+            <input type="button" name="uploadbutton" id="t3" value="Choose File" style="display:none" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value"/>
+        </form>
+        <button name="upload_submit" id="import" onclick="sub_func(true)">Import User</button>
+        <button name="upload_submit" id="delete" onclick="sub_func(false)">Delete User</button>
+    </div>
+    <br />
+    <script>
+        function sub_func(params){
+            var x;
+            if (params == true){ x = "import"; }
+            else if (params == false){ x = "delete"; }
+            document.getElementById("text").value = x
+            document.getElementById("form").submit();
+        }
+    </script>
+    <!--<script>
+        document.getElementById("file").onchange = function() {
+            document.getElementById("form").submit();
+    };
+    </script> -->
+    {{ block.super }}
+{% endblock %}

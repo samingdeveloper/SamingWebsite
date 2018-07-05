@@ -56,7 +56,7 @@ def Home(request,classroom):
                                                      classroom=ClassRoom.objects.get(className=classroom)),
                                                  })
         try:
-            if request.POST["country"] == "CSV" and request.user.is_admin:
+            if request.POST["country"] == "CSV":
                 add_status = 1
                 csv_file = request.FILES.get('upload_testcase', False)
                 if not csv_file.name.endswith('.csv'):
@@ -81,22 +81,10 @@ def Home(request,classroom):
                 #print(csv_data)
                 lines = csv_data.split("\n")
                 for line in lines:
-                    fields = line.replace(',','\t').split('\t')
+                    fields = line
                     #print(fields)
                     try:
-                        u,created = User.objects.update_or_create(email=fields[0],
-                                                   username=fields[1],
-                                                   first_name=fields[2],
-                                                   last_name=fields[3],
-                                                   studentId=fields[4],
-                                                   is_active=fields[5].capitalize(),
-                                                   is_staff=fields[6].capitalize(),
-                                                   is_admin=fields[7].capitalize().rstrip())
-                        if created:
-                            u.set_password("FIBO")
-                        else:
-                            pass
-                        u.save()
+                        ClassRoom.objects.get(className=classroom).user.add(User.objects.get(studentId=fields.rstrip()))
                     except Exception as e:
                         #print(e)
                         continue
@@ -178,17 +166,11 @@ def Home(request,classroom):
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
                 for line in lines:
-                    fields = line.replace(',', '\t').split('\t')
+                    fields = line
                     #print(fields)
                     try:
-                        User.objects.get(email=fields[0],
-                                                   username=fields[1],
-                                                   first_name=fields[2],
-                                                   last_name=fields[3],
-                                                   studentId=fields[4],
-                                                   is_active=fields[5].capitalize(),
-                                                   is_staff=fields[6].capitalize(),
-                                                   is_admin=fields[7].capitalize().rstrip()).delete()
+                        if '@' in fields: ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(email=fields.rstrip()))
+                        else: ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(studentId=fields.rstrip()))
                     except Exception as e:
                         #print(e)
                         continue

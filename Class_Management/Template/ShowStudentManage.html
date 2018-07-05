@@ -1,0 +1,84 @@
+<div class="form-row field-user">
+
+
+                <div>
+
+
+                        <label for="id_user">User:</label>
+
+                            <div class="related-widget-wrapper">
+
+
+        <a class="related-widget-wrapper-link add-related" id="add_id_user" href="/admin/LogIn_Management/user/add/?_to_field=username&amp;_popup=1" title="Add another user"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>
+
+<div class="selector">
+    <div class="selector-available">
+        <h2>Available user <span class="help help-tooltip help-icon" title="This is the list of available user. You may choose some by selecting them in the box below and then clicking the &quot;Choose&quot; arrow between the two boxes."></span></h2>
+        <p id="id_user_filter" class="selector-filter"><label for="id_user_input"><span class="help-tooltip search-label-icon" title="Type into this box to filter down the list of available user."></span></label>
+            <input type="text" placeholder="Filter" id="id_user_input"></p>
+            <select name="user_old" id="id_user_from" multiple="multiple" class="filtered" data-field-name="user" data-is-stacked="0">
+                <option value="9871" title="9871 : 9871">9871 : 9871</option><option value="pengza79" title="59340500018 : pengza79">59340500018 : pengza79</option><option value="45612" title="sdfsfxcv : 45612">sdfsfxcv : 45612</option><option value="4561sdfsdf2" title="cvxcvxc : 4561sdfsdf2">cvxcvxc : 4561sdfsdf2</option>
+            </select>
+        <a title="Click to choose all user at once." href="#" id="id_user_add_all_link" class="selector-chooseall active">Choose all</a>
+    </div><ul class="selector-chooser">
+    <li><a title="Choose" href="#" id="id_user_add_link" class="selector-add">Choose</a></li>
+    <li><a title="Remove" href="#" id="id_user_remove_link" class="selector-remove">Remove</a></li></ul>
+    <div class="selector-chosen"><h2>Chosen user <span class="help help-tooltip help-icon" title="This is the list of chosen user. You may remove some by selecting them in the box below and then clicking the &quot;Remove&quot; arrow between the two boxes."></span></h2>
+        <select id="id_user_to" multiple="multiple" size="0" name="user" class="filtered">
+            <option value="natworpong" title="59340500019 : natworpong">59340500019 : natworpong</option></select>
+        <a title="Click to remove all chosen user at once." href="#" id="id_user_remove_all_link" class="selector-clearall active">Remove all</a>
+    </div></div></div>
+
+
+
+                        <div class="help">Hold down "Control", or "Command" on a Mac, to select more than one.</div>
+
+                </div>
+
+        </div>
+
+<!--             if request.POST["country"] == "CSV" and request.user.is_admin:
+                add_status = 3
+                csv_file = request.FILES.get('upload_testcase', False)
+                if not csv_file.name.endswith('.csv'):
+                    add_status = 2
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
+                elif csv_file.multiple_chunks():
+                    add_status = 2
+                    return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             })
+                csv_data = csv_file.read().decode("utf-8")
+                lines = csv_data.split("\n")
+                for line in lines:
+                    fields = line.replace(',', '\t').split('\t')
+                    #print(fields)
+                    try:
+                        User.objects.get(email=fields[0],
+                                                   username=fields[1],
+                                                   first_name=fields[2],
+                                                   last_name=fields[3],
+                                                   studentId=fields[4],
+                                                   is_active=fields[5].capitalize(),
+                                                   is_staff=fields[6].capitalize(),
+                                                   is_admin=fields[7].capitalize().rstrip()).delete()
+                    except Exception as e:
+                        #print(e)
+                        continue
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                             'classname': classroom,
+                                             'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                             'user_obj': User.objects.all(),
+                                             'user_group': user_group,
+                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             }) -->

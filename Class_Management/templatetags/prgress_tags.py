@@ -8,7 +8,7 @@ def u_progress(studentId, classroom):
     try:
         tracker = QuizTracker.objects.get(studentId=studentId, classroom__className=classroom)
         return (tracker.quizDoneCount/Quiz.objects.filter(classroom__className=classroom).count())*100
-    except ObjectDoesNotExist:
+    except:
         return 0
 
 
