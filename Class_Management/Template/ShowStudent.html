@@ -5,7 +5,7 @@
 {% load prgress_tags %}
 
   <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
-
+  <link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">
   <!-- input assignment -->
   <div id="main">
     <div class="center">
@@ -35,9 +35,8 @@
             <td>{{ i.email }}</td>
           <td>
             <div class="container">
-                <div id={{ i.username }}progress>
-                    <div id={{ i.username }}percent><center>{% u_progress i request.session.classroom %}%</center></div>
-                </div>
+                  <div id={{ i.username }}progress>
+                  </div>
             </div>
           </td>
         </tr>
@@ -60,7 +59,7 @@
         };
         change_qp_classname();
         document.getElementById("{{ i.username }}progress").style.width = x.toFixed([0])+'%';
-        document.getElementById("{{ i.username }}percent").innerHTML = x.toFixed([0])+' %';
+        document.getElementById("{{ i.username }}progress").innerHTML = x.toFixed([0])+'%';
     </script>
           {% endfor %}
       </table>

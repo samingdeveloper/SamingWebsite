@@ -7,7 +7,7 @@ body {
     overflow-y: auto;
 }
 
-.navbar {
+.home_navbar {
     overflow: hidden;
     background-color: #4F4F4F;
     position: sticky;
@@ -15,7 +15,7 @@ body {
     width: 100%;
 }
 
-.navbar a {
+.home_navbar a {
     float: right;
     display: block;
     font-size: 16px;

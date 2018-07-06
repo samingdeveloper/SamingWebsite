@@ -15,3 +15,8 @@ def sda(n):
 #print(sda(5))
 #print(dsa(5))
 
+assert_equal(prob.dsa(2),8,5)
+
+
+CASE 1: PASS
+RESULT: PASS

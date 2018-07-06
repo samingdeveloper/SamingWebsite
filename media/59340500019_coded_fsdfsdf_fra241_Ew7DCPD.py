@@ -13,7 +13,9 @@ def sda(n):
 	c = n**4
 	return c
 #print(sda(5))
-#print(dsa(5))
+#print(dsa(5))
+
 
-CASE 2: 3.8
-CASE 3: 4.0
+
+CASE 1: PASS
+RESULT: PASS

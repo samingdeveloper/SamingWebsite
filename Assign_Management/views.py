@@ -449,8 +449,6 @@ def uploadgrading(request, classroom, quiz_id):
                     quizStatus.status = True
                     quizStatus.save()
                 # print(str(test_case_count) + ' ' + str(Out_count))
-                with open(in_sys_file_location + in_sys_file, 'w') as f:
-                    f.write(code_temp)
                 with open(in_sys_file_location + in_sys_file, 'a') as f:
                     f.write('\n\n')
                     for c, i in enumerate(result['case']):

@@ -6,11 +6,12 @@ def asd(n):
 	return a
 
 def dsa(n):
-	b = n**3
+	b = n**3sdfsdf
 	return b
 
 def sda(n):
 	c = n**4
 	return c
 #print(sda(5))
-#print(dsa(5))
+#print(dsa(5))
+

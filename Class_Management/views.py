@@ -296,7 +296,7 @@ def export_score_csv(classroom):
     name_quiz = ["StudentId","Classroom"]
     for i in obj_quiz:
         name_quiz.append(i.quizTitle)
-    name_quiz.append("MaxScore")
+    name_quiz.append("TotalScore")
     obj_all = []
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=Quiscore.csv'
@@ -354,7 +354,7 @@ def StudentInfo(request,classroom):
         context = {
             #'var':User.objects.get(username=var).studentYear,
             'classname':ClassRoom.objects.get(className=classroom),
-            'User_objects':ClassRoom.objects.get(className=classroom).user.all(),
+            'User_objects':ClassRoom.objects.get(className=classroom).user.all().order_by('studentId'),
             'quiz_count':quiz_count
         }
         return render(request,'ShowStudent.html',context)
