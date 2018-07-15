@@ -2,6 +2,7 @@
 <html lang="en">
 {% block content %}
 {%  load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/login.css' %}">
 <head>
 	<meta charset="utf-8"> <!--����ö�ʴ�������������-->
 	<!-- connect saming.png from floder fire -->
@@ -21,7 +22,7 @@
 <body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
 	<div class="container">
 	<!--��ǹ���-->
-    <div class="center">
+    <div class="center" align="center">
 		<img src="{% static "grading_code/images/saming_login.png"%}" style="width:80px;height:80px;"></br>
 		<br></br>
         <div class="h1">Sign in to SaminG</div>
@@ -56,15 +57,15 @@
 			<br/>
 			<input type="password" name="password" value="" id="password" placeholder="Your password..">
 			<br/>
-                <input type="submit" value="Sign in" >
+                <input type="submit" value="Sign In" >
 			<br/>
                 <div class="forgot">
 			<a href="{% url 'reset_password_reset1' %}"><p class="small">Forgot your password?</p></a>
         </div>
             </form>
         <div class="footer">
-            <p>Web Application </p>
-            <p>Grading platform for programming system</p>
+            <!-- <p>Web Application </p> -->
+            <p>Grading Platform for Programming Classrooms</p>
         </div>
         </div>
 		</div>
