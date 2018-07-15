@@ -1,7 +1,7 @@
 {% extends "NavBar.html" %}
 {% block content %}
 {% load static %}
-
+{% load group_tags %}
     <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
     <script src="{% static '/grading_code/js/popup.js' %}"></script>
 
@@ -28,7 +28,7 @@
         </script>
         {% elif add_status == 4 %}
         <script>
-            alert("User not in class.");
+            alert("User can't be found in class.");
         </script>
     {% endif %}
         <div class="row">
@@ -45,8 +45,8 @@
                         <p>{{ j.get_full_name }}</p>
                     {% endfor %}
                 </div>
-                {%  if request.user.is_admin %}
-                <button id="myBtn" class="boxadd">Add Admin</button>
+                {%  if request.user|can_manage:request.session.classroom %}
+                <button id="myBtn" class="boxadd">Manage</button>
                 {% endif %}
             </div>
 
@@ -88,48 +88,49 @@
             </div>
         </div>
     </div>
+    {%  if request.user|can_manage:request.session.classroom %}
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h4>Manage</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+                        <br>
+                        <label for="email" id="e_mail">Email:</label>
+                        <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
 
-    <div id="myModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h4>Add Admin</h4>
-            </div>
-            <div class="modal-body">
-                <form method="post" enctype="multipart/form-data"> {% csrf_token %}
-                    <br>
-                    <label for="email" id="e_mail">Email:</label>
-                    <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
+                        <label for="test_case" id="t1" style="display:none">CSV:</label>
+                        <input type="file" name="upload_testcase" style="display:none" id="csv_file" />
+                        <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" style="display:none" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
+                        <input type="button" name="uploadbutton" id="t3" value="Choose File" style="display:none" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value">
 
-                    <label for="test_case" id="t1" style="display:none">CSV:</label>
-                    <input type="file" name="upload_testcase" style="display:none" id="csv_file" />
-                    <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" style="display:none" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
-                    <input type="button" name="uploadbutton" id="t3" value="Choose File" style="display:none" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value">
+                        <label for="country" id="status">Status:</label>
+                        <select id="country" name="country" onchange="validate();">
+                            <option value="Teacher"> Teacher</option>
+                            <option value="TA"> TA</option>
+                            {% if request.user.is_admin %}
+                            <option value="Admin"> Admin</option>
+                            <option value="CSV"> CSV User </option>
+                            {% endif %}
+                        </select>
 
-                    <label for="country" id="status">Status:</label>
-                    <select id="country" name="country" onchange="validate();">
-                        <option value="Teacher"> Teacher</option>
-                        <option value="TA"> TA</option>
-                        {% if request.user.is_admin %}
-                        <option value="Admin"> Admin</option>
-                        <option value="CSV"> CSV User </option>
-                        {% endif %}
-                    </select>
+                        <label for="country">Action:</label>
+                        <select id="country" name="action">
+                            <option value="add"> Add</option>
+                            <option value="delete"> Delete</option>
+                        </select>
+                        <br></br>
+                        <input type="submit" name="add_status" value="PROCEED">
 
-                    <label for="country">Action:</label>
-                    <select id="country" name="action">
-                        <option value="add"> Add</option>
-                        <option value="delete"> Delete</option>
-                    </select>
-                    <br></br>
-                    <input type="submit" name="add_status" value="PROCEED">
-
-                    <br></br>
-                </form>
+                        <br></br>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 
     <script>
         // Get the modal

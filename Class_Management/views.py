@@ -35,8 +35,8 @@ def Home(request,classroom):
     var = request.user.username
     action = request.POST.get("action","")
     request.session["classroom"] = classroom
-    user_group = {"teacher":User.objects.filter(groups__name=classroom + '_' + "Teacher"),
-                     "ta":User.objects.filter(groups__name=classroom + '_' + "TA"),
+    user_group = {"teacher":User.objects.filter(groups__name=classroom + "_Teacher"),
+                     "ta":User.objects.filter(groups__name=classroom + "_TA"),
                      }
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
