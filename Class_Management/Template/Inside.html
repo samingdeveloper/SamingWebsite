@@ -41,7 +41,7 @@
             {% endif %}
     {% endfor %}
 </ul>
-
+{% if request.user.is_admin %}
  <div class="tooltip">
                     <button1>
                         <span class="tooltiptext">Classroom</span>
@@ -50,6 +50,6 @@
                         </a>
                     </button1>
                 </div>
-
+{% endif %}
 </body>
 {% endblock %}
