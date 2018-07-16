@@ -39,7 +39,7 @@
                 <div class="row">
                     <div class='col-sm-6 col-sm-offset-3'>
                 {% for message in messages %}
-                <p {% if message.tags == error %} class="alert alert-danger" color="red" {% endif %}>
+                <p {% if message.tags == error %} style="color:red" {% endif %}>
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
                     {{ message }}
                     {% endif %}
