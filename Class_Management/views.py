@@ -270,14 +270,22 @@ def EditClassroom(request,classroom):
                       }
         classname = request.POST["classname"]
         creator = request.POST["creator"]
-        group = Group.objects.get(name=classroom + "_Teacher")
-        Group.objects.filter(name=group.name).update(name=classname + "_Teacher")
-        group = Group.objects.get(name=classroom + "_TA")
-        Group.objects.filter(name=group.name).update(name=classname + "_TA")
-        classroom_instance.className = classname
-        classroom_instance.creator = User.objects.get(pk=creator)
-        classroom_instance.save()
-        return HttpResponseRedirect('/ClassRoom')
+        if classname is not '':
+            group = Group.objects.get(name=classroom + "_Teacher")
+            Group.objects.filter(name=group.name).update(name=classname + "_Teacher")
+            group = Group.objects.get(name=classroom + "_TA")
+            Group.objects.filter(name=group.name).update(name=classname + "_TA")
+            classroom_instance.className = classname
+            classroom_instance.creator = User.objects.get(pk=creator)
+            classroom_instance.save()
+            return HttpResponseRedirect('/ClassRoom')
+        else:
+            context={
+                "classname":classroom,
+                "creator":User.objects.filter(is_admin=True)
+            }
+            messages.error(request, 'Classes must have a name!')
+            return render(request, 'EditClassroom.html', context)
     else:
         context={
             "classname":classroom,

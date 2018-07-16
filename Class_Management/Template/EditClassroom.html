@@ -30,6 +30,19 @@
         <div class="div">
             <form action="{% url 'Class_Management:EditClassroom' classname %}" method="post" enctype="multipart/form-data"
               > {% csrf_token %}
+              {% if messages %}
+  <div class="row">
+      <div class='col-sm-6 col-sm-offset-3'>
+  {% for message in messages %}
+  <p {% if message.tags == error %} style="color:red" {% endif %}>
+      {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+      {{ message }}
+      {% endif %}
+  </p>
+  {% endfor %}
+      </div>
+  </div>
+{% endif %}
                 <label for="classname">Classname:</label>
                 <input type="text" id="classname" name="classname" placeholder="{{ classname }}">
                 <label for="creator">creator:</label>
@@ -38,7 +51,7 @@
                         <option value='{{ i.pk }}'> {{ i.get_full_name }}</option>
                         {% endfor %}
                     </select>
-                <input type="submit" value="Create">
+                <input type="submit" value="Save">
             </form>
         </div>
     </div>
