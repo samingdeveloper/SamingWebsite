@@ -39,7 +39,7 @@ def LogIn_Page(request):
             return HttpResponseRedirect("/ClassRoom/")
 
         else:
-            messages.error(request, 'Sorry, userId or password is not valid.')
+            messages.error(request, 'Invalid user ID or password.')
             return HttpResponse(template.render(context, request))
     else:
         return render(request, 'LogIn_Page.html')

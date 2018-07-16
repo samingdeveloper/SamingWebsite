@@ -10,7 +10,7 @@ input[type=text], select {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    
+
 }
 
 input[type=submit] {
@@ -52,7 +52,7 @@ input[type=button]:hover {
     border-style: solid;
     box-shadow: 0 5px 50px rgba(0,0,0,0.1);
 	border: 1px solid #ccc;
-    
+
 }
 
 textarea {

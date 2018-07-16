@@ -4,6 +4,7 @@ from Assign_Management.models import Upload
 from django.core import serializers
 from django.http import Http404
 from django.contrib.auth.models import Group
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 #from LogIn_Management.models import extraauth,Tracker
 from Assign_Management import views
@@ -248,10 +249,14 @@ def GenerateClassroom(request):
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST" and request.user.is_admin:
         classname = request.POST["classname"]
-        classroom_instance = ClassRoom.objects.create(className=classname,creator=request.user)
-        classroom_instance.user.add(request.user)
-        classroom_instance.save()
-        return HttpResponseRedirect('/ClassRoom')
+        if classname is not '':
+            classroom_instance = ClassRoom.objects.create(className=classname,creator=request.user)
+            classroom_instance.user.add(request.user)
+            classroom_instance.save()
+            return HttpResponseRedirect('/ClassRoom')
+        else:
+            messages.error(request, 'Classes must have a name!')
+            return render(request, 'CreateClassroom.html')
     else:
         return render(request, 'CreateClassroom.html')
 
