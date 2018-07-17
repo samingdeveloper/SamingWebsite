@@ -10,9 +10,9 @@ body {
 	background: #F8F8FF;
 } 
 
-/* Typography คือ ส่วนแสดงผลของ Saming Programming*/
+/* Typography ๏ฟฝ๏ฟฝ๏ฟฝ ๏ฟฝ๏ฟฝวน๏ฟฝสด๏ฟฝ๏ฟฝลของ Saming Programming*/
 h1#title {
-	/*font-family: 'Roboto Slab', serif;*/ /*กำหนด front ตรง saming programming เองได้*/ 
+	/*font-family: 'Roboto Slab', serif;*/ /*๏ฟฝ๏ฟฝหน๏ฟฝ front ๏ฟฝรง saming programming ๏ฟฝอง๏ฟฝ๏ฟฝ*/ 
 	/*font-weight: 300;*/
 	font-family: 'Roboto Slab';
 	/*text-transform: uppercase;*/
@@ -42,7 +42,7 @@ h2 {
 	line-height: 2.8em;
 }
 
-/* ขีดเสันใต้*/
+/* ๏ฟฝีด๏ฟฝ๏ฟฝัน๏ฟฝ๏ฟฝ*/
 a {
 	text-decoration: none;
 	/*color: #666;*/
@@ -63,7 +63,7 @@ p.small {
 	margin: 0;
 }
 
-/*สีดำ ด้านบน*/
+/*๏ฟฝีด๏ฟฝ ๏ฟฝ๏ฟฝาน๏ฟฝ๏ฟฝ*/
 /*.top {
 	margin: 0;
 	padding: 0;
@@ -75,7 +75,7 @@ p.small {
 /*}*/
 
 
-/*ส่วนพื้นหลังสีขาว*/
+/*๏ฟฝ๏ฟฝวน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝัง๏ฟฝีข๏ฟฝ๏ฟฝ*/
 .login-box {
 	background-color: white;
 	max-width: 300px;
@@ -86,17 +86,17 @@ p.small {
 	border-radius: 5px;
 	/*box-shadow: 0 5px 50px rgba(0,0,0,0.1);*/
 	text-align: center;
-	border: 1px solid #ccc;/*กรอบ*/
+	border: 1px solid #ccc;/*๏ฟฝ๏ฟฝอบ*/
 }
 
-/*ส่วนหัวสีส้ม*/ /* ตรงนี้อาจจะไม่ต้องมี*/
+/*๏ฟฝ๏ฟฝวน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ*/ /* ๏ฟฝรง๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝาจ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝอง๏ฟฝ๏ฟฝ*/
 .login-box .box-header {
 	background-color:  white;
 	margin-top: 0;
 	border-radius: 5px 5px 0 0;
 }
 
-/*กำหนดสีและขนาดตัวอักษร username และ password*/
+/*๏ฟฝ๏ฟฝหน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝะข๏ฟฝาด๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝัก๏ฟฝ๏ฟฝ userId ๏ฟฝ๏ฟฝ๏ฟฝ password*/
 .login-box label {
 	font-family: 'Lato', serif;
 	font-weight: 700;
@@ -109,13 +109,13 @@ p.small {
 	
 }
 
-/*กำหนดขนาด text รับข้อมูลและ front ที่ป้อนลงไป */
+/*๏ฟฝ๏ฟฝหน๏ฟฝ๏ฟฝ๏ฟฝาด text ๏ฟฝับ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ front ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝอนลง๏ฟฝ */
 .login-box input {
 	margin-bottom: 20px;
 	padding: 3px;
 	border: 1px solid #ccc;
 	border-radius: 2px;
-	font-size: 1.3em;/*ขนาด text รับข้อความ*/
+	font-size: 1.3em;/*๏ฟฝ๏ฟฝาด text ๏ฟฝับ๏ฟฝ๏ฟฝอค๏ฟฝ๏ฟฝ๏ฟฝ*/
 	color: #888;
 }
 
@@ -127,7 +127,7 @@ p.small {
 	color: #665851;
 }*/
 
-/*กำหนด สีและขนาด ปุ่ม button*/
+/*๏ฟฝ๏ฟฝหน๏ฟฝ ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝะข๏ฟฝาด ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ button*/
 .login-box button {
 	margin-top: 0px;
 	border: 0;
@@ -138,7 +138,7 @@ p.small {
 	font-weight: 400;
 	font-size: 0.7em;
 	letter-spacing: 1px;
-	background-color: #FF6600;/*สีฟ้า*/
+	background-color: #FF6600;/*๏ฟฝีฟ๏ฟฝ๏ฟฝ*/
 	/*cursor:pointer;*/
 	outline: none;
 }

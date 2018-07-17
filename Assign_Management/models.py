@@ -41,7 +41,7 @@ def submission_delete(sender, instance, **kwargs):
                                                     Max("score"))["score__max"])
         print("try success")
         print(list_upload_obj[0])
-        x = QuizScore.objects.get(classroom=instance_var["classroom"],studentId=instance_var["user"],quizId=instance_var["quiz"])
+        x = QuizScore.objects.get(classroom=instance_var["classroom"],userId=instance_var["user"],quizId=instance_var["quiz"])
         print(x)
         if x.code == None:
             if instance_var["quiz"].mode is "Scoring":
@@ -58,7 +58,7 @@ def submission_delete(sender, instance, **kwargs):
         print("5555")
         print(e)
         try:
-            x = QuizScore.objects.get(classroom=instance_var["classroom"],studentId=instance_var["user"],quizId=instance_var["quiz"])
+            x = QuizScore.objects.get(classroom=instance_var["classroom"],userId=instance_var["user"],quizId=instance_var["quiz"])
             x.passOrFail = 0
             x.total_score = 0
             x.code = None

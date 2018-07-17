@@ -4,9 +4,9 @@ from django.core.exceptions import ObjectDoesNotExist
 register = template.Library()
 
 @register.simple_tag
-def u_progress(studentId, classroom):
+def u_progress(userId, classroom):
     try:
-        tracker = QuizTracker.objects.get(studentId=studentId, classroom__className=classroom)
+        tracker = QuizTracker.objects.get(userId=userId, classroom__className=classroom)
         return (tracker.quizDoneCount/Quiz.objects.filter(classroom__className=classroom).count())*100
     except:
         return 0

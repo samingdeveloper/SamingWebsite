@@ -46,8 +46,10 @@ def GenerateAssign(request,classroom):
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST": #and request.FILES['upload_testcase']:
         try:
+            if request.POST['asname'] == '':
+                raise ValueError("Assignment must have a name!")
             OSS = OverwriteStorage()
-            var = request.user.username
+            var = request.user.userId
             Assignment = request.POST.get('asname', '')
             Assignment_Detail = request.POST.get('asdetail', '')
             Deadline = request.POST.get('dateInput','')
@@ -62,7 +64,7 @@ def GenerateAssign(request,classroom):
             get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
             for k in get_tracker:
                 QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                                    studentId=k.studentId,
+                                                    userId=k.userId,
                                                     classroom=GenerateAssign_instance_temp.classroom,
                                                     status=False,
                                                     )
@@ -79,7 +81,7 @@ def GenerateAssign(request,classroom):
                 x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
                 for j in get_tracker:
                     QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                             studentId=j.studentId,
+                                             userId=j.userId,
                                              classroom=GenerateAssign_instance_temp.classroom,
                                              timer=x,
                                              )
@@ -101,7 +103,7 @@ def DeleteAssign(request, classroom, quiz_id):
     for j in quizStatus:
         if j.status:
             quizDoneCount = QuizTracker.objects.get(
-                            studentId=j.studentId,
+                            userId=j.userId,
                             classroom=quiz.classroom, )
             #print(quizDoneCount)
             if quizDoneCount.quizDoneCount != 0:
@@ -131,14 +133,14 @@ def regen(require_regen):
         classroom=GenerateAssign_instance_temp.classroom)  # reference at QuizTracker
     for k in get_tracker:
         QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                            studentId=k.studentId,
+                                            userId=k.userId,
                                             classroom=GenerateAssign_instance_temp.classroom,
                                             status=False,
                                             )
     #print("k1 has passed")
     try:
         for k in get_tracker:
-            tracker = QuizTracker.objects.get(studentId=k.studentId,
+            tracker = QuizTracker.objects.get(userId=k.userId,
                                               classroom=GenerateAssign_instance_temp.classroom,
                                               )
             if tracker.quizDoneCount > 0:
@@ -158,7 +160,7 @@ def regen(require_regen):
             x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
             for j in get_tracker:
                 QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                                   studentId=j.studentId,
+                                                   userId=j.userId,
                                                    classroom=GenerateAssign_instance_temp.classroom,
                                                    timer=x,
                                                    )
@@ -174,9 +176,11 @@ def EditAssign(request, classroom, quiz_id):
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST":
         try:
+            if request.POST['asname'] == '':
+                raise ValueError("Assignment must have a name!")
             quiz = Quiz.objects.get(pk=quiz_id)
             OSS = OverwriteStorage()
-            var = request.user.username
+            var = request.user.userId
             Assignment = request.POST.get('asname', '')
             Assignment_Detail = request.POST.get('asdetail', '')
             Deadline = request.POST.get('dateInput', '')
@@ -232,7 +236,7 @@ def EditAssign(request, classroom, quiz_id):
                     x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
                     for j in get_tracker:
                         timer = QuizTimer.objects.get(quizId=quiz_id,
-                                                      studentId=j.studentId,
+                                                      userId=j.userId,
                                                       classroom=quiz.classroom,
                                                       )
                         if timer.start:
@@ -261,12 +265,12 @@ def EditAssign(request, classroom, quiz_id):
                   }
         return render(request, 'EditAssignment.html', context)
 
-@timeout_decorator.timeout(10, use_signals=False)
+#@timeout_decorator.timeout(10, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif ClassRoom.objects.get(className=classroom).user.filter(username=request.user.username).exists() != True:
+    elif ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True and not request.user.is_admin:
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline, timer_stop, name
@@ -276,7 +280,7 @@ def uploadgrading(request, classroom, quiz_id):
     quiz = Quiz.objects.get(pk=quiz_id)
     try:
         Timer = QuizTimer.objects.get(quizId=quiz,
-                                        studentId=User.objects.get(studentId=request.user.studentId),
+                                        userId=User.objects.get(userId=request.user.userId),
                                         classroom=quiz.classroom,
                                         ).timer_stop
     except ObjectDoesNotExist:
@@ -307,7 +311,7 @@ def uploadgrading(request, classroom, quiz_id):
             try:
                 timer = QuizTimer.objects.get(
                     quizId=quiz,
-                    studentId=User.objects.get(studentId=request.user.studentId),
+                    userId=User.objects.get(userId=request.user.userId),
                     classroom=quiz.classroom, )
                 timer.timer = time_left
                 timer.save(update_fields=["timer"])
@@ -329,12 +333,12 @@ def uploadgrading(request, classroom, quiz_id):
                                                            'code': code_temp,
                                                            'Deadtimestamp': deadline.timestamp() * 1000,
                                                            })
-                fileName = str(request.user.studentId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
+                fileName = str(request.user.userId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
                 #OSS = OverwriteStorage()
                 #in_sys_file = OSS.save(fileName, uploaded_to_file)
                 fuck_sake = Quiz.objects.get(id=quiz_id)
-                in_sys_file_location = os.getcwd()+"/media/"#+fuck_sake.classroom.className+'/'+request.user.studentId+'/'+fuck_sake.quizTitle+'/'
-                temp_test = fuck_sake.classroom.className+'/'+request.user.studentId+'/'+fuck_sake.quizTitle+'/'
+                in_sys_file_location = os.getcwd()+"/media/"#+fuck_sake.classroom.className+'/'+request.user.userId+'/'+fuck_sake.quizTitle+'/'
+                temp_test = fuck_sake.classroom.className+'/'+request.user.userId+'/'+fuck_sake.quizTitle+'/'
                 sys.path.append(in_sys_file_location)
                 FSS = FileSystemStorage()#(location=in_sys_file_location,
                                         #base_url=os.path.join(temp_test))
@@ -343,7 +347,7 @@ def uploadgrading(request, classroom, quiz_id):
                 #print(FSS.path(in_sys_file))
                 Upload.objects.get_or_create(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 # global dict variable for each user
-                name = request.user.username
+                name = request.user.userId
                 result = {
                     'max_score': 0,
                     'score': 0,
@@ -353,7 +357,7 @@ def uploadgrading(request, classroom, quiz_id):
                 ####################################
                 # open file .txt. Address  file ???????? Now! change follow your PC
                 with open(in_sys_file_location + in_sys_file, 'r+') as f:
-                    code = f.read()
+                    code = code_origin = f.read()
                     restricted_globals = dict(__builtins__=safe_builtins)
                     eval(compile_restricted(code, filename=in_sys_file_location + in_sys_file, mode='exec'), restricted_globals, {})
                     f.seek(0, 0)
@@ -430,25 +434,25 @@ def uploadgrading(request, classroom, quiz_id):
                 else:
                     result['status'] = "FAIL"
                 # print(case)
-                if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
-                                          classroom=quiz.classroom).status == False:
-                    QuizTracker.objects.update_or_create(
-                        studentId=User.objects.get(studentId=request.user.studentId),
-                        classroom=quiz.classroom,
-                    )
-                    quizDoneCount = QuizTracker.objects.get(
-                        studentId=User.objects.get(studentId=request.user.studentId),
-                        classroom=quiz.classroom, )
+                try:
+                    if QuizStatus.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom).status == False:
+                        QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,
+                        )
+                        quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
+                        quizDoneCount.quizDoneCount += 1
+                        quizDoneCount.save()
+                        quizStatus = QuizStatus.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
+                        quizStatus.status = True
+                        quizStatus.save()
+                except:
+                    QuizStatus.objects.create(quizId=quiz, userId=User.objects.get(userId=request.user.userId), classroom=quiz.classroom, status=True)
+                    QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
+                    quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
                     quizDoneCount.quizDoneCount += 1
                     quizDoneCount.save()
-                    quizStatus = QuizStatus.objects.get(quizId=quiz,
-                                                        studentId=User.objects.get(
-                                                            studentId=request.user.studentId),
-                                                        classroom=quiz.classroom,
-                                                        )
-                    quizStatus.status = True
-                    quizStatus.save()
                 # print(str(test_case_count) + ' ' + str(Out_count))
+                with open(in_sys_file_location + in_sys_file, 'w') as f:
+                    f.write(code_origin)
                 with open(in_sys_file_location + in_sys_file, 'a') as f:
                     f.write('\n\n')
                     for c, i in enumerate(result['case']):
@@ -457,7 +461,7 @@ def uploadgrading(request, classroom, quiz_id):
                 f = open(in_sys_file_location + in_sys_file, 'r')
                 try:
                     quiz_score = QuizScore.objects.get(quizId=quiz,
-                                                       studentId=User.objects.get(studentId=request.user.studentId),
+                                                       userId=User.objects.get(userId=request.user.userId),
                                                        classroom=quiz.classroom)
                     if quiz.mode == "Scoring":
                         if result['score'] >= quiz_score.total_score:
@@ -483,8 +487,8 @@ def uploadgrading(request, classroom, quiz_id):
                     else:
                         x = (0,1)
                     quiz_score = QuizScore.objects.create(quizId=quiz,
-                                                          studentId=User.objects.get(
-                                                              studentId=request.user.studentId),
+                                                          userId=User.objects.get(
+                                                          userId=request.user.userId),
                                                           classroom=quiz.classroom,
                                                           total_score=result['score']*x[0],
                                                           passOrFail=result['score']*x[1],
@@ -543,14 +547,14 @@ def uploadgrading(request, classroom, quiz_id):
                                                        })
             else:
                 rs = get_random_string(length=7)
-                fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className) + '_' + rs +'.py'
+                fileName = str(request.user.userId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className) + '_' + rs +'.py'
                 with open('./media/' + fileName, 'w') as f:
                     for debug_line in code:
                         #print(debug_line)
                         f.write(debug_line)
                 Upload.objects.get_or_create(title=fileName, Uploadfile=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
                 # global dict variable for each user
-                name = request.user.username
+                name = request.user.userId
                 result = {
                             'max_score':0,
                             'score':0,
@@ -635,22 +639,21 @@ def uploadgrading(request, classroom, quiz_id):
                 else:
                     result['status'] = "FAIL"
                 #print(case)
-                if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
-                                          classroom=quiz.classroom).status == False:
-                    QuizTracker.objects.update_or_create(
-                        studentId=User.objects.get(studentId=request.user.studentId),
-                        classroom=quiz.classroom,
-                    )
-                    quizDoneCount = QuizTracker.objects.get(studentId=User.objects.get(studentId=request.user.studentId),
-                                                            classroom=quiz.classroom, )
+                try:
+                    if QuizStatus.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom).status == False:
+                        QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
+                        quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
+                        quizDoneCount.quizDoneCount += 1
+                        quizDoneCount.save()
+                        quizStatus = QuizStatus.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
+                        quizStatus.status = True
+                        quizStatus.save()
+                except:
+                    QuizStatus.objects.create(quizId=quiz, userId=User.objects.get(userId=request.user.userId), classroom=quiz.classroom, status=True)
+                    QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
+                    quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
                     quizDoneCount.quizDoneCount += 1
                     quizDoneCount.save()
-                    quizStatus = QuizStatus.objects.get(quizId=quiz,
-                                                        studentId=User.objects.get(studentId=request.user.studentId),
-                                                        classroom=quiz.classroom,
-                                                        )
-                    quizStatus.status = True
-                    quizStatus.save()
                 #print(str(test_case_count) + ' ' + str(Out_count))
                 with open('./media/' + fileName, 'w') as f:
                     f.write(code_temp)
@@ -661,9 +664,7 @@ def uploadgrading(request, classroom, quiz_id):
                     f.write("RESULT: %s" % result['status'])
                 f = open('./media/' + fileName, 'r')
                 try:
-                    quiz_score = QuizScore.objects.get(quizId=quiz,
-                                                       studentId=User.objects.get(studentId=request.user.studentId),
-                                                       classroom=quiz.classroom)
+                    quiz_score = QuizScore.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom)
                     if quiz.mode == "Scoring":
                         if result['score'] >= quiz_score.total_score:
                             #print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
@@ -688,8 +689,8 @@ def uploadgrading(request, classroom, quiz_id):
                     else:
                         x = (0,1)
                     quiz_score = QuizScore.objects.create(quizId=quiz,
-                                                          studentId=User.objects.get(
-                                                              studentId=request.user.studentId),
+                                                          userId=User.objects.get(
+                                                              userId=request.user.userId),
                                                           classroom=quiz.classroom,
                                                           total_score=result['score']*x[0],
                                                           passOrFail=result['score']*x[1],
@@ -734,7 +735,7 @@ def uploadgrading(request, classroom, quiz_id):
         else:
             #print("not-in-code-form")
             try:
-                Timer = QuizTimer.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
+                Timer = QuizTimer.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),
                                               classroom=quiz.classroom, )
                 if Timer.timer:
                     if not Timer.start:

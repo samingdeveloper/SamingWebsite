@@ -16,12 +16,12 @@ def LogIn_Page(request):
         return HttpResponseRedirect('/LogOut')
 
     elif request.method=="POST":
-        username = request.POST.get('username','')
+        userId = request.POST.get('userId','')
         password = request.POST.get('password','')
         template = loader.get_template('LogIn_Page.html')
-        user_a = authenticate(request, username=username, password=password)
+        user_a = authenticate(request, username=userId, password=password)
         context = {
-            'var1':username,
+            'var1':userId,
         }
         #if user is not None:
             #login(request, user)
@@ -30,7 +30,7 @@ def LogIn_Page(request):
         #else:
             # Return an 'invalid login' error message.
             #return HttpResponse(template.render(context,request))
-        #if user.objects.filter(userId=username) or user.objects.filter(studentId=username) and user.objects.filter(userPassWord=password):
+        #if user.objects.filter(userId=userId) or user.objects.filter(userId=userId) and user.objects.filter(userPassWord=password):
         if user_a is not None:
             login(request, user_a)
             #if request.user_a.is_admin:
@@ -52,7 +52,7 @@ def Change_Password(request):
         new_pass = request.POST.get("newpassword")
         con_pass = request.POST.get("confirmpassword")
         if new_pass == con_pass:
-            u = User.objects.get(username__exact=request.user.username)
+            u = User.objects.get(userId__exact=request.user.userId)
             u.set_password(new_pass)
             u.save()
             return render(request, 'Change_Password.html', {'change_pass_status':"You've successfully change your password."})
@@ -67,7 +67,7 @@ def Forgot_Password(request):
     if request.method == "POST":
         Email = request.POST.get("Email")
         if new_pass == con_pass:
-            u = User.objects.get(username__exact=request.user.username)
+            u = User.objects.get(userId__exact=request.user.userId)
             u.set_password(new_pass)
             u.save()
             return render(request, 'Forgot_Password.html', {'change_pass_status':"You've successfully change your password."})

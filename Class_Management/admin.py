@@ -12,7 +12,7 @@ def export_csv(modeladmin, request, queryset):
     response.write(u'\ufeff'.encode('utf8')) # BOM (optional...Excel needs it to open UTF-8 file properly)
     writer.writerow([
         smart_str(u"Title"),
-        smart_str(u"StudentId"),
+        smart_str(u"userId"),
         smart_str(u"Classroom"),
         smart_str(u"PassOrFail"),
         smart_str(u"TotalScore"),
@@ -22,7 +22,7 @@ def export_csv(modeladmin, request, queryset):
     for obj in queryset:
         writer.writerow([
             smart_str(obj.quizId.quizTitle),
-            smart_str(obj.studentId.studentId),
+            smart_str(obj.userId.userId),
             smart_str(obj.classroom),
             smart_str(obj.passOrFail),
             smart_str(obj.total_score),

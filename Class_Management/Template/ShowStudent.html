@@ -4,7 +4,8 @@
 {% load mathfilters %}
 {% load prgress_tags %}
 
-  <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}"
+      xmlns:Class_Management="http://www.w3.org/1999/xhtml">
   <link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">
   <!-- input assignment -->
   <div id="main">
@@ -27,15 +28,16 @@
           <th>Progress</th>
         </tr>
         {% for i in User_objects %}
+        {% if not i.is_admin or request.user.is_admin %}
         <tr>
           <td>
-            <a href='{% url 'Class_Management:StudentScoreInfo' request.session.classroom i.username %}'>{{ i.studentId }}</a>
+            <a href='{% url 'Class_Management:StudentScoreInfo' request.session.classroom i.userId %}'>{{ i.userId }}</a>
           </td>
           <td>{{ i.first_name }} {{ i.last_name }}</td>
             <td>{{ i.email }}</td>
           <td>
             <div class="container">
-                  <div id={{ i.username }}progress>
+                  <div id={{ i.userId }}progress>
                   </div>
             </div>
           </td>
@@ -45,22 +47,23 @@
                       var x = {% u_progress i request.session.classroom %}
         function change_qp_classname() {
             if (x >= 80 && x <= 100){
-                document.getElementById("{{ i.username }}progress").className = "skills html";
+                document.getElementById("{{ i.userId }}progress").className = "skills html";
             }
             else if (x >= 50 && x < 80){
-                document.getElementById("{{ i.username }}progress").className = "skills css";
+                document.getElementById("{{ i.userId }}progress").className = "skills css";
             }
             else if (x >= 10 && x < 50){
-                document.getElementById("{{ i.username }}progress").className = "skills js";
+                document.getElementById("{{ i.userId }}progress").className = "skills js";
             }
             else if (x >= 0 && x < 10){
-                document.getElementById("{{ i.username }}progress").className = "skills php";
+                document.getElementById("{{ i.userId }}progress").className = "skills php";
             }
         };
         change_qp_classname();
-        document.getElementById("{{ i.username }}progress").style.width = x.toFixed([0])+'%';
-        document.getElementById("{{ i.username }}progress").innerHTML = x.toFixed([0])+'%';
+        document.getElementById("{{ i.userId }}progress").style.width = x.toFixed([0])+'%';
+        document.getElementById("{{ i.userId }}progress").innerHTML = x.toFixed([0])+'%';
     </script>
+        {% endif %}
           {% endfor %}
       </table>
     </div>

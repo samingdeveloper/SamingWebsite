@@ -33,7 +33,7 @@ def ClassSelect(request):
 
 def Home(request,classroom):
     add_status = 0
-    var = request.user.username
+    var = request.user.userId
     action = request.POST.get("action","")
     request.session["classroom"] = classroom
     user_group = {"teacher":User.objects.filter(groups__name=classroom + "_Teacher"),
@@ -85,7 +85,11 @@ def Home(request,classroom):
                     fields = line
                     #print(fields)
                     try:
-                        ClassRoom.objects.get(className=classroom).user.add(User.objects.get(studentId=fields.rstrip()))
+                        try:
+                            validate_email(fields)
+                            ClassRoom.objects.get(className=classroom).user.add(User.objects.get(email=fields.rstrip()))
+                        except:
+                            ClassRoom.objects.get(className=classroom).user.add(User.objects.get(userId=fields.rstrip()))
                     except Exception as e:
                         #print(e)
                         continue
@@ -166,12 +170,16 @@ def Home(request,classroom):
                                              })
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
+                from django.core.validators import validate_email
                 for line in lines:
                     fields = line
                     #print(fields)
                     try:
-                        if '@' in fields: ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(email=fields.rstrip()))
-                        else: ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(studentId=fields.rstrip()))
+                        try:
+                            validate_email(fields)
+                            ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(email=fields.rstrip()))
+                        except:
+                            ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(userId=fields.rstrip()))
                     except Exception as e:
                         #print(e)
                         continue
@@ -229,7 +237,7 @@ def Home(request,classroom):
         data = serializers.serialize('json',x)
         request.session["quiz"]=json.loads(data)
         context = {
-            #'var':User.objects.get(username=var).studentYear,
+            #'var':User.objects.get(userId=var).studentYear,
             'classname':classroom,
             'classroom_creator':ClassRoom.objects.get(className=classroom).creator.get_full_name,
             'user_obj':User.objects.all(),
@@ -298,7 +306,7 @@ def export_score_csv(classroom):
     from django.utils.encoding import smart_str
     from django.http import HttpResponse
     obj_quiz = Quiz.objects.filter(classroom__className=classroom).order_by("quizTitle")
-    name_quiz = ["StudentId","Classroom"]
+    name_quiz = ["userId","Classroom"]
     for i in obj_quiz:
         name_quiz.append(i.quizTitle)
     name_quiz.append("TotalScore")
@@ -310,11 +318,11 @@ def export_score_csv(classroom):
     writer.writerow(
         name_quiz
     )
-    QuizScore_list = list(QuizScore.objects.filter(classroom__className=classroom).order_by("quizId__quizTitle", "studentId__studentId"))
+    QuizScore_list = list(QuizScore.objects.filter(classroom__className=classroom).exclude(userId__is_admin=True).order_by("quizId__quizTitle", "userId__userId"))
 
     for index, obj in enumerate(QuizScore_list):
         try:
-            if QuizScore_list[index+1].studentId == QuizScore_list[index].studentId:
+            if QuizScore_list[index+1].userId == QuizScore_list[index].userId:
                 obj_all.append(obj.passOrFail+obj.total_score)
                 #print(obj_all)
                 continue
@@ -326,7 +334,7 @@ def export_score_csv(classroom):
                         obj_all.append(0)
                 obj_all.append(sum(obj_all))
                 obj_all.insert(0, obj.classroom.className)
-                obj_all.insert(0, obj.studentId.studentId)
+                obj_all.insert(0, obj.userId.userId)
                 writer.writerow(smart_str(obj_all))
                 obj_all = []
                 continue
@@ -338,14 +346,14 @@ def export_score_csv(classroom):
                     obj_all.append(0)
             obj_all.append(sum(obj_all))
             obj_all.insert(0, obj.classroom.className)
-            obj_all.insert(0, obj.studentId.studentId)
+            obj_all.insert(0, obj.userId.userId)
             writer.writerow(obj_all)
             obj_all = []
             continue
     return response
 
 def StudentInfo(request,classroom):
-    #var = request.user.username
+    #var = request.user.userId
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
@@ -357,25 +365,25 @@ def StudentInfo(request,classroom):
         if quiz_count == 0:
             quiz_count = 1
         context = {
-            #'var':User.objects.get(username=var).studentYear,
+            #'var':User.objects.get(userId=var).studentYear,
             'classname':ClassRoom.objects.get(className=classroom),
-            'User_objects':ClassRoom.objects.get(className=classroom).user.all().order_by('studentId'),
+            'User_objects':ClassRoom.objects.get(className=classroom).user.all().order_by('userId'),
             'quiz_count':quiz_count
         }
         return render(request,'ShowStudent.html',context)
 
 
-def StudentScoreInfo(request,classroom,username):
+def StudentScoreInfo(request,classroom,userId):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
-        request.session['u_id'] = [username]
+        request.session['u_id'] = [userId]
         u_id = request.session['u_id']
-        #var = request.user.username
+        #var = request.user.userId
         #print(u_id[0])
         try:
             #print("try")
-            score = QuizScore.objects.filter(studentId=User.objects.get(username=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
+            score = QuizScore.objects.filter(userId=User.objects.get(userId=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
             quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom))
             x = 0
             y = 0
@@ -385,7 +393,7 @@ def StudentScoreInfo(request,classroom,username):
                 x += i.total_score + i.passOrFail
                 y += i.max_score
             context = {
-                'var': User.objects.get(username=username),
+                'var': User.objects.get(userId=userId),
                 'classname': classroom,
                 'User_objects': User.objects.all(),
                 'u_id': {'user_name': u_id[0]},
@@ -398,44 +406,44 @@ def StudentScoreInfo(request,classroom,username):
             #print('noe')
             return render(request, 'ShowScoreStudent.html')
 
-def StudentQuizListInfo(request,classroom,username,quiz_id):
+def StudentQuizListInfo(request,classroom,userId,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
-        if request.user.username == username or request.user.is_admin:
+        if request.user.userId == userId or request.user.is_admin:
             if request.method == 'POST':
                 title_list = request.POST.getlist("cb")
                 #print(title_list)
                 Upload.objects.filter(title__in=title_list).delete()
-        file_list = Upload.objects.filter(user=User.objects.get(username=username),
+        file_list = Upload.objects.filter(user=User.objects.get(userId=userId),
                                           quiz=Quiz.objects.get(pk=quiz_id),
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom
                                           )
         file_list = list(file_list)
         try:
             score_pointer = QuizScore.objects.get(quizId=Quiz.objects.get(pk=quiz_id),
-                                  studentId=User.objects.get(username=username)
+                                  userId=User.objects.get(userId=userId)
                                   )
             score_pointer_render = score_pointer.code.title
         except:
             score_pointer_render = None
         context = {
             'file_list': file_list,
-            'username': username,
+            'userId': userId,
             'quiz_id': quiz_id,
             'score_pointer': score_pointer_render
         }
         return render(request,'ShowQuizListStudent.html',context)
 
-def StudentQuizInfo(request,classroom,username,quiz_id,title):
+def StudentQuizInfo(request,classroom,userId,quiz_id,title):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif request.method == 'POST' and request.user.is_admin or request.method == 'POST' and request.user.username == username:
-        if username != request.user.username and not request.user.is_admin:
+    elif request.method == 'POST' and request.user.is_admin or request.method == 'POST' and request.user.userId == userId:
+        if userId != request.user.userId and not request.user.is_admin:
             return HttpResponseRedirect("/ClassRoom/"+classroom)
         score_pointer = QuizScore.objects.get(quizId=Quiz.objects.get(pk=quiz_id),
-                                              studentId=User.objects.get(username=username)
+                                              userId=User.objects.get(userId=userId)
                                               )
         if Quiz.objects.get(pk=quiz_id).mode == "Scoring":
             score_pointer.total_score = Upload.objects.get(title=title).score
@@ -443,18 +451,18 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
             score_pointer.passOrFail = Upload.objects.get(title=title).score
         score_pointer.code = Upload.objects.get(title=title)
         score_pointer.save()
-        return HttpResponseRedirect("/ClassRoom/"+classroom+'/StudentInfo/'+username+'/'+quiz_id)
+        return HttpResponseRedirect("/ClassRoom/"+classroom+'/StudentInfo/'+userId+'/'+quiz_id)
 
     else:
-        if username != request.user.username and not request.user.is_admin:
+        if userId != request.user.userId and not request.user.is_admin:
             return HttpResponseRedirect("/ClassRoom/"+classroom)
-        file = Upload.objects.get(user=User.objects.get(username=username),
+        file = Upload.objects.get(user=User.objects.get(userId=userId),
                                           quiz=Quiz.objects.get(pk=quiz_id),
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom,
                                           title=title
                                           )
         quiz_to_show = Quiz.objects.get(pk=quiz_id)
-        u_id = User.objects.get(username=request.session['u_id'][0]).studentId
+        u_id = User.objects.get(userId=request.session['u_id'][0]).userId
         try:
             file.Uploadfile.open(mode="rb")
             code_to_show = file.Uploadfile.read().replace(b"\r\r\n",b"\r\n").decode()
@@ -462,12 +470,12 @@ def StudentQuizInfo(request,classroom,username,quiz_id,title):
         except Exception as e:
             #print(e)
             code_to_show = ""
-        var = request.user.username
+        var = request.user.userId
         context = {
-            'var':User.objects.get(username=username),
+            'var':User.objects.get(userId=userId),
             'classname':ClassRoom.objects.get(className=classroom),
             'User_objects':User.objects.all(),
-            'u_id': {'user_name': u_id, 'username': username},
+            'u_id': {'user_name': u_id, 'userId': userId},
             'quiz_id': quiz_id,
             'quiz_to_show':quiz_to_show,
             "code_to_show":code_to_show,

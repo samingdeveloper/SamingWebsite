@@ -1,0 +1,6 @@
+1.Delete userId field and change username field to userId #done
+2.createsuper with userId(username) #done
+3.add user to database with csv userId,email,first_name,last_name #done
+4.add user to class with csv userId #done
+5.log in with just (usename||email)&&password #no need
+6.add user to class with email or username #done

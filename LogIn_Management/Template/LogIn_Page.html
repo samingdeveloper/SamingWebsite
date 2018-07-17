@@ -48,9 +48,9 @@
                     </div>
                 </div>
             {% endif %}
-			<label for="userid">User ID:</label> <!-- �����Ź�Ҩж١ ��˹����㹵���� username ��� password-->
+			<label for="userid">User ID:</label> <!-- �����Ź�Ҩж١ ��˹����㹵���� userId ��� password-->
 			<br/>
-			<input type="text" name="username" value="" id="userid" placeholder="Your user id..">
+			<input type="text" name="userId" value="" id="userid" placeholder="Your user id..">
 			<br/>
 			<label for="password">Password</label>
 			<br/>
@@ -83,11 +83,11 @@
     	$('#logo').addClass('animated fadeInDown');
     	$("input:text:visible:first").focus();
 	});
-	$('#username').focus(function() {
-		$('label[for="username"]').addClass('selected');
+	$('#userId').focus(function() {
+		$('label[for="userId"]').addClass('selected');
 	});
-	$('#username').blur(function() {
-		$('label[for="username"]').removeClass('selected');
+	$('#userId').blur(function() {
+		$('label[for="userId"]').removeClass('selected');
 	});
 	$('#password').focus(function() {
 		$('label[for="password"]').addClass('selected');

@@ -11,7 +11,7 @@ if code == '':
                                            'Deadtimestamp': deadline.timestamp() * 1000,
                                            })
 else:
-    fileName = str(request.user.studentId) + '_coded_' + str(quiz.quizTitle) + '_' + str(
+    fileName = str(request.user.userId) + '_coded_' + str(quiz.quizTitle) + '_' + str(
         quiz.classroom.className) + '.py'
     f = open('./media/' + fileName, 'w')
     for debug_line in code:
@@ -205,18 +205,18 @@ else:
                   'scoring': {'total_score': score_total, 'max_score': max_score}
                   }
 
-    if QuizStatus.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
+    if QuizStatus.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),
                               classroom=quiz.classroom).status == False:
         QuizTracker.objects.update_or_create(
-            studentId=User.objects.get(studentId=request.user.studentId),
+            userId=User.objects.get(userId=request.user.userId),
             classroom=quiz.classroom,
         )
-        quizDoneCount = QuizTracker.objects.get(studentId=User.objects.get(studentId=request.user.studentId),
+        quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),
                                                 classroom=quiz.classroom, )
         quizDoneCount.quizDoneCount += 1
         quizDoneCount.save()
         quizStatus = QuizStatus.objects.get(quizId=quiz,
-                                            studentId=User.objects.get(studentId=request.user.studentId),
+                                            userId=User.objects.get(userId=request.user.userId),
                                             classroom=quiz.classroom,
                                             )
         quizStatus.status = True
@@ -241,7 +241,7 @@ else:
     f.close()
     f = open('./media/' + fileName, 'r')
     try:
-        quiz_score = QuizScore.objects.get(quizId=quiz, studentId=User.objects.get(studentId=request.user.studentId),
+        quiz_score = QuizScore.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),
                                            classroom=quiz.classroom)
         quiz_score.total_score = score_total
         quiz_score.passOrFail = result_model
@@ -250,7 +250,7 @@ else:
         quiz_score.save()
     except ObjectDoesNotExist:
         QuizScore.objects.create(quizId=quiz,
-                                 studentId=User.objects.get(studentId=request.user.studentId),
+                                 userId=User.objects.get(userId=request.user.userId),
                                  classroom=quiz.classroom,
                                  total_score=score_total,
                                  passOrFail=result_model,

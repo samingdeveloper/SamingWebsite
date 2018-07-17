@@ -37,15 +37,15 @@ class Quiz(models.Model):
 
 class QuizStatus(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     def __str__(self):
-        return str(self.studentId.studentId) + " : " + str(self.quizId) + " : " + self.classroom.className
+        return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
 
 class QuizScore(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     passOrFail = models.FloatField(blank=True, null=True, default=0.0)
     total_score = models.FloatField(blank=True, null=True, default=0.0)
@@ -53,24 +53,24 @@ class QuizScore(models.Model):
     #code = models.TextField(blank=True, null=True)
     code = models.ForeignKey("Assign_Management.Upload", on_delete=models.SET_NULL,null=True)
     def __str__(self):
-        return str(self.studentId.studentId) + " : " + str(self.quizId) + " : " + self.classroom.className
+        return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
 
 class QuizTimer(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
     timer = models.IntegerField(null=True)
     timer_stop = models.DateTimeField(blank=True,null=True)
     start = models.BooleanField(default=False)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
-        return str(self.studentId.studentId) + " : " + str(self.quizId) + " : " + self.classroom.className
+        return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
 
 class QuizTracker(models.Model):
     quizDoneCount = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0),MaxValueValidator(100)])
-    studentId = models.ForeignKey(User, on_delete=models.CASCADE)
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
-        return str(self.studentId.studentId) + " : " + self.classroom.className
+        return str(self.userId.userId) + " : " + self.classroom.className
 
 class AddTA(models.Model):
     Email = models.CharField(max_length=255)
@@ -88,33 +88,33 @@ class AddTA(models.Model):
 def classroom_user_changed(sender,instance,action,pk_set,**kwargs):
     if action == "post_add":
         QuizTracker.objects.bulk_create([
-            QuizTracker(classroom=instance,studentId=User.objects.get(pk=i)) for i in pk_set
+            QuizTracker(classroom=instance,userId=User.objects.get(pk=i)) for i in pk_set
         ])
         for i in pk_set:
             QuizStatus.objects.bulk_create([
-                QuizStatus(classroom=instance,studentId=User.objects.get(pk=i),quizId=y) for y in Quiz.objects.filter(classroom=instance)
+                QuizStatus(classroom=instance,userId=User.objects.get(pk=i),quizId=y) for y in Quiz.objects.filter(classroom=instance)
             ])
 
     elif action == "post_remove":
         for i in pk_set:
             print(action)
             try:
-                QuizTracker.objects.get(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+                QuizTracker.objects.get(classroom=instance,userId=User.objects.get(pk=i)).delete()
             except Exception as E:
                 print(E)
                 continue
             try:
-                QuizStatus.objects.filter(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+                QuizStatus.objects.filter(classroom=instance,userId=User.objects.get(pk=i)).delete()
             except Exception as E:
                 print(E)
                 continue
             try:
-                QuizScore.objects.filter(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+                QuizScore.objects.filter(classroom=instance,userId=User.objects.get(pk=i)).delete()
             except Exception as E:
                 print(E)
                 continue
             try:
-                QuizTimer.objects.filter(classroom=instance,studentId=User.objects.get(pk=i)).delete()
+                QuizTimer.objects.filter(classroom=instance,userId=User.objects.get(pk=i)).delete()
             except Exception as E:
                 print(E)
                 continue

@@ -36,8 +36,8 @@ class UserAdmin(BaseUserAdmin):
     list_display = ('email', 'is_admin','is_staff','is_active')
     list_filter = ('is_admin','is_staff','is_active')
     fieldsets = (
-        ('User info', {'fields': ('email', 'username', 'password')}),
-        ('Personal info', {'fields': ('first_name','last_name','studentId')}),
+        ('User info', {'fields': ('email', 'userId', 'password')}),
+        ('Personal info', {'fields': ('first_name','last_name','userId')}),
         ('Permissions', {'fields': ('is_admin','is_staff','is_active','groups','user_permissions')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -45,16 +45,16 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         ('User info', {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2')
+            'fields': ('email', 'userId', 'password1', 'password2')
         }
         ),
         ('Personal info', {
             'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'studentId')
+            'fields': ('first_name', 'last_name')
         }
         ),
     )
-    search_fields = ('email','username')
+    search_fields = ('email','userId')
     ordering = ('email',)
     #filter_horizontal = ()
     def get_urls(self):
@@ -83,14 +83,11 @@ class UserAdmin(BaseUserAdmin):
                     # print(fields)
                     try:
                         if request.POST.get('text') == "import":
-                            u, created = User.objects.update_or_create(email=fields[0],
-                                                                       username=fields[1],
+                            u, created = User.objects.update_or_create(userId=fields[0],
+                                                                       email=fields[1],
                                                                        first_name=fields[2],
                                                                        last_name=fields[3],
-                                                                       studentId=fields[4],
-                                                                       is_active=fields[5].capitalize(),
-                                                                       is_staff=fields[6].capitalize(),
-                                                                       is_admin=fields[7].capitalize().rstrip())
+                                                                       is_active=True)
                             if created:
                                 u.set_password("FIBO")
                                 counter += 1
@@ -98,12 +95,15 @@ class UserAdmin(BaseUserAdmin):
                                 pass
                             u.save()
                         elif request.POST.get('text') == "delete":
-                            User.objects.get(email=fields[0],
-                                                 username=fields[1],
+                            if len(fields) == 4:
+                                User.objects.get(userId=fields[0],
+                                                 email=fields[1],
                                                  first_name=fields[2],
-                                                 last_name=fields[3],
-                                                 studentId=fields[4].rstrip()).delete()
-                            counter += 1
+                                                 last_name=fields[3].delete())
+                                counter += 1
+                            else:
+                                User.objects.get(userId=fields[0].delete())
+                                counter += 1
                     except Exception as e:
                         # print(e)
                         continue
