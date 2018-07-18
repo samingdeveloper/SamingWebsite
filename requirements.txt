@@ -1,7 +1,7 @@
 Django==2.0.3
 #uWSGI
 gunicorn
-django-mathfilters
+#django-mathfilters
 pytz
 #django-bootstrap4
 RestrictedPython==4.0b4

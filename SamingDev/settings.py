@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'LogIn_Management.apps.LoginManagementConfig',
     'Class_Management.apps.ClassManagementConfig',
     'Assign_Management.apps.AssignManagementConfig',
-    'mathfilters'
+    #'mathfilters'
 ]
 
 EMAIL_HOST = 'smtp.gmail.com'
@@ -88,18 +88,18 @@ WSGI_APPLICATION = 'SamingDev.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-                #'default': {
-                #    'ENGINE': 'django.db.backends.postgresql',
-                #    'NAME': 'postgres',
-                #   'USER': 'postgres',
-                #    'PASSWORD': 'pengza78',
-                #    'HOST': 'db',
-                #    'PORT': 5432
-                #}
                 'default': {
-                    'ENGINE': 'django.db.backends.sqlite3',
-                    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+                    'ENGINE': 'django.db.backends.postgresql',
+                    'NAME': 'postgres',
+                   'USER': 'postgres',
+                    'PASSWORD': 'pengza78',
+                    'HOST': 'db',
+                    'PORT': 5432
                 }
+                #'default': {
+                #    'ENGINE': 'django.db.backends.sqlite3',
+                #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+                #}
 }
 
 
