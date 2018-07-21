@@ -9,5 +9,5 @@ timeout-decorator
 #docker
 #redis
 #autograder-sandbox
-psycopg2
+psycopg2-binary
 mosspy
