@@ -1,0 +1,2 @@
+class BikeShed():
+	colour = 'green'

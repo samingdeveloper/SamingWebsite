@@ -1,0 +1,2 @@
+class BikeShe:
+	colour = 'green'

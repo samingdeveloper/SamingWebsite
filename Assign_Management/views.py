@@ -6,8 +6,9 @@ from Class_Management.models import *
 from Assign_Management.models import Upload
 from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
-import sys,os,datetime,importlib,unittest,timeout_decorator,mosspy
-from RestrictedPython import compile_restricted
+import sys,os,datetime,importlib,unittest,timeout_decorator,mosspy,contextlib
+from io import StringIO
+from RestrictedPython import compile_restricted,utility_builtins
 from RestrictedPython.Guards import full_write_guard,safe_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
@@ -25,6 +26,14 @@ sys.path.append(os.getcwd()+"/media")
 def str_to_class(str):
     return getattr(sys.modules[__name__], str)
 
+@contextlib.contextmanager
+def stdoutIO(stdout=None): # Get exec print output.
+    old = sys.stdout
+    if stdout is None:
+        stdout = StringIO()
+    sys.stdout = stdout
+    yield stdout
+    sys.stdout = old
 ####################### url #######################
 
 def CreateAssignment(request):
@@ -403,7 +412,8 @@ def uploadgrading(request, classroom, quiz_id):
                              "            globals()[name]['case'].append('FAIL')\n" \
                              "        raise".format(rand_string, actual, expected, points, hidden)
                     # print(locals())
-                    eval(compile(string, 'defstr', 'exec'), globals(), locals())
+                    with stdoutIO() as s:
+                        eval(compile(string, 'defstr', 'exec'), globals(), locals())
                     # print(str(actual)+str(expected)+str(points)+str(hidden))
                     # print(string)
                     # print(globals())
@@ -415,7 +425,9 @@ def uploadgrading(request, classroom, quiz_id):
                     # print(method_list)
 
                 # Exec
-                eval(compile(code, 'gradingstr', 'exec'))
+                with stdoutIO() as gradingstr:
+                    eval(compile(code,'gradingstr', 'exec'))
+                gradingstr_out = gradingstr.getvalue()#.split('\n')
                 # return None
                 test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
                 test_result = TextTestRunner().run(test_suite)
@@ -517,6 +529,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
                                                        'code': code_temp,
+                                                       'prints': gradingstr_out,
                                                        'Timer': timer_stop.timestamp() * 1000,
                                                        'Deadtimestamp': deadline.timestamp() * 1000, })
             except Exception as e:
@@ -530,6 +543,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                        'mode': quiz.mode,
                                                        'Timer': False,
                                                        'code': code_temp,
+                                                       'prints': gradingstr_out,
                                                        'Deadtimestamp': deadline.timestamp() * 1000, })
 
         elif request.method == 'POST' and 'code-form-submit' in request.POST:
@@ -609,7 +623,7 @@ def uploadgrading(request, classroom, quiz_id):
                              "            globals()[name]['case'].append('FAIL')\n" \
                              "        raise".format(rand_string,actual,expected,points,hidden)
                     #print(locals())
-                    eval(compile(string, 'defstr', 'exec'),globals(),locals())
+                    eval(compile(string, 'defstr', 'exec'), globals(), locals())
                     #print(str(actual)+str(expected)+str(points)+str(hidden))
                     #print(string)
                     #print(globals())
@@ -620,7 +634,10 @@ def uploadgrading(request, classroom, quiz_id):
                     #method_list = [func for func in dir(MyTestCase) if callable(getattr(MyTestCase, func)) and not func.startswith("__")]
                     #print(method_list)
                 # Exec
-                eval(compile(code,'gradingstr', 'exec'))
+                with stdoutIO() as gradingstr:
+                    eval(compile(code,'gradingstr', 'exec'))
+                gradingstr_out = gradingstr.getvalue()#.split('\n')
+                #print(gradingstr_out)
                 #return None
                 test_suite = unittest.TestLoader().loadTestsFromTestCase(MyTestCase)
                 test_result = TextTestRunner().run(test_suite)
@@ -718,6 +735,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
                                                        'code': code_temp,
+                                                       'prints': gradingstr_out,
                                                        'Timer':timer_stop.timestamp()*1000,
                                                        'Deadtimestamp':deadline.timestamp()*1000,})
             except Exception as e:
@@ -730,6 +748,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
                                                        'code': code_temp,
+                                                       'prints': gradingstr_out,
                                                        'Timer': False,
                                                        'Deadtimestamp': deadline.timestamp() * 1000, })
         else:
