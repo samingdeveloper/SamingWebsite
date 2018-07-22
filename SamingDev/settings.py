@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '$(dz!yau&t9ct!opo59%5m4(egv(vz&avl4=pu!qq+&$-o-jjm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'web']
 
@@ -88,18 +88,18 @@ WSGI_APPLICATION = 'SamingDev.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-                'default': {
-                    'ENGINE': 'django.db.backends.postgresql',
-                    'NAME': 'postgres',
-                   'USER': 'postgres',
-                    'PASSWORD': 'pengza78',
-                    'HOST': 'db',
-                    'PORT': 5432
-                }
-                #'default': {
-                #    'ENGINE': 'django.db.backends.sqlite3',
-                #    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+              #  'default': {
+               #     'ENGINE': 'django.db.backends.postgresql',
+                #    'NAME': 'postgres',
+                #   'USER': 'postgres',
+                 #   'PASSWORD': 'pengza78',
+                  #  'HOST': 'db',
+                  #  'PORT': 5432
                 #}
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                    'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+                }
 }
 
 
