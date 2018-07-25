@@ -1,7 +1,7 @@
 body {
     margin: 0;
     background: white url("paper.png"); 
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato','Kanit', sans-serif;
 	font-size: 16px;
     font-weight: 300;
     overflow-y: auto;

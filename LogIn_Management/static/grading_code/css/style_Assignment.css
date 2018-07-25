@@ -5,7 +5,7 @@
 body {
     margin: 0;
     background-color: #204056;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Kanit', sans-serif;
 	font-size: 16px;
     font-weight: 300;
     overflow-y: auto;
@@ -292,7 +292,7 @@ h1 {
     background-color: inherit;
     width: 80px;
     height: auto;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Kanit', sans-serif;
     font-size: 16px;
     color: rgb(206, 206, 206);
     padding: 15px 0px;
