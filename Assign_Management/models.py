@@ -13,7 +13,7 @@ def callable_path(instance, filename):
 # Create your models here.
 
 class Upload(models.Model):
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=255)
     Uploadfile = models.FileField(upload_to=callable_path)
     user = models.ForeignKey("LogIn_Management.User", on_delete=models.CASCADE)
     quiz = models.ForeignKey("Class_Management.Quiz", on_delete=models.CASCADE)
