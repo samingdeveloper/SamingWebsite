@@ -1,2 +1,0 @@
-class BikeShed():
-	colour = 'green'

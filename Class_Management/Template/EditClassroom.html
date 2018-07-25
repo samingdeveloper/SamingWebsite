@@ -44,18 +44,18 @@
   </div>
 {% endif %}
                 <label for="classname">Classname:</label>
-                <input type="text" id="classname" name="classname" placeholder="{{ classname }}">
+                <input type="text" id="classname" name="classname" value="{{ classname }}">
                 <label for="creator">creator:</label>
                     <select id="creator" name="creator">
                         {% for i in creator %}
-                        <option value='{{ i.pk }}'> {{ i.get_full_name }}</option>
+                            {% if selected == i.get_full_name %}
+                                <option value='{{ i.pk }}' selected> {{ i.get_full_name }}</option>
+                            {% else %}
+                                <option value='{{ i.pk }}'> {{ i.get_full_name }}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
-<<<<<<< HEAD
-                <input type="submit" value="Update">
-=======
                 <input type="submit" value="Save">
->>>>>>> b12993777cc60f0e693458acf21e87aec969b9e1
             </form>
         </div>
     </div>

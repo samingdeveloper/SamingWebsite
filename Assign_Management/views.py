@@ -8,15 +8,15 @@ from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
 import sys,os,datetime,importlib,unittest,timeout_decorator,mosspy,contextlib
 from io import StringIO
-from RestrictedPython import compile_restricted,utility_builtins
-from RestrictedPython.Guards import full_write_guard,safe_builtins
+#from RestrictedPython import compile_restricted,utility_builtins,limited_builtins
+#from RestrictedPython.Guards import safe_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
-
+from . import my_globals
 User = get_user_model()
 # Create your views here.
 
@@ -367,11 +367,16 @@ def uploadgrading(request, classroom, quiz_id):
                 # open file .txt. Address  file ???????? Now! change follow your PC
                 with open(in_sys_file_location + in_sys_file, 'r+') as f:
                     code = code_origin = f.read()
-                    restricted_globals = dict(__builtins__=safe_builtins)
-                    eval(compile_restricted(code, filename=in_sys_file_location + in_sys_file, mode='exec'), restricted_globals, {})
+                    restricted_globals = dict(__builtins__=my_globals.mgb())
+                    eval(compile(code, filename=in_sys_file_location + in_sys_file, mode='exec'), restricted_globals, {})
                     f.seek(0, 0)
-                    if "# Lib" in quiz.text_testcase_content.splitlines()[0]:
-                        f.write("import ".rstrip('\r\n') + quiz.text_testcase_content.splitlines()[0][6:].rstrip('\r\n') + '\n' + code)
+                    if "# lib" in quiz.text_testcase_content.splitlines()[0]:
+                        f.write("import ".rstrip('\r\n') + quiz.text_testcase_content.splitlines()[0][6:].rstrip(
+                            '\r\n') + '\n' + code)
+                        # libs = quiz.text_testcase_content.splitlines()[0][6:].split(" ")
+                        # print(libs)
+                    # else:
+                    # libs = []
 
                 if in_sys_file[:-3] in sys.modules:
                     del sys.modules[in_sys_file[:-3]]
@@ -385,6 +390,7 @@ def uploadgrading(request, classroom, quiz_id):
                 #setattr(module, 'prob', prob)
                 with open(in_sys_file_location + in_sys_file, 'a') as f:
                     case = quiz.text_testcase_content
+                    f.write('\n')
                     for case_line in case.splitlines():
                         f.write(case_line + "\n")
                 with open(in_sys_file_location + in_sys_file, 'r') as f:
@@ -410,7 +416,7 @@ def uploadgrading(request, classroom, quiz_id):
                              "    except:\n" \
                              "        if self.hidden != True:\n" \
                              "            globals()[name]['case'].append('FAIL')\n" \
-                             "        raise".format(rand_string, actual, expected, points, hidden)
+                             "        raise\n".format(rand_string, actual, expected, points, hidden)
                     # print(locals())
                     with stdoutIO() as s:
                         eval(compile(string, 'defstr', 'exec'), globals(), locals())
@@ -579,11 +585,15 @@ def uploadgrading(request, classroom, quiz_id):
                 # open file .txt. Address  file ???????? Now! change follow your PC
                 with open('./media/' + fileName, 'r+') as f:
                     code = f.read()
-                    restricted_globals = dict(__builtins__=safe_builtins)
-                    eval(compile_restricted(code, filename='./media/' + fileName, mode='exec'), restricted_globals, {})
+                    restricted_globals = dict(__builtins__=my_globals.mgb()) # pass libs as parameters
+                    eval(compile(code, filename='./media/' + fileName, mode='exec'), restricted_globals, {})
                     f.seek(0, 0)
-                    if "# Lib" in quiz.text_testcase_content.splitlines()[0]:
+                    if "# lib" in quiz.text_testcase_content.splitlines()[0]:
                         f.write("import ".rstrip('\r\n') + quiz.text_testcase_content.splitlines()[0][6:].rstrip('\r\n') + '\n' + code)
+                        # libs = quiz.text_testcase_content.splitlines()[0][6:].split(" ")
+                        # print(libs)
+                    #else:
+                        #libs = []
 
                 if fileName[:-3] in sys.modules:
                     del sys.modules[fileName[:-3]]
@@ -598,6 +608,7 @@ def uploadgrading(request, classroom, quiz_id):
                 #return None
                 with open('./media/' + fileName, 'a') as f:
                     case = quiz.text_testcase_content
+                    f.write('\n')
                     for case_line in case.splitlines():
                         f.write(case_line + "\n")
                 with open('./media/' + fileName, 'r') as f:
@@ -621,7 +632,7 @@ def uploadgrading(request, classroom, quiz_id):
                              "    except:\n" \
                              "        if self.hidden != True:\n" \
                              "            globals()[name]['case'].append('FAIL')\n" \
-                             "        raise".format(rand_string,actual,expected,points,hidden)
+                             "        raise\n".format(rand_string,actual,expected,points,hidden)
                     #print(locals())
                     eval(compile(string, 'defstr', 'exec'), globals(), locals())
                     #print(str(actual)+str(expected)+str(points)+str(hidden))

@@ -14,10 +14,11 @@ urlpatterns = [
     url(r'^delete_(?P<classroom>[\w\ .@+-]+)', views.DeleteClassroom, name='DeleteClassroom'),
     url(r'^(?P<classroom>[\w\ .@+-]+)/$', views.Home, name='Home'),
     #url(r'^(?P<classroom>[\w\ .@+-]+)/About/$', views.About, name='About'),
+    url(r'^(?P<classroom>[\w\ .@+-]+)/Manual/$', views.Manual, name='Manual'),
     url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/$', views.StudentInfo, name='StudentInfo'),
     url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/$', views.StudentScoreInfo, name='StudentScoreInfo'),
     url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/$', views.StudentQuizListInfo, name='StudentQuizListInfo'),
-    url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/(?P<title>[\w.@+-]+)/$', views.StudentQuizInfo, name='StudentQuizInfo'),
+    url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/(?P<file_id>[0-9]+)/$', views.StudentQuizInfo, name='StudentQuizInfo'),
     url(r'^Submit/$', views.Submit, name='SubmitRoom'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

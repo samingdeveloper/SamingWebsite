@@ -297,7 +297,8 @@ def EditClassroom(request,classroom):
     else:
         context={
             "classname":classroom,
-            "creator":User.objects.filter(is_admin=True)
+            "creator":User.objects.filter(is_admin=True),
+            "selected":ClassRoom.objects.get(className=classroom).creator.get_full_name,
         }
         return render(request, 'EditClassroom.html', context)
 
@@ -359,6 +360,14 @@ def export_score_csv(classroom):
             obj_all = []
             continue
     return response
+
+def Manual(request,classroom):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+
+    else:
+        #return None
+        return render(request, "./manual/index.html")
 
 def StudentInfo(request,classroom):
     #var = request.user.userId
@@ -443,7 +452,7 @@ def StudentQuizListInfo(request,classroom,userId,quiz_id):
         }
         return render(request,'ShowQuizListStudent.html',context)
 
-def StudentQuizInfo(request,classroom,userId,quiz_id,title):
+def StudentQuizInfo(request,classroom,userId,quiz_id,file_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
@@ -454,10 +463,10 @@ def StudentQuizInfo(request,classroom,userId,quiz_id,title):
                                               userId=User.objects.get(userId=userId)
                                               )
         if Quiz.objects.get(pk=quiz_id).mode == "Scoring":
-            score_pointer.total_score = Upload.objects.get(title=title).score
+            score_pointer.total_score = Upload.objects.get(pk=file_id).score
         else:
-            score_pointer.passOrFail = Upload.objects.get(title=title).score
-        score_pointer.code = Upload.objects.get(title=title)
+            score_pointer.passOrFail = Upload.objects.get(pk=file_id).score
+        score_pointer.code = Upload.objects.get(pk=file_id)
         score_pointer.save()
         return HttpResponseRedirect("/ClassRoom/"+classroom+'/StudentInfo/'+userId+'/'+quiz_id)
 
@@ -467,7 +476,7 @@ def StudentQuizInfo(request,classroom,userId,quiz_id,title):
         file = Upload.objects.get(user=User.objects.get(userId=userId),
                                           quiz=Quiz.objects.get(pk=quiz_id),
                                           classroom=Quiz.objects.get(pk=quiz_id).classroom,
-                                          title=title
+                                        pk=file_id
                                           )
         quiz_to_show = Quiz.objects.get(pk=quiz_id)
         u_id = User.objects.get(userId=request.session['u_id'][0]).userId
@@ -488,7 +497,8 @@ def StudentQuizInfo(request,classroom,userId,quiz_id,title):
             'quiz_to_show':quiz_to_show,
             "code_to_show":code_to_show,
             "upload_time":file.uploadTime,
-            "title":file.title,
+            "file_title":file.title,
+            "file_id":file.id,
         }
         return render(request,'ShowQuizStudent.html',context)
 

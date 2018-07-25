@@ -7,7 +7,8 @@ register = template.Library()
 def u_progress(userId, classroom):
     try:
         tracker = QuizTracker.objects.get(userId=userId, classroom__className=classroom)
-        return (tracker.quizDoneCount/Quiz.objects.filter(classroom__className=classroom).count())*100
+        percent = (tracker.quizDoneCount/Quiz.objects.filter(classroom__className=classroom).count())*100
+        return percent if percent < 100 else 100
     except:
         return 0
 
