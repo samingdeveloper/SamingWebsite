@@ -14,7 +14,7 @@ class ClassRoom(models.Model):
     #teacher = models.ManyToManyField("LogIn_Management.User",related_name="teacher",blank=True)
     #ta = models.ManyToManyField("LogIn_Management.User",related_name="ta",blank=True)
     user = models.ManyToManyField("LogIn_Management.User", related_name="user", blank=True)
-    className = models.CharField(max_length=255)
+    className = models.CharField(max_length=255,unique=True)
     creator = models.ForeignKey("LogIn_Management.User", related_name="creator", on_delete=models.DO_NOTHING, null=True, blank=True)
     def __str__(self):
         return self.className

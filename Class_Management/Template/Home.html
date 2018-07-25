@@ -75,7 +75,7 @@
                 </div>
                 {% endfor %}
 
-                {%  if request.user.is_admin %}
+                {%  if request.user|can_manage:request.session.classroom %}
                 <div class="tooltip">
                     <button1>
                         <span class="tooltiptext">Quiz</span>

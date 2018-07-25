@@ -248,6 +248,7 @@ def EditAssign(request, classroom, quiz_id):
                                                       userId=j.userId,
                                                       classroom=quiz.classroom,
                                                       )
+                        return None
                         if timer.start:
                             timer.timer = x
                             timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
