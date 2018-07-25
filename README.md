@@ -4,3 +4,17 @@ Welcome to Saming, a programming grading platform, created for FIBO.
 ## Test Case Syntax
 
 Each test case is a call of `assert_equal(actual, expected, points, [Optional]hidden=False)`
+
+`actual` is the method call, written as `prob.your_method(args)`
+
+`expected` is the expected return value of the method
+
+`points` is the score of the individual test case. In scoring mode, the test cases add up.
+
+`hidden` is whether the test case will be viewable for students
+
+## Example
+
+```
+assert_equal(prob.foo_bar(9), 8, 7, True)
+```
