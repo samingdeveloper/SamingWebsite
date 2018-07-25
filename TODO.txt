@@ -1,3 +1,2 @@
-1.Allow Print (worst implement)
-2.CodeMirror editor indentUnit: 4.
-3.remove __import__,__loader__,__spec__,__name__
+1.fix str to object with repr()
+2.change hidden to level 0 - 2

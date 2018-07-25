@@ -244,17 +244,21 @@ def EditAssign(request, classroom, quiz_id):
                     o = Timer.split(':')
                     x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
                     for j in get_tracker:
-                        timer = QuizTimer.objects.get(quizId=quiz,
-                                                      userId=j.userId,
-                                                      classroom=quiz.classroom,
-                                                      )
-                        if timer.start:
-                            timer.timer = x
-                            timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
-                        else:
-                            timer.timer = x
-                            timer.timer_stop = None
-                        timer.save(update_fields=["timer", "timer_stop"])
+                        try:
+                            timer = QuizTimer.objects.get(quizId=quiz,
+                                                          userId=j.userId,
+                                                          classroom=quiz.classroom,
+                                                          )
+                            if timer.start:
+                                timer.timer = x
+                                timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
+                            else:
+                                timer.timer = x
+                                timer.timer_stop = None
+                            timer.save(update_fields=["timer", "timer_stop"])
+                        except Exception as e:
+                            #print(e)
+                            continue
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
         except Exception as E:
             from django.contrib import messages
@@ -360,7 +364,7 @@ def uploadgrading(request, classroom, quiz_id):
                 result = {
                     'max_score': 0,
                     'score': 0,
-                    'case': [],
+                    'case': {},
                 }
                 globals()[name] = result
                 ####################################
@@ -371,20 +375,19 @@ def uploadgrading(request, classroom, quiz_id):
                     eval(compile(code, filename=in_sys_file_location + in_sys_file, mode='exec'), restricted_globals, {})
                     f.seek(0, 0)
                     if "# lib" in quiz.text_testcase_content.splitlines()[0]:
-                        f.write("import ".rstrip('\r\n') + quiz.text_testcase_content.splitlines()[0][6:].rstrip(
-                            '\r\n') + '\n' + code)
+                        f.write("import ".rstrip('\r\n') + quiz.text_testcase_content.splitlines()[0][6:].rstrip('\r\n') + '\n' + code)
                         # libs = quiz.text_testcase_content.splitlines()[0][6:].split(" ")
                         # print(libs)
                     # else:
                     # libs = []
 
-                if in_sys_file[:-3] in sys.modules:
-                    del sys.modules[in_sys_file[:-3]]
+                #if in_sys_file[:-3] in sys.modules:
+                    #del sys.modules[in_sys_file[:-3]]
                     #importlib.invalidate_caches()
-                    prob = importlib.import_module(in_sys_file[:-3])
+                    #prob = importlib.import_module(in_sys_file[:-3])
                     #importlib.reload(prob)
-                else:
-                    prob = importlib.import_module(in_sys_file[:-3])
+                #else:
+                    #prob = importlib.import_module(in_sys_file[:-3])
                     #importlib.reload(prob)
                 #print(prob)
                 #setattr(module, 'prob', prob)
@@ -398,34 +401,36 @@ def uploadgrading(request, classroom, quiz_id):
 
                 # unittest process.
                 class MyTestCase(unittest.TestCase):
-                    pass
+                    num = 0
 
-                def assert_equal(actual, expected, points, hidden=False):
-                    rand_string = get_random_string(length=7)
+                def assert_equal(actual, expected, points=0, level=0):
+                    MyTestCase.num += 1
                     string = "def test_{0}(self):\n" \
                              "    self.actual = {1}\n" \
                              "    self.expected = {2}\n" \
                              "    self.points = {3}\n" \
-                             "    self.hidden = {4}\n" \
+                             "    self.level = {4}\n" \
                              "    globals()[name]['max_score'] += self.points\n" \
                              "    try:\n" \
                              "        self.assertEquals(self.actual, self.expected)\n" \
-                             "        if self.hidden != True:\n" \
-                             "            globals()[name]['case'].append('PASS')\n" \
+                             "        if self.level < 2:\n" \
+                             "            globals()[name]['case'][{0}] = ({1},{2},'PASS')\n" \
                              "        globals()[name]['score'] += self.points\n" \
-                             "    except:\n" \
-                             "        if self.hidden != True:\n" \
-                             "            globals()[name]['case'].append('FAIL')\n" \
-                             "        raise\n".format(rand_string, repr(actual), repr(expected), points, hidden)
+                             "    except Exception as e:\n" \
+                             "        if self.level == 0:\n" \
+                             "            globals()[name]['case'][{0}] = ({1},{2},str(e))\n" \
+                             "        elif self.level == 1:\n" \
+                             "            globals()[name]['case'][{0}] = ({1},{2},'FAIL')\n" \
+                             "        raise AssertionError\n".format(repr(MyTestCase.num), repr(actual), repr(expected),points, abs(level))
                     # print(locals())
-                    with stdoutIO() as s:
-                        eval(compile(string, 'defstr', 'exec'), globals(), locals())
+                    # print(MyTestCase.num)
+                    eval(compile(string, 'defstr', 'exec'), globals(), locals())
                     # print(str(actual)+str(expected)+str(points)+str(hidden))
                     # print(string)
                     # print(globals())
                     # print(globals()[name]['params'])
                     # print(str_to_class('test_{0}'.format(rand_string)))
-                    setattr(MyTestCase, "test_{0}".format(rand_string), locals()['test_{0}'.format(rand_string)])
+                    setattr(MyTestCase, "test_{0}".format(MyTestCase.num), locals()['test_{0}'.format(MyTestCase.num)])
                     # setattr(MyTestCase, "test_{0}".format(rand_string), str_to_class('test_{0}'.format(rand_string)))
                     # method_list = [func for func in dir(MyTestCase) if callable(getattr(MyTestCase, func)) and not func.startswith("__")]
                     # print(method_list)
@@ -439,7 +444,6 @@ def uploadgrading(request, classroom, quiz_id):
                 test_result = TextTestRunner().run(test_suite)
                 # fail = len(test_result.failures)
                 result = globals()[name]
-                print(result)
                 del globals()[name]
                 del name
                 if quiz.mode == "Pass or Fail" and test_result.wasSuccessful():
@@ -447,7 +451,7 @@ def uploadgrading(request, classroom, quiz_id):
                 elif quiz.mode == "Pass or Fail" and test_result.wasSuccessful() == False:
                     result['status'] = "FAIL"
                     result['score'] = 0
-                elif quiz.mode == "Scoring" and any(result['case']) == True:
+                elif quiz.mode == "Scoring" and my_globals.scr(result['case']) is True:
                     result['status'] = "PASS"
                 else:
                     result['status'] = "FAIL"
@@ -471,10 +475,11 @@ def uploadgrading(request, classroom, quiz_id):
                 # print(str(test_case_count) + ' ' + str(Out_count))
                 with open(in_sys_file_location + in_sys_file, 'w') as f:
                     f.write(code_origin)
-                with open(in_sys_file_location + in_sys_file, 'a') as f:
+                with open('./media/' + fileName, 'a') as f:
                     f.write('\n\n')
-                    for c, i in enumerate(result['case']):
-                        f.write("CASE {0}: ".format(c + 1) + i + '\n')
+                    for c,i in enumerate(result['case'].values()):
+                        print(i)
+                        f.write("CASE {0}: ".format(c+1) + i[2] + '\n')
                     f.write("RESULT: %s" % result['status'])
                 f = open(in_sys_file_location + in_sys_file, 'r')
                 try:
@@ -578,7 +583,7 @@ def uploadgrading(request, classroom, quiz_id):
                 result = {
                             'max_score':0,
                             'score':0,
-                            'case':[],
+                            'case':{},
                           }
                 globals()[name] = result
                 ####################################
@@ -595,13 +600,13 @@ def uploadgrading(request, classroom, quiz_id):
                     #else:
                         #libs = []
 
-                if fileName[:-3] in sys.modules:
-                    del sys.modules[fileName[:-3]]
+                #if fileName[:-3] in sys.modules:
+                    #del sys.modules[fileName[:-3]]
                     # importlib.invalidate_caches()
-                    prob = importlib.import_module(fileName[:-3])
+                    #prob = importlib.import_module(fileName[:-3])
                     # importlib.reload(prob)
-                else:
-                    prob = importlib.import_module(fileName[:-3])
+                #else:
+                    #prob = importlib.import_module(fileName[:-3])
                     # importlib.reload(prob)
                     # print(prob)
                 #setattr(module, 'prob', prob)
@@ -615,32 +620,37 @@ def uploadgrading(request, classroom, quiz_id):
                     code = f.read()
 
                 # unittest process.
-                class MyTestCase(unittest.TestCase): pass
-                def assert_equal(actual, expected, points=0, hidden=False):
-                    rand_string = get_random_string(length=7)
+                class MyTestCase(unittest.TestCase):
+                    num = 0
+                def assert_equal(actual, expected, points=0, level=0):
+                    #rand_string = get_random_string(length=7)
+                    MyTestCase.num += 1
                     string = "def test_{0}(self):\n" \
                              "    self.actual = {1}\n" \
                              "    self.expected = {2}\n" \
                              "    self.points = {3}\n" \
-                             "    self.hidden = {4}\n" \
+                             "    self.level = {4}\n" \
                              "    globals()[name]['max_score'] += self.points\n" \
                              "    try:\n" \
                              "        self.assertEquals(self.actual, self.expected)\n" \
-                             "        if self.hidden != True:\n" \
-                             "            globals()[name]['case'].append('PASS')\n" \
+                             "        if self.level < 2:\n" \
+                             "            globals()[name]['case'][{0}] = ({1},{2},'PASS')\n" \
                              "        globals()[name]['score'] += self.points\n" \
-                             "    except:\n" \
-                             "        if self.hidden != True:\n" \
-                             "            globals()[name]['case'].append('FAIL')\n" \
-                             "        raise\n".format(rand_string,repr(actual),repr(expected),points,hidden)
+                             "    except Exception as e:\n" \
+                             "        if self.level == 0:\n" \
+                             "            globals()[name]['case'][{0}] = ({1},{2},str(e))\n" \
+                             "        elif self.level == 1:\n" \
+                             "            globals()[name]['case'][{0}] = ({1},{2},'FAIL')\n" \
+                             "        raise AssertionError\n".format(repr(MyTestCase.num),repr(actual),repr(expected),points,abs(level))
                     #print(locals())
+                    #print(MyTestCase.num)
                     eval(compile(string, 'defstr', 'exec'), globals(), locals())
                     #print(str(actual)+str(expected)+str(points)+str(hidden))
                     #print(string)
                     #print(globals())
                     #print(globals()[name]['params'])
                     #print(str_to_class('test_{0}'.format(rand_string)))
-                    setattr(MyTestCase, "test_{0}".format(rand_string),locals()['test_{0}'.format(rand_string)])
+                    setattr(MyTestCase, "test_{0}".format(MyTestCase.num),locals()['test_{0}'.format(MyTestCase.num)])
                     #setattr(MyTestCase, "test_{0}".format(rand_string), str_to_class('test_{0}'.format(rand_string)))
                     #method_list = [func for func in dir(MyTestCase) if callable(getattr(MyTestCase, func)) and not func.startswith("__")]
                     #print(method_list)
@@ -654,15 +664,17 @@ def uploadgrading(request, classroom, quiz_id):
                 test_result = TextTestRunner().run(test_suite)
                 #fail = len(test_result.failures)
                 result = globals()[name]
-                print(result)
+                #print(result)
+                #print(my_globals.scr(result['case']))
+                #return None
                 del globals()[name]
                 del name
                 if quiz.mode == "Pass or Fail" and test_result.wasSuccessful():
                     result['status'] = "PASS"
-                elif quiz.mode == "Pass or Fail" and test_result.wasSuccessful() == False:
+                elif quiz.mode == "Pass or Fail" and test_result.wasSuccessful() is False:
                     result['status'] = "FAIL"
                     result['score'] = 0
-                elif quiz.mode == "Scoring" and any(result['case']) == True:
+                elif quiz.mode == "Scoring" and my_globals.scr(result['case']) is True:
                     result['status'] = "PASS"
                 else:
                     result['status'] = "FAIL"
@@ -687,8 +699,9 @@ def uploadgrading(request, classroom, quiz_id):
                     f.write(code_temp)
                 with open('./media/' + fileName, 'a') as f:
                     f.write('\n\n')
-                    for c,i in enumerate(result['case']):
-                        f.write("CASE {0}: ".format(c+1) + i + '\n')
+                    for c,i in enumerate(result['case'].values()):
+                        print(i)
+                        f.write("CASE {0}: ".format(c+1) + i[2] + '\n')
                     f.write("RESULT: %s" % result['status'])
                 f = open('./media/' + fileName, 'r')
                 try:

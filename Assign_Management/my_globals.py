@@ -14,3 +14,10 @@ def mgb(libs=[]):
                 tb[lib] = getattr(builtins, lib)
 
     return tb
+
+def scr(case_dict):
+    for i in case_dict.values():
+        if i[2] == "PASS":
+            return True
+    else:
+        return False
