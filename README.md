@@ -1,3 +1,25 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Saming ![CI status](https://img.shields.io/badge/release-v0.1-blue.svg)
 Welcome to Saming, a programming grading platform, created for FIBO.
 
@@ -13,8 +35,14 @@ Each test case is a call of `assert_equal(actual, expected, points, [Optional]hi
 
 `hidden` is whether the test case will be viewable for students
 
+## Importing libraries
+
+use `# lib yourlib` to import libraries your students might need.
+
 ## Example
 
 ```
 assert_equal(prob.foo_bar(9), 8, 7, True)
+# lib math
 ```
+
