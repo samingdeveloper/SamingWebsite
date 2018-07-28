@@ -1,19 +1,24 @@
 {% block content %}
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <body lang="en">
 
 <head>
     <meta charset="utf-8">
     <link rel="icon" type="png" href="{% static 'grading_code/images/logo.png' %}" />
     <title>Saming</title>
+    
+    <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=latin-ext,thai,vietnamese" rel="stylesheet">
 
     <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/style.css' %}">
     <script src="{% static 'grading_code/js/navbar.js' %}"></script>
 
+    
+    
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet'
         type='text/css'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -25,41 +30,22 @@
 <body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
     <div id="main" >
         <div class="center">
-                <h3>Edit Classroom</h3>
+                <h3>Create Classroom</h3>
         </div>
         <div class="div">
             <form action="{% url 'Class_Management:EditClassroom' classname %}" method="post" enctype="multipart/form-data"
               > {% csrf_token %}
-              {% if messages %}
-  <div class="row">
-      <div class='col-sm-6 col-sm-offset-3'>
-  {% for message in messages %}
-  <p {% if message.tags == error %} style="color:red" {% endif %}>
-      {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-      {{ message }}
-      {% endif %}
-  </p>
-  {% endfor %}
-      </div>
-  </div>
-{% endif %}
                 <label for="classname">Classname:</label>
-                <input type="text" id="classname" name="classname" value="{{ classname }}">
+                <input type="text" id="classname" name="classname" placeholder="{{ classname }}">
                 <label for="creator">creator:</label>
                     <select id="creator" name="creator">
                         {% for i in creator %}
-                            {% if selected == i.get_full_name %}
-                                <option value='{{ i.pk }}' selected> {{ i.get_full_name }}</option>
-                            {% else %}
-                                <option value='{{ i.pk }}'> {{ i.get_full_name }}</option>
-                            {% endif %}
+                        <option value='{{ i.pk }}'> {{ i.get_full_name }}</option>
                         {% endfor %}
                     </select>
-                <input type="submit" value="Save">
+                <input type="submit" value="Create">
             </form>
         </div>
     </div>
 </body>
-
 {% endblock %}
-</html>

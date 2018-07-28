@@ -1,5 +1,6 @@
 body {
     background: white url("images/background.png");
+    font-family: 'Kanit', sans-serif;
 }
 
 ul.errorlist {

@@ -14,7 +14,8 @@ body {
 h1#title {
 	/*font-family: 'Roboto Slab', serif;*/ /*��˹� front �ç saming programming �ͧ��*/ 
 	/*font-weight: 300;*/
-	font-family: 'Roboto Slab';
+	font-family: 'Lato','Kanit', sans-serif;
+	/*font-family: 'Roboto Slab';
 	/*text-transform: uppercase;*/
 	font-size: 1.5em;
 	color: black;
@@ -96,7 +97,7 @@ p.small {
 	border-radius: 5px 5px 0 0;
 }
 
-/*��˹�����Т�Ҵ����ѡ�� userId ��� password*/
+/*��˹�����Т�Ҵ����ѡ�� username ��� password*/
 .login-box label {
 	font-family: 'Lato', serif;
 	font-weight: 700;

@@ -19,7 +19,7 @@
       </table>
       <p><strong>Assignment name:</strong> {{ quiz_to_show.quizTitle }}</p>
       <p><strong>Assignment detail:</strong> {{ quiz_to_show.quizDetail }}</p>
-      <p><strong>File name:</strong> {{ file_title }}</p>
+      <p><strong>File name:</strong> {{ title }}</p>
       <p><strong>Uploadtime:</strong> {{ upload_time }}</p>
       <p><strong>Deadline:</strong> {{ quiz_to_show.deadline }}</p>
 
@@ -30,7 +30,7 @@
       <textarea type="text" id="showcase" name="showcasedetail" placeholder="">{{ quiz_to_show.text_testcase_content }}</textarea>
       {% endif %}
 
-      <form action="{% url 'Class_Management:StudentQuizInfo' request.session.classroom u_id.userId quiz_id file_id%}" method="POST">
+      <form action="{% url 'Class_Management:StudentQuizInfo' request.session.classroom u_id.username quiz_id title%}" method="POST">
         {% csrf_token %}
         <input id="set" type="submit" value="SET"/>
       </form>

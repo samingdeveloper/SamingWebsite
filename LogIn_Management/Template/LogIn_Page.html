@@ -7,11 +7,14 @@
 	<!-- connect saming.png from floder fire -->
 	<link rel="icon" type="png" href="{%  static "saming.png" %}"/>
 	<title>Saming</title> <!-- show name tab title on web-->
-    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/login.css' %}">
+	
+	<link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=latin-ext,thai,vietnamese" rel="stylesheet">
+	
+	<link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/login.css' %}">
 	<!-- Google Fonts -->
 	<link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet'
         type='text/css'>
-
+	
 	<!--<link rel="stylesheet" href="css/animate.css">--><!--�ٻẺ�������͹��� �� animation �������-->
 	<!-- Custom Stylesheet -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -39,7 +42,7 @@
                 <div class="row">
                     <div class='col-sm-6 col-sm-offset-3'>
                 {% for message in messages %}
-                <p {% if message.tags == error %} style="color:red" {% endif %}>
+                <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
                     {{ message }}
                     {% endif %}
@@ -48,23 +51,23 @@
                     </div>
                 </div>
             {% endif %}
-			<label for="userid">User ID:</label> <!-- �����Ź�Ҩж١ ��˹����㹵���� userId ��� password-->
+			<label for="userid">User ID:</label> <!-- �����Ź�Ҩж١ ��˹����㹵���� username ��� password-->
 			<br/>
-			<input type="text" name="userId" value="" id="userid" placeholder="Your user id..">
+			<input type="text" name="username" value="" id="userid" placeholder="Your user id..">
 			<br/>
 			<label for="password">Password</label>
 			<br/>
 			<input type="password" name="password" value="" id="password" placeholder="Your password..">
 			<br/>
-                <input type="submit" value="Sign In" >
+                <input type="submit" value="Sign in" >
 			<br/>
                 <div class="forgot">
 			<a href="{% url 'reset_password_reset1' %}"><p class="small">Forgot your password?</p></a>
         </div>
             </form>
         <div class="footer">
-            <p>Web Application</p>
-            <p>Programming Classroom Platform</p>
+            <p>Web Application </p>
+            <p>Grading platform for programming system</p>
         </div>
         </div>
 		</div>
@@ -83,11 +86,11 @@
     	$('#logo').addClass('animated fadeInDown');
     	$("input:text:visible:first").focus();
 	});
-	$('#userId').focus(function() {
-		$('label[for="userId"]').addClass('selected');
+	$('#username').focus(function() {
+		$('label[for="username"]').addClass('selected');
 	});
-	$('#userId').blur(function() {
-		$('label[for="userId"]').removeClass('selected');
+	$('#username').blur(function() {
+		$('label[for="username"]').removeClass('selected');
 	});
 	$('#password').focus(function() {
 		$('label[for="password"]').addClass('selected');
