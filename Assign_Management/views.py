@@ -244,11 +244,10 @@ def EditAssign(request, classroom, quiz_id):
                     o = Timer.split(':')
                     x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
                     for j in get_tracker:
-                        timer = QuizTimer.objects.get(quizId=quiz_id,
+                        timer = QuizTimer.objects.get(quizId=quiz,
                                                       userId=j.userId,
                                                       classroom=quiz.classroom,
                                                       )
-                        return None
                         if timer.start:
                             timer.timer = x
                             timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
@@ -417,7 +416,7 @@ def uploadgrading(request, classroom, quiz_id):
                              "    except:\n" \
                              "        if self.hidden != True:\n" \
                              "            globals()[name]['case'].append('FAIL')\n" \
-                             "        raise\n".format(rand_string, actual, expected, points, hidden)
+                             "        raise\n".format(rand_string, repr(actual), repr(expected), points, hidden)
                     # print(locals())
                     with stdoutIO() as s:
                         eval(compile(string, 'defstr', 'exec'), globals(), locals())
@@ -617,7 +616,7 @@ def uploadgrading(request, classroom, quiz_id):
 
                 # unittest process.
                 class MyTestCase(unittest.TestCase): pass
-                def assert_equal(actual, expected, points, hidden=False):
+                def assert_equal(actual, expected, points=0, hidden=False):
                     rand_string = get_random_string(length=7)
                     string = "def test_{0}(self):\n" \
                              "    self.actual = {1}\n" \
@@ -633,7 +632,7 @@ def uploadgrading(request, classroom, quiz_id):
                              "    except:\n" \
                              "        if self.hidden != True:\n" \
                              "            globals()[name]['case'].append('FAIL')\n" \
-                             "        raise\n".format(rand_string,actual,expected,points,hidden)
+                             "        raise\n".format(rand_string,repr(actual),repr(expected),points,hidden)
                     #print(locals())
                     eval(compile(string, 'defstr', 'exec'), globals(), locals())
                     #print(str(actual)+str(expected)+str(points)+str(hidden))
