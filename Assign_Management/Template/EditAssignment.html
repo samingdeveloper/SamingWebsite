@@ -52,6 +52,18 @@
                     });
                     </script>
                     <input type="text" name="dateInput" id="dateInput" placeholder="{{ quizdedit }}">
+
+                    <label for="dateAvailable">Available:</label>
+                    <script type="text/javascript">
+                        $(function(){
+                        $("#dateAvailable").datetimepicker({
+                          dateFormat: 'yy-mm-dd',
+                          timeFormat: 'HH:mm:ss',
+                          });
+                    });
+                    </script>
+                    <input type="text" name="dateAvailable" id="dateAvailable" placeholder="{{ quizaedit }}">
+
                     <label for="redo">Restart:</label>
                     <select name="redo">
                             <option value="No"> No </option>

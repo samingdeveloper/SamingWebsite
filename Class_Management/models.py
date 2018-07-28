@@ -21,15 +21,17 @@ class ClassRoom(models.Model):
 
 class Quiz(models.Model):
     quizTitle = models.CharField(unique=True, max_length=255, blank=True)
-    quizDetail = models.TextField()
-    deadline = models.DateTimeField(blank=True, null=True)
+    quizDetail = models.TextField(blank=True,null=True)
+    deadline = models.DateTimeField()
+    available = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
     hint = models.CharField(max_length=1024, blank=True, null=True)
     mode_choices = (
         ("Pass or Fail", "Pass or Fail"),
         ("Scoring", "Scoring")
     )
     mode = models.CharField(max_length=100, choices=mode_choices)
-    text_template_content = models.TextField()
+    text_template_content = models.TextField(blank=True,null=True)
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):

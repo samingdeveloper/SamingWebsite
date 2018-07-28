@@ -1,13 +1,21 @@
+############# framework ############# 
 Django==2.0.3
+#django-mathfilters
+#django-globals
+#django-bootstrap4
+
+############# WSGI #############
 #uWSGI
 gunicorn
-#django-mathfilters
+
+############# utility #############
 pytz
-#django-bootstrap4
 RestrictedPython==4.0b4
 timeout-decorator
-#docker
-#redis
-#autograder-sandbox
 psycopg2-binary
 mosspy
+############# pytest #############
+#pytest
+#pytest-timeout
+#docker
+#redis

@@ -1,5 +1,8 @@
 pynbox
-db.sqlite3
+#db.sqlite3
 *.pyc
+__pycache__/
+*.py[cod]
+*$py.class
 SamingDev/settings.py
 SamingDev/settings.py

@@ -8,7 +8,7 @@ from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
 import sys,os,datetime,importlib,unittest,timeout_decorator,mosspy,contextlib
 from io import StringIO
-#from RestrictedPython import compile_restricted,utility_builtins,limited_builtins
+from RestrictedPython import compile_restricted,utility_builtins,limited_builtins
 #from RestrictedPython.Guards import safe_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
@@ -16,7 +16,8 @@ from django.utils.crypto import get_random_string
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
-from . import my_globals
+from .Lib import my_globals
+
 User = get_user_model()
 # Create your views here.
 
@@ -62,14 +63,15 @@ def GenerateAssign(request,classroom):
             Assignment = request.POST.get('asname', '')
             Assignment_Detail = request.POST.get('asdetail', '')
             Deadline = request.POST.get('dateInput','')
+            Available = request.POST.get('dateAvailable','')
             Hint = request.POST.get('hint','')
             Timer = request.POST.get('timer','')
             #dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
             test_case = request.POST.get('upload_testcase','')
             code_template = request.POST.get('upload_template','')
             mode = request.POST.get('mode','')
-            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=code_template ,text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
-            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline,text_template_content=code_template ,text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline, available=Available, text_template_content=code_template ,text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline ,available=Available, text_template_content=code_template ,text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
             get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
             for k in get_tracker:
                 QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
@@ -131,6 +133,7 @@ def regen(require_regen):
         quizTitle=require_regen["quizTitle"],
         quizDetail=require_regen["quizDetail"],
         deadline=require_regen["deadline"],
+        available=require_regen["available"],
         hint=require_regen["hint"],
         text_testcase_content=require_regen["text_testcase_content"],
         text_template_content=require_regen["text_template_content"],
@@ -193,6 +196,7 @@ def EditAssign(request, classroom, quiz_id):
             Assignment = request.POST.get('asname', '')
             Assignment_Detail = request.POST.get('asdetail', '')
             Deadline = request.POST.get('dateInput', '')
+            Available = request.POST.get('dateAvailable', '')
             Hint = request.POST.get('hint', '')
             Timer = request.POST.get('timer', '')
             asd = request.FILES.get('upload_testcase', False)
@@ -212,6 +216,7 @@ def EditAssign(request, classroom, quiz_id):
                 regen({"quizTitle":Assignment,
                                  "quizDetail":Assignment_Detail,
                                  "deadline":Deadline,
+                                 "available":Available,
                                  "hint":Hint,
                                  "text_testcase_content":test_case,
                                  "text_template_content":code_template,
@@ -227,6 +232,7 @@ def EditAssign(request, classroom, quiz_id):
                 quiz.quizTitle = Assignment
                 quiz.quizDetail = Assignment_Detail
                 quiz.deadline = Deadline
+                quiz.available = Available
                 quiz.hint = Hint
                 quiz.text_testcase_content = test_case
                 quiz.text_template_content = code_template
@@ -275,15 +281,16 @@ def EditAssign(request, classroom, quiz_id):
         context = {'quizedit': quiz,
                    'quiztedit': quizTimer,
                    'quizdedit': quiz.deadline,
+                   'quizaedit': quiz.available,
                   }
         return render(request, 'EditAssignment.html', context)
 
-#@timeout_decorator.timeout(10, use_signals=False)
+#@timeout_decorator.timeout(5, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True and not request.user.is_admin:
+    elif ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline, timer_stop, name
@@ -312,7 +319,7 @@ def uploadgrading(request, classroom, quiz_id):
         deadline.astimezone(timezone.utc).replace(tzinfo=None)
         #print(t)
         #print(deadline)
-        if t >= deadline:
+        if ((t > deadline or t < quiz.available) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))) :
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
     try:
@@ -413,14 +420,16 @@ def uploadgrading(request, classroom, quiz_id):
                              "    globals()[name]['max_score'] += self.points\n" \
                              "    try:\n" \
                              "        self.assertEquals(self.actual, self.expected)\n" \
-                             "        if self.level < 2:\n" \
-                             "            globals()[name]['case'][{0}] = ({1},{2},'PASS')\n" \
+                             "        if self.level == 0:\n" \
+                             "            globals()[name]['case'][{0}] = str({1})+' == '+str({2})\n" \
+                             "        elif self.level == 1:\n" \
+                             "            globals()[name]['case'][{0}] = 'PASS'\n" \
                              "        globals()[name]['score'] += self.points\n" \
                              "    except Exception as e:\n" \
                              "        if self.level == 0:\n" \
-                             "            globals()[name]['case'][{0}] = ({1},{2},str(e))\n" \
+                             "            globals()[name]['case'][{0}] = str(e)\n" \
                              "        elif self.level == 1:\n" \
-                             "            globals()[name]['case'][{0}] = ({1},{2},'FAIL')\n" \
+                             "            globals()[name]['case'][{0}] = 'FAIL'\n" \
                              "        raise AssertionError\n".format(repr(MyTestCase.num), repr(actual), repr(expected),points, abs(level))
                     # print(locals())
                     # print(MyTestCase.num)
@@ -479,7 +488,7 @@ def uploadgrading(request, classroom, quiz_id):
                     f.write('\n\n')
                     for c,i in enumerate(result['case'].values()):
                         print(i)
-                        f.write("CASE {0}: ".format(c+1) + i[2] + '\n')
+                        f.write("CASE {0}: ".format(c+1) + i + '\n')
                     f.write("RESULT: %s" % result['status'])
                 f = open(in_sys_file_location + in_sys_file, 'r')
                 try:
@@ -577,7 +586,6 @@ def uploadgrading(request, classroom, quiz_id):
                     for debug_line in code:
                         #print(debug_line)
                         f.write(debug_line)
-                Upload.objects.get_or_create(title=fileName, Uploadfile=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
                 # global dict variable for each user
                 name = request.user.userId
                 result = {
@@ -591,7 +599,8 @@ def uploadgrading(request, classroom, quiz_id):
                 with open('./media/' + fileName, 'r+') as f:
                     code = f.read()
                     restricted_globals = dict(__builtins__=my_globals.mgb()) # pass libs as parameters
-                    eval(compile(code, filename='./media/' + fileName, mode='exec'), restricted_globals, {})
+                    sandboxe = eval(compile(code, filename='./media/' + fileName, mode='exec'), restricted_globals, {})
+                    del sandboxe
                     f.seek(0, 0)
                     if "# lib" in quiz.text_testcase_content.splitlines()[0]:
                         f.write("import ".rstrip('\r\n') + quiz.text_testcase_content.splitlines()[0][6:].rstrip('\r\n') + '\n' + code)
@@ -600,17 +609,15 @@ def uploadgrading(request, classroom, quiz_id):
                     #else:
                         #libs = []
 
-                #if fileName[:-3] in sys.modules:
-                    #del sys.modules[fileName[:-3]]
+                if fileName[:-3] in sys.modules:
+                    del sys.modules[fileName[:-3]]
                     # importlib.invalidate_caches()
-                    #prob = importlib.import_module(fileName[:-3])
+                    prob = importlib.import_module(fileName[:-3])
                     # importlib.reload(prob)
-                #else:
-                    #prob = importlib.import_module(fileName[:-3])
+                else:
+                    prob = importlib.import_module(fileName[:-3])
                     # importlib.reload(prob)
                     # print(prob)
-                #setattr(module, 'prob', prob)
-                #return None
                 with open('./media/' + fileName, 'a') as f:
                     case = quiz.text_testcase_content
                     f.write('\n')
@@ -625,26 +632,9 @@ def uploadgrading(request, classroom, quiz_id):
                 def assert_equal(actual, expected, points=0, level=0):
                     #rand_string = get_random_string(length=7)
                     MyTestCase.num += 1
-                    string = "def test_{0}(self):\n" \
-                             "    self.actual = {1}\n" \
-                             "    self.expected = {2}\n" \
-                             "    self.points = {3}\n" \
-                             "    self.level = {4}\n" \
-                             "    globals()[name]['max_score'] += self.points\n" \
-                             "    try:\n" \
-                             "        self.assertEquals(self.actual, self.expected)\n" \
-                             "        if self.level < 2:\n" \
-                             "            globals()[name]['case'][{0}] = ({1},{2},'PASS')\n" \
-                             "        globals()[name]['score'] += self.points\n" \
-                             "    except Exception as e:\n" \
-                             "        if self.level == 0:\n" \
-                             "            globals()[name]['case'][{0}] = ({1},{2},str(e))\n" \
-                             "        elif self.level == 1:\n" \
-                             "            globals()[name]['case'][{0}] = ({1},{2},'FAIL')\n" \
-                             "        raise AssertionError\n".format(repr(MyTestCase.num),repr(actual),repr(expected),points,abs(level))
                     #print(locals())
                     #print(MyTestCase.num)
-                    eval(compile(string, 'defstr', 'exec'), globals(), locals())
+                    eval(compile(my_globals.string(MyTestCase.num, actual, expected, points, level), 'defstr', 'exec'),globals(),locals())
                     #print(str(actual)+str(expected)+str(points)+str(hidden))
                     #print(string)
                     #print(globals())
@@ -656,7 +646,8 @@ def uploadgrading(request, classroom, quiz_id):
                     #print(method_list)
                 # Exec
                 with stdoutIO() as gradingstr:
-                    eval(compile(code,'gradingstr', 'exec'))
+                    #eval(compile(code,'gradingstr', 'exec'),globals(),locals())
+                    eval(compile(quiz.text_testcase_content, 'gradingstr', 'exec'), globals(), locals())
                 gradingstr_out = gradingstr.getvalue()#.split('\n')
                 #print(gradingstr_out)
                 #return None
@@ -700,56 +691,56 @@ def uploadgrading(request, classroom, quiz_id):
                 with open('./media/' + fileName, 'a') as f:
                     f.write('\n\n')
                     for c,i in enumerate(result['case'].values()):
-                        print(i)
-                        f.write("CASE {0}: ".format(c+1) + i[2] + '\n')
+                        #print(i)
+                        f.write("CASE {0}: ".format(c+1) + i + '\n')
                     f.write("RESULT: %s" % result['status'])
-                f = open('./media/' + fileName, 'r')
-                try:
-                    quiz_score = QuizScore.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom)
+                Upload.objects.get_or_create(title=fileName, Uploadfile=fileName, user=request.user, quiz=quiz,classroom=quiz.classroom)
+                with open('./media/' + fileName, 'r') as f:
+                    try:
+                        quiz_score = QuizScore.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom)
+                        if quiz.mode == "Scoring":
+                            if result['score'] >= quiz_score.total_score:
+                                #print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
+                                #print(str(score_total)+":"+str(result_model))
+                                #print(fileName)
+                                #return None
+                                quiz_score.total_score = result['score']
+                                quiz_score.passOrFail = 0
+                                quiz_score.max_score = result['max_score']
+                                quiz_score.code =  Upload.objects.get(title=fileName) #f.read()
+                                quiz_score.save()
+                        else:
+                            if result['score'] >= quiz_score.passOrFail:
+                                quiz_score.total_score = 0
+                                quiz_score.passOrFail = result['score']
+                                quiz_score.max_score = result['max_score']
+                                quiz_score.code = Upload.objects.get(title=fileName)  # f.read()
+                                quiz_score.save()
+                    except ObjectDoesNotExist:
+                        if quiz.mode == "Scoring":
+                            x = (1,0)
+                        else:
+                            x = (0,1)
+                        quiz_score = QuizScore.objects.create(quizId=quiz,
+                                                              userId=User.objects.get(
+                                                                  userId=request.user.userId),
+                                                              classroom=quiz.classroom,
+                                                              total_score=result['score']*x[0],
+                                                              passOrFail=result['score']*x[1],
+                                                              max_score=result['max_score'],
+                                                              code=Upload.objects.get(title=fileName)  # f.read(),
+                                                              )
+                    upload_instance = Upload.objects.get(title=fileName, Uploadfile=fileName ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                     if quiz.mode == "Scoring":
-                        if result['score'] >= quiz_score.total_score:
-                            #print(str(quiz_score.total_score) + ":" + str(quiz_score.passOrFail))
-                            #print(str(score_total)+":"+str(result_model))
-                            #print(fileName)
-                            #return None
-                            quiz_score.total_score = result['score']
-                            quiz_score.passOrFail = 0
-                            quiz_score.max_score = result['max_score']
-                            quiz_score.code =  Upload.objects.get(title=fileName) #f.read()
-                            quiz_score.save()
-                    else:
-                        if result['score'] >= quiz_score.passOrFail:
-                            quiz_score.total_score = 0
-                            quiz_score.passOrFail = result['score']
-                            quiz_score.max_score = result['max_score']
-                            quiz_score.code = Upload.objects.get(title=fileName)  # f.read()
-                            quiz_score.save()
-                except ObjectDoesNotExist:
-                    if quiz.mode == "Scoring":
-                        x = (1,0)
-                    else:
-                        x = (0,1)
-                    quiz_score = QuizScore.objects.create(quizId=quiz,
-                                                          userId=User.objects.get(
-                                                              userId=request.user.userId),
-                                                          classroom=quiz.classroom,
-                                                          total_score=result['score']*x[0],
-                                                          passOrFail=result['score']*x[1],
-                                                          max_score=result['max_score'],
-                                                          code=Upload.objects.get(title=fileName)  # f.read(),
-                                                          )
-                upload_instance = Upload.objects.get(title=fileName, Uploadfile=fileName ,user=request.user, quiz=quiz, classroom=quiz.classroom)
-                if quiz.mode == "Scoring":
-                    if quiz_score.total_score == None:
-                        result['score'] = 0
-                    upload_instance.score = result['score']
-                elif quiz.mode == "Pass or Fail":
-                    if quiz_score.passOrFail == None:
-                        result['score'] = 0
-                    upload_instance.score = result['score']
-                upload_instance.save(update_fields=["score"])
-                f.close()
-                #print(eval('dir()'))
+                        if quiz_score.total_score == None:
+                            result['score'] = 0
+                        upload_instance.score = result['score']
+                    elif quiz.mode == "Pass or Fail":
+                        if quiz_score.passOrFail == None:
+                            result['score'] = 0
+                        upload_instance.score = result['score']
+                    upload_instance.save(update_fields=["score"])
+                    #print(eval('dir()'))
             try:
                 return render(request, 'Upload.html', {'quizTitle': quiz.quizTitle,
                                                        'quizDetail': quiz.quizDetail,

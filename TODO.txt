@@ -1,2 +1,24 @@
-1.fix str to object with repr()
-2.change hidden to level 0 - 2
+#0.fix str to object with repr()
+#1.change hidden to level 0 - 2
+#2.show quiz when the time has come.
+#3.tracker percent divide by quiz avaiable
+4.ranking system can do quiz if rank equal or beyond.
+5.timeout for each case
+
+                             "        with test_timeout(5):\n" \
+                             "            try:\n" \
+                             "                self.assertEquals(self.actual, self.expected)\n" \
+                             "                if self.level == 0:\n" \
+                             "                    globals()[name]['case'][{0}] = str({1})+' == '+str({2})\n" \
+                             "                elif self.level == 1:\n" \
+                             "                    globals()[name]['case'][{0}] = 'PASS'\n" \
+                             "                globals()[name]['score'] += self.points\n" \
+                             "            except TestTimeout as t:\n" \
+                             "                globals()[name]['case'][{0}] = str(t)\n" \
+===================================================================================================
+                             "        self.assertEquals(self.actual, self.expected)\n" \
+                             "        if self.level == 0:\n" \
+                             "            globals()[name]['case'][{0}] = str({1})+' == '+str({2})\n" \
+                             "        elif self.level == 1:\n" \
+                             "            globals()[name]['case'][{0}] = 'PASS'\n" \
+                             "        globals()[name]['score'] += self.points\n" \

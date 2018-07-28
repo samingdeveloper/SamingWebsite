@@ -1,0 +1,5 @@
+{
+  "pt.py::test_answer": true,
+  "pt.py::test_raises": true,
+  "pt.py::test_recursion_depth": true
+}

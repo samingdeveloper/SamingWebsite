@@ -3,9 +3,10 @@ from .models import *
 from Assign_Management.models import Upload
 from django.core import serializers
 from django.http import Http404
-from django.contrib.auth.models import Group
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 #from LogIn_Management.models import extraauth,Tracker
 from Assign_Management import views
 import json
@@ -233,8 +234,11 @@ def Home(request,classroom):
 
     else:
         #print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
-        x=Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom))
-        data = serializers.serialize('json',x)
+        if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
+            quiz_set = Quiz.objects.filter(classroom__className=classroom)
+        else:
+            quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()))
+        data = serializers.serialize('json',quiz_set)
         request.session["quiz"]=json.loads(data)
         context = {
             #'var':User.objects.get(userId=var).studentYear,
@@ -242,7 +246,7 @@ def Home(request,classroom):
             'classroom_creator':ClassRoom.objects.get(className=classroom).creator.get_full_name,
             'user_obj':User.objects.all(),
             'user_group': user_group,
-            'quiz':x,
+            'quiz':quiz_set,
         }
         return render(request,'Home.html',context)
 
@@ -255,7 +259,7 @@ def About(request, classroom):
 def GenerateClassroom(request):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
-    elif request.method == "POST" and request.user.is_admin:
+    elif request.method == "POST":
         classname = request.POST["classname"]
         if classname is not '':
             classroom_instance = ClassRoom.objects.create(className=classname,creator=request.user)
@@ -269,9 +273,9 @@ def GenerateClassroom(request):
         return render(request, 'CreateClassroom.html')
 
 def EditClassroom(request,classroom):
-    if not request.user.is_authenticated or not request.user.is_admin:
+    if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
-    elif request.method == "POST" and request.user.is_admin:
+    elif request.method == "POST":
         classroom_instance = ClassRoom.objects.get(className=classroom)
         user_group = {"teacher": User.objects.filter(groups__name=classroom + '_' + "Teacher"),
                       "ta": User.objects.filter(groups__name=classroom + '_' + "TA"),
@@ -378,7 +382,7 @@ def StudentInfo(request,classroom):
         return export_score_csv(classroom)
 
     else:
-        quiz_count = Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)).count()
+        quiz_count = Quiz.objects.filter(classroom__className=classroom).count()
         if quiz_count == 0:
             quiz_count = 1
         context = {
@@ -401,7 +405,10 @@ def StudentScoreInfo(request,classroom,userId):
         try:
             #print("try")
             score = QuizScore.objects.filter(userId=User.objects.get(userId=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
-            quiz = Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom))
+            if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"]).exists():
+                quiz = Quiz.objects.filter(classroom__className=classroom)
+            else:
+                quiz = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()))
             x = 0
             y = 0
             for i in score:
@@ -426,6 +433,8 @@ def StudentScoreInfo(request,classroom,userId):
 def StudentQuizListInfo(request,classroom,userId,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
+    elif (Quiz.objects.get(pk=quiz_id).available > timezone.localtime(timezone.now()) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
     else:
         if request.user.userId == userId or request.user.is_admin:
             if request.method == 'POST':
@@ -455,6 +464,9 @@ def StudentQuizListInfo(request,classroom,userId,quiz_id):
 def StudentQuizInfo(request,classroom,userId,quiz_id,file_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
+
+    elif (Quiz.objects.get(pk=quiz_id).available > timezone.localtime(timezone.now()) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     elif request.method == 'POST' and request.user.is_admin or request.method == 'POST' and request.user.userId == userId:
         if userId != request.user.userId and not request.user.is_admin:
