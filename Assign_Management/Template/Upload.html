@@ -1,14 +1,12 @@
+
 {% load static %}
 <html lang="en">
 {% block content %}
 <head>
     <meta charset="utf-8">
     <link rel="icon" type="png" href="{% static 'grading_code/images/logo.png' %}" />
-    <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=thai" rel="stylesheet">
-
      <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet'
         type='text/css'>
-        
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Saming</title>
@@ -16,18 +14,18 @@
     <script src="{% static 'grading_code/js/navbar_Assignment.js' %}"></script>
 
 <!-- start Section of codemirror -->
-    <link rel="stylesheet" href="{% static 'codemirror/plugin/codemirror-5.32.0/doc/docs.css' %}">
-    <link rel="stylesheet" href="//codemirror.net/lib/codemirror.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/blackboard.css">
-    <script  src="//codemirror.net/lib/codemirror.js"></script>
-    <script  src="//codemirror.net/mode/python/python.js"></script>
+    <link rel="stylesheet" href="{% static 'grading_code/codemirror-5.39.2/doc/docs.css' %}">
+    <link rel="stylesheet" href="{% static 'grading_code/codemirror-5.39.2/lib/codemirror.css' %}">
+    <link rel="stylesheet" href="{% static 'grading_code/codemirror-5.39.2/theme/blackboard.css' %}">
+    <script  src="{% static 'grading_code/codemirror-5.39.2/lib/codemirror.js' %}"></script>
+    <script  src="{% static 'grading_code/codemirror-5.39.2/mode/python/python.js' %}"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- ENd -->
+<!-- end -->
 </head>
 
 <body style="margin: 0;
     background-color: #204056;
-    font-family: 'Kanit', sans-serif;
+    font-family: 'Lato', sans-serif;
 	font-size: 16px;
     font-weight: 300;
     overflow-y: auto;" onunload="myFunction()">
@@ -94,6 +92,7 @@
             <div class="column side">
                 <div class="result">
                     {{ exception }}
+                    <pre><span style="white-space: pre-line">{{ prints }}</span></pre>
                     {% for case_result in display.case %}
                         {% if case_result == 'PASS' %}
                             <span style="color:#00ff00"> CASE {{ forloop.counter }}: {{ case_result }} </span><br><br>
@@ -134,14 +133,17 @@
     </script>
     {% endif %}
 
+    <!-- codemirror theme -->
     <script>
         var editor = CodeMirror.fromTextArea(document.getElementById("code-form-comment"), {
        theme : "blackboard",
        lineNumbers: true,
+       indentUnit: 4,
        });
         editor.setSize("100%", 550);
     </script>
 
+    <!-- time's up script -->
     <script>
         var deadline =  new Date({{ Deadtimestamp }});
         if ("{{ Timer }}" == "False" ){

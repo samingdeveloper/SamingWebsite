@@ -9,7 +9,7 @@
                             <div class="related-widget-wrapper">
 
 
-        <a class="related-widget-wrapper-link add-related" id="add_id_user" href="/admin/LogIn_Management/user/add/?_to_field=username&amp;_popup=1" title="Add another user"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>
+        <a class="related-widget-wrapper-link add-related" id="add_id_user" href="/admin/LogIn_Management/user/add/?_to_field=userId&amp;_popup=1" title="Add another user"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a>
 
 <div class="selector">
     <div class="selector-available">
@@ -65,10 +65,10 @@
                     #print(fields)
                     try:
                         User.objects.get(email=fields[0],
-                                                   username=fields[1],
+                                                   userId=fields[1],
                                                    first_name=fields[2],
                                                    last_name=fields[3],
-                                                   studentId=fields[4],
+                                                   userId=fields[4],
                                                    is_active=fields[5].capitalize(),
                                                    is_staff=fields[6].capitalize(),
                                                    is_admin=fields[7].capitalize().rstrip()).delete()

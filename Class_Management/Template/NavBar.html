@@ -6,52 +6,44 @@
     <meta charset="utf-8">
     <link rel="icon" type="png" href="{% static 'grading_code/images/logo.png' %}" />
     <title>Saming</title>
-    
+
     <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/style.css' %}">
     <script src="{% static 'grading_code/js/navbar.js' %}"></script>
 
-    <link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=latin-ext,thai,vietnamese" rel='stylesheet' type='text/css'>
-    
+    <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet'
+        type='text/css'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 </head>
-
-<style>
-    .w {
-        background-color: brown;
-        color:white;
-    }
-    .w:hover {
-        background-color: brown;
-        color:white;
-    }
-</style>
-
 <body style="background-image: url('{% static "grading_code/images/background.png"%}')";>
     <div class="navbar">
         <div class="logo">
             <button class="logo1" onclick="myFunction1()">
                 <img src="{% static 'grading_code/images/Tap.png' %}" width="auto" height="30"> </button>
-            <span style ="margin-left: 20px;">
+            <span style="margin-left: 20px;">
                 <img src="{% static 'grading_code/images/saming.png' %}" width="auto" height="30"> </span>
         </div>
 
         <div id="wrap">
-                <div id="content">
-                    <div class="tab">
-                        <button class="tablinks" onclick="location.href='/ClassRoom/{{request.session.classroom}}';"  id="defaultOpen">
-                            Home
-                        </button>
-                        <button class="tablinks" onclick="location.href='{% url 'Class_Management:StudentInfo' request.session.classroom %}';">
-                            Student
-                        </button>
-                    </div>
-                    <div id="steam" class="tabcontent"></div>
-                    <div id="student" class="tabcontent"></div>
-                    <div id="about" class="tabcontent"></div>
+            <div id="content">
+                <div class="tab">
+                    <button class="tablinks" onclick="location.href='/ClassRoom/{{request.session.classroom}}';"  id="defaultOpen">
+                        Steam
+                    </button>
+                    <button class="tablinks" onclick="location.href='{% url 'Class_Management:StudentInfo' request.session.classroom %}';">
+                        Student
+                    </button>
+                    <button class="tablinks" onclick="location.href='{% url 'Class_Management:Manual' request.session.classroom %}';">
+                        Manual
+                    </button>
                 </div>
+                <div id="steam" class="tabcontent"></div>
+                <div id="student" class="tabcontent"></div>
+                <div id="manual" class="tabcontent"></div>
+            </div>
         </div>
 
         <div class="dropdown">
@@ -68,10 +60,10 @@
     </div>
     <!-- input assignment -->
     <div id="mySidenav" class="sidenav">
-            <a class="w" href="{% url 'Class_Management:select_class'%}">Select Class</a>
-            {%  for i in request.session.quiz %}
-                <a href={% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.pk %}>{{ i.fields.quizTitle }}</a>
-            {% endfor %}
+        <a href="{% url 'Class_Management:select_class'%}">Select Class</a>
+        {%  for i in request.session.quiz %}
+            <a href={% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.pk %}>{{ i.fields.quizTitle }}</a>
+        {% endfor %}
     </div>
     {% block content %}{% endblock content %}
 </body>

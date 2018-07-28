@@ -14,20 +14,20 @@
                 <tr>
                     <th>File Name</th>
                     <th>Score</th>
-                    {% if request.user.username == username %}
+                    {% if request.user.userId == userId %}
                     <th><input type="checkbox" name="chkall" id="chkall" onclick="chkall(this)" style="display:none"></th>
                     {% endif %}
                 </tr>
                 {%  for i in file_list %}
                 <tr>
                     <td>
-                        <a href="{% url 'Class_Management:StudentQuizInfo' request.session.classroom username quiz_id i.title %}">{{ i.title }}</a>
+                        <a href="{% url 'Class_Management:StudentQuizInfo' request.session.classroom userId quiz_id i.id %}">{{ i.title }}</a>
                     </td>
                     <td>
                         {{ i.score }}
                     </td>
                     <form method="post"> {% csrf_token %}
-                        {% if request.user.username == username %}
+                        {% if request.user.userId == userId %}
                     <td>
                         <input type="checkbox" id="myCheck{{i.title}}" name="cb" value="{{ i.title }}" onclick="checkFile('{{i.title}}')">
 
@@ -39,7 +39,7 @@
                 </tr>
                 {% endfor %}
             </table>
-            {% if request.user.username == username %}
+            {% if request.user.userId == userId %}
             <button type="submit" id="bbox" name="delete" style="display:none;">Delete</button>
             {% endif %}
             </form>

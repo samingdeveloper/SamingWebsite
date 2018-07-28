@@ -1,424 +1,112 @@
 {% extends "NavBar.html" %}
 {% block content %}
 {% load static %}
-<link href="https://fonts.googleapis.com/css?family=Kanit&amp;subset=latin-ext,thai,vietnamese" rel='stylesheet' type='text/css'>
-<link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
-<script src="{% static '/grading_code/js/popup.js' %}"></script>
-<style>
-body {
-    margin: 0;
-    background: white url("paper.png"); 
-    font-family: 'Kanit', sans-serif;
-	font-size: 16px;
-    font-weight: 300;
-    overflow-y: auto;
-}
+{% load group_tags %}
+    <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
+    <script src="{% static '/grading_code/js/popup.js' %}"></script>
 
-.center {
-    text-align: center;
-}
+    <!-- Trigger/Open The Modal -->
 
-.column {
-    float: left;
-    padding: 5px;
-}
+    <!-- input assignment -->
+    <div class="banner">
+        <div class="nameclass">{{ classname }}</div>
+        <div class="nameadmin">{{ classroom_creator }}</div>
+    </div>
 
-/* Left and right column */
-.column.side {
-    width: 20%;
-}
-
-/* Middle column */
-.column.middle {
-    width: 60%;
-}
-
-/* Clear floats after the columns */
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-.boxassign{
-	width: 100%;
-	height: 50px;
-	background-color: #3c3c3c;
-	margin-left: 120px;
-    box-shadow: 0 5px 50px rgba(0,0,0,0.1);
-}
-
-.boxassign2{
-    width: 100%;
-    height: auto;
-	background-color: #f4f3ed;
-	border: 1px solid #dad7d7;
-    box-shadow: 0 5px 50px rgba(0,0,0,0.1);
-}
-
-.boxadmin {
-	width: 100%;
-	height:  250px;
-	max-height: 500px;
-	background-color: #f4f3ed;
-	margin-left: 100px;
-	border: 1px solid #dad7d7;
-	box-shadow: 0 5px 50px rgba(0,0,0,0.1);
-	overflow-y: auto;
-	margin-bottom: 20px;
-    font-family: 'Kanit', sans-serif;
-    font-family: 'Kanit', cursive;
-	font-size: 16px;
-	font-weight: 300;
-	text-align: center;
-}
-
-.boxadmin:hover {
-	background-color: rgb(238, 235, 235);
-	-webkit-transition-duration: 0.2s; /* Safari */
-    transition-duration: 0.2s;
-}
-
-.boxadd {
-    font-family: 'Kanit', sans-serif;
-	width: 100%;
-	height:  50px;
-	margin-left: 100px;
-	border: 0.5px solid #b1b1b1;
-	box-shadow: 1px 1px 2px 0px rgba(50,50,50,.4);
-	font-size: 16px;
-	font-weight: 400;
-	background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.boxadd:hover {
-	background-color: #1e90ff;
-	-webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-}
-
-.detail{
-	text-indent: 20px;
-	color: #5a5a5a;
-	font-size: 16px;
-	line-height: normal;
-    padding: 5px;
-    text-align:justify;
-
-}
-
-.nameassign{
-	color: #fff;
-	text-indent: 20px;
-	font-size: 20px;
-	font-weight: 300px;
-	padding: 5px;
-	padding-top: 10px;
-}
-
-.nameclass {
-    padding-top: 90px;
-	font-size: 26px;
-	font-weight: bold;
-	text-align: center;
-	top: 90px;
-    color: #FFFFFF;
-}
-
-.nameadmin {
-    padding-top: 10px;
-	font-size: 20px;
-	text-align: center;
-	top: 100px;
-    color: #FFFFFF;
-}
-
-.delete {
-    font-family: 'Kanit', sans-serif;
-	background-color: #4CAF50;
-	color: white;
-	text-align: center;
-	cursor: pointer;
-    border-radius: 5%;
-}
-
-.delete:hover {
-	background: #1e90ff;
-	color: #fff;
-}
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-}
-    
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: auto;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 4px;
-    padding: 4px 6px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    margin-left: -60px;
-    opacity: 0;
-    transition: opacity 1s;
-}
-    
-.tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 60%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-    
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-button1{
-    font-size:14px;  
-    padding: 2px 1px 0px 1px;
-    -moz-border-radius: ุ 10px;
-    -webkit-border-radius: 10px;
-    text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
-    -webkit-transition-duration: 0.4s; /* Safari*/
-    transition-duration: 0.4s;
-    border-radius: 100%;
-    border: none;
-    cursor: pointer;
-    position: fixed;
-    width: 50px;
-	height: 50px;
-	bottom: 20px;
-	right: 20px;
-}
-
-button1:hover{ 
-    background: rgba(255, 255, 255, 0.137); 
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 5px 15px 30px 5px rgba(255, 255, 255, 0.137);
-}
+    <div id="main">
+    {% if add_status == 1 %}
+        <script>
+            alert("Added Success.");
+        </script>
+        {% elif add_status == 2 %}
+        <script>
+            alert("Failed,Check your input.");
+        </script>
+        {% elif add_status == 3 %}
+        <script>
+            alert("Deleted Success.");
+        </script>
+        {% elif add_status == 4 %}
+        <script>
+            alert("User can't be found in class.");
+        </script>
+    {% endif %}
+        <div class="row">
+            <div class="column side">
+                <div class="boxadmin">
 
 
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 2; /* Sit on top */
-    padding-top: 70px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow-y: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-    position: relative;
-    background-color: #f2f2f2;
-    margin: auto;
-    padding: 0;
-    /*border: 1px solid #888;*/
-    border-radius: 4px;
-    width: 400px;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-
-/* Add Animation */
-@-webkit-keyframes animatetop {
-    from {
-        top: -300px;
-        opacity: 0;
-    }
-    to {
-        top: 0;
-        opacity: 1
-    }
-}
-
-@keyframes animatetop {
-    from {
-        top: -300px;
-        opacity: 0;
-    }
-    to {
-        top: 0;
-        opacity: 1;
-    }
-}
-
-/* The Close Button */
-.close {
-    color: white;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: rgb(221, 216, 216);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.modal-header {
-    padding: 2px 16px;
-    background-color: rgb(85, 81, 81);
-    color: rgb(255, 255, 255);
-    /*border: 1px solid rgb(207, 207, 207);*/
-    /*border-radius: 4px;*/
-}
-
-.modal-body {
-    padding: 2px 16px;
-}
-
-input[type=text], select, textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid rgb(211, 211, 211);
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin-top: 6px;
-    margin-bottom: 16px;
-    resize: none;
-}
-
-input[type=submit] {
-    width: 20%;
-    padding: 12px;
-    border: none;
-    border-radius: 2px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    font-family: 'Kanit', sans-serif;
-	color: white;
-	text-align: center;
-}
-
-input[type=submit]:hover {
-    background-color: #1e90ff;
-	color: #fff;
-}
-</style>
-
-        <div class="banner">
-            <div class="nameclass">{{ classname }}</div>
-            <div class="nameadmin">{{ classroom_creator }}</div>
-        </div>
-        <div id="main">
-            {% if add_status == 1 %}
-            <script>
-                alert("Added Success.");
-            </script>
-            {% elif add_status == 2 %}
-            <script>
-                alert("Failed,Check your input.");
-            </script>
-            {% elif add_status == 3 %}
-            <script>
-                alert("Deleted Success.");
-            </script>
-            {% elif add_status == 4 %}
-            <script>
-                alert("User not in class.");
-            </script>
-            {% endif %}
-            <div class="row">
-                <div class="column side">
-                    <div class="boxadmin">
-                        <p>Teacher:</p>
-                        {% for i in user_group.teacher %}
+                    <p>Teacher:</p>
+                    {% for i in user_group.teacher %}
                         <p>{{ i.get_full_name }}</p>
-                        {% endfor %}
-                        <p>TA:</p>
-                        {% for j in user_group.ta %}
-                        <p>{{ j.get_full_name }}</p>
-                        {% endfor %}
-                    </div>
-                    {%  if request.user.is_admin %}
-                    <button id="myBtn" class="boxadd">Add Admin</button>
-                    {% endif %}
-                </div>
-                <div class="column middle">
-                    {%  for i in quiz %}
-                    <div class="boxassign">
-                        <div class="nameassign">{{ i.quizTitle }}</div>
-                    </div>
-                    <div class="boxassign2">
-                        <div class="detail">
-                            <p>Assignment name : {{ i.quizTitle }}</p>
-                            <p>Hint: {{ i.hint }}</p>
-                            {% if i.quiztimer_set.all.0.timer %}
-                            <p>Time: {{ i.quiztimer_set.all.0.timer_stop }} </p>
-                            {% endif %}
-                            <p>Deadline : {{ i.deadline }}</p>
-                        </div>
-                        {%  if request.user.is_admin %}
-                        <input type="submit" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id %}')" value="MOSS">
-                        <input type="submit" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" value="Delete">
-                        <input type="submit" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'" value="Edit">
-                        <input type="submit" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'" value="view">
-                        {%  else %}
-                        <input type="submit" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'" value="Open">
-                        {% endif %}
-                    </div>
                     {% endfor %}
-
-                    {%  if request.user.is_admin %}
-                    <div class="tooltip">
-                        <button1>
-                            <span class="tooltiptext">Quiz</span>
-                            <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
-                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                            </a>
-                        </button1>
-                    </div>
-                    {% endif %}
+                    <p>TA:</p>
+                    {% for j in user_group.ta %}
+                        <p>{{ j.get_full_name }}</p>
+                    {% endfor %}
                 </div>
+                {%  if request.user|can_manage:request.session.classroom %}
+                <button id="myBtn" class="boxadd">Manage</button>
+                {% endif %}
+            </div>
+
+            <div class="column middle">
+            {%  for i in quiz %}
+                <div class="boxassign">
+                    <div class="nameassign">{{ i.quizTitle }}</div>
+                </div>
+                <div class="boxassign2">
+                    {%  if request.user.is_admin %}
+                    <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id %}')" value="MOSS">
+                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
+                    {%  else %}
+                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
+                    {% endif %}
+                    <div class="detail">
+                        <p>Assignment name : {{ i.quizTitle }}</p>
+                        <p>Hint: {{ i.hint }}</p>
+                        {% if i.quiztimer_set.all.0.timer %}
+                            <p>Time: {{ i.quiztimer_set.all.0.timer_stop }} </p>
+                        {% endif %}
+                        <p>Deadline : {{ i.deadline }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {%  if request.user|can_manage:request.session.classroom %}
+                <div class="tooltip">
+                    <button1>
+                        <span class="tooltiptext">Quiz</span>
+                        <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
+                            <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                        </a>
+                    </button1>
+                </div>
+                {% endif %}
             </div>
         </div>
+    </div>
+    {%  if request.user|can_manage:request.session.classroom %}
         <div id="myModal" class="modal">
             <!-- Modal content -->
             <div class="modal-content">
                 <div class="modal-header">
                     <span class="close">&times;</span>
-                    <h4>Add Admin</h4>
+                    <h4>Manage</h4>
                 </div>
                 <div class="modal-body">
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
+                    <form method="post" enctype="multipart/form-data"> {% csrf_token %}
                         <br>
                         <label for="email" id="e_mail">Email:</label>
                         <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
+
                         <label for="test_case" id="t1" style="display:none">CSV:</label>
                         <input type="file" name="upload_testcase" style="display:none" id="csv_file" />
                         <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" style="display:none" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
                         <input type="button" name="uploadbutton" id="t3" value="Choose File" style="display:none" onclick="upload_testcase.click()" onmouseout="uploadtext_testcase.value=upload_testcase.value">
+
                         <label for="country" id="status">Status:</label>
                         <select id="country" name="country" onchange="validate();">
                             <option value="Teacher"> Teacher</option>
@@ -428,6 +116,7 @@ input[type=submit]:hover {
                             <option value="CSV"> CSV User </option>
                             {% endif %}
                         </select>
+
                         <label for="country">Action:</label>
                         <select id="country" name="action">
                             <option value="add"> Add</option>
@@ -435,74 +124,78 @@ input[type=submit]:hover {
                         </select>
                         <br></br>
                         <input type="submit" name="add_status" value="PROCEED">
+
                         <br></br>
                     </form>
                 </div>
             </div>
         </div>
-        <script>
-            // Get the modal
-            var modal = document.getElementById('myModal');
+    {% endif %}
 
-            // Get the button that opens the modal
-            var btn = document.getElementById("myBtn");
+    <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
 
-            // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
 
-            // When the user clicks the button, open the modal
-            btn.onclick = function () {
-                modal.style.display = "block";
-            }
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
 
-            // When the user clicks on <span> (x), close the modal
-            span.onclick = function () {
+        // When the user clicks the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
                 modal.style.display = "none";
             }
-
-            // When the user clicks anywhere outside of the modal, close it
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
+        }
+    </script>
+    <script>
+        function delQuiz(url,name) {
+            if (confirm("Delete "+name+' ?')){
+                location.href=url;
+                x = location.href;
             }
-        </script>
-        <script>
-            function delQuiz(url, name) {
-                if (confirm("Delete " + name + ' ?')) {
-                    location.href = url;
-                    x = location.href;
-                }
-                else {
-                    window.close();
-                }
+            else{
+                window.close();
             }
-        </script>
-        <script>
-            function validate() {
-                var ddl = document.getElementById("country");
-                var selectedValue = ddl.options[ddl.selectedIndex].value;
-                var one = document.getElementById("t1");
-                var two = document.getElementById("uploadtext_testcase");
-                var three = document.getElementById("t3");
-                var four = document.getElementById("e_mail");
-                var five = document.getElementById("email");
-                console.log(selectedValue);
-                if (selectedValue == "CSV") {
-                    one.style.display = "block";
-                    two.style.display = "block";
-                    three.style.display = "block";
-                    four.style.display = "none";
-                    five.style.display = "none";
-                    //alert("Please select a card type");
-                }
-                else {
-                    one.style.display = "none";
-                    two.style.display = "none";
-                    three.style.display = "none";
-                    four.style.display = "block";
-                    five.style.display = "block";
-                }
+        }
+    </script>
+    <script>
+        function validate(){
+             var ddl = document.getElementById("country");
+             var selectedValue = ddl.options[ddl.selectedIndex].value;
+             var one = document.getElementById("t1");
+             var two = document.getElementById("uploadtext_testcase");
+             var three = document.getElementById("t3");
+             var four = document.getElementById("e_mail");
+             var five = document.getElementById("email");
+             console.log(selectedValue);
+                if (selectedValue == "CSV")
+               {
+                one.style.display = "block";
+                two.style.display = "block";
+                three.style.display = "block";
+                four.style.display = "none";
+                five.style.display = "none";
+                //alert("Please select a card type");
+               }
+               else{
+                     one.style.display = "none";
+                     two.style.display = "none";
+                     three.style.display = "none";
+                     four.style.display = "block";
+                     five.style.display = "block";
+               }
             }
-        </script>
+    </script>
 {% endblock %}
