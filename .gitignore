@@ -4,5 +4,5 @@ pynbox
 __pycache__/
 *.py[cod]
 *$py.class
-SamingDev/settings.py
+#SamingDev/settings.py
 SamingDev/settings.py

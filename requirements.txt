@@ -1,5 +1,6 @@
 ############# framework ############# 
 Django==2.0.3
+django-session-timeout
 #django-mathfilters
 #django-globals
 #django-bootstrap4
@@ -13,6 +14,7 @@ pytz
 RestrictedPython==4.0b4
 timeout-decorator
 psycopg2-binary
+python-resources
 mosspy
 ############# pytest #############
 #pytest

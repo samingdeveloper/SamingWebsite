@@ -1,24 +1,11 @@
 #0.fix str to object with repr()
 #1.change hidden to level 0 - 2
 #2.show quiz when the time has come.
-#3.tracker percent divide by quiz avaiable
-4.ranking system can do quiz if rank equal or beyond.
-5.timeout for each case
-
-                             "        with test_timeout(5):\n" \
-                             "            try:\n" \
-                             "                self.assertEquals(self.actual, self.expected)\n" \
-                             "                if self.level == 0:\n" \
-                             "                    globals()[name]['case'][{0}] = str({1})+' == '+str({2})\n" \
-                             "                elif self.level == 1:\n" \
-                             "                    globals()[name]['case'][{0}] = 'PASS'\n" \
-                             "                globals()[name]['score'] += self.points\n" \
-                             "            except TestTimeout as t:\n" \
-                             "                globals()[name]['case'][{0}] = str(t)\n" \
-===================================================================================================
-                             "        self.assertEquals(self.actual, self.expected)\n" \
-                             "        if self.level == 0:\n" \
-                             "            globals()[name]['case'][{0}] = str({1})+' == '+str({2})\n" \
-                             "        elif self.level == 1:\n" \
-                             "            globals()[name]['case'][{0}] = 'PASS'\n" \
-                             "        globals()[name]['score'] += self.points\n" \
+#3.tracker percent divide by quiz available.
+4.multiprocessing for limit cpu usage for uploadgrading function #now limit cpu&memory usage for entire uploadgrading. multiprocessing needed.
+#5.improve grader.
+#6.save user input if no compile error.
+#7.importlib for each quiz
+8.ranking system can do quiz if rank equal or beyond.
+9.improve system file management (delete cache).
+10.Backup POSTGRES.
