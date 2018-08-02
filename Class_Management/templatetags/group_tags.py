@@ -14,6 +14,16 @@ def can_manage(user, classname):
     except:
         return False
 
+@register.filter(name='get_rank')
+def get_rank(user, classname):
+    try:
+        rank = Rank.objects.get(userId=user, classroom__className=classname)
+        return rank.rank_choices[int(rank.rank)][1]
+    except ObjectDoesNotExist:
+        rank = Rank(userId=user, classroom=ClassRoom.objects.get(className=classname))
+        rank.save()
+        return rank.get_rank_display()
+
 @register.simple_tag
 def check_rank(user, classname, quiz):
     try:

@@ -2,7 +2,7 @@
 {% block content %}
 {% load static %}
 {% load prgress_tags %}
-
+{% load group_tags %}
 <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}"
       xmlns:Class_Management="http://www.w3.org/1999/xhtml">
   <link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">
@@ -25,9 +25,10 @@
           <th>Name</th>
             <th>Email</th>
           <th>Progress</th>
+          <th>Rank</th>
         </tr>
         {% for i in User_objects %}
-        {% if not i.is_admin or request.user.is_admin %}
+        {% if not i.is_admin or request.user|can_manage:request.session.classroom %}
         <tr>
           <td>
             <a href='{% url 'Class_Management:StudentScoreInfo' request.session.classroom i.userId %}'>{{ i.userId }}</a>
@@ -39,6 +40,9 @@
                   <div id={{ i.userId }}progress>
                   </div>
             </div>
+          </td>
+          <td>
+            {{ i|get_rank:request.session.classroom }}
           </td>
         </tr>
                       <script>

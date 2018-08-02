@@ -1,5 +1,6 @@
 <!DOCTYPE html>
     {% load static %}
+    {% load group_tags %}
 <html lang="en">
 
 <head>
@@ -55,6 +56,9 @@
                     <i class="fa fa-cog" style="font-size:18px; color: grey"></i> Change password</a>
                 <a href="/LogOut">
                     <i class="fa fa-power-off" style="font-size:18px; color: grey"></i> Log out</a>
+                <a href="#Rank">
+                    <i class="fa fa-cog" style="font-size:18px; color: grey"></i> {{ request.user|get_rank:request.session.classroom }}</a>
+                </a>
             </div>
         </div>
     </div>

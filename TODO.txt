@@ -6,6 +6,8 @@
 #5.improve grader.
 #6.save user input if no compile error.
 #7.importlib for each quiz
-8.ranking system can do quiz if rank equal or beyond.
-9.improve system file management (delete cache).
-10.Backup POSTGRES.
+#8.ranking system can do quiz if rank equal or beyond.
+9.ask before delete anything.
+10.test case checking before create quiz.
+11.improve system file management (delete cache).
+12.Backup POSTGRES.

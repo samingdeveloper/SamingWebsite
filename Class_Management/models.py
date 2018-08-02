@@ -33,7 +33,7 @@ class Rank(models.Model):
         (5, "Master"),
         (6, "Challenger"),
     )
-    rank = models.CharField(max_length=100, choices=rank_choices, default=0)
+    rank = models.SmallIntegerField(choices=rank_choices, default=0)
     fixture = models.BooleanField(default=False)
     def __str__(self):
         return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
@@ -54,7 +54,7 @@ class Quiz(models.Model):
         (5, "Master"),
         (6, "Challenger"),
     )
-    rank = models.CharField(max_length=100, choices=rank_choices, default=0)
+    rank = models.SmallIntegerField(choices=rank_choices, default=0)
     mode_choices = (
         ("Pass or Fail", "Pass or Fail"),
         ("Scoring", "Scoring")
