@@ -24,7 +24,7 @@ class Upload(models.Model):
     def __str__(self):
         return self.title
 
-@receiver(post_delete, sender=Upload)
+@receiver(post_delete, sender=Upload, weak=False)
 def submission_delete(sender, instance, **kwargs):
     instance_var = {"classroom":instance.classroom,
                     "user":instance.user,

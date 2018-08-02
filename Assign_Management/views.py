@@ -292,7 +292,12 @@ def uploadgrading(request, classroom, quiz_id):
         return HttpResponseRedirect('/LogOut')
 
     elif ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
-        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+        try:
+            if Rank.objects.get(userId=request.user, classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank:
+                return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+        except Exception as e:
+            print(e)
+            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
@@ -312,7 +317,7 @@ def uploadgrading(request, classroom, quiz_id):
         deadline, timer_stop = timezone.localtime(quiz.deadline),timezone.localtime(Timer)
         deadline.astimezone(timezone.utc).replace(tzinfo=None)
         timer_stop.astimezone(timezone.utc).replace(tzinfo=None)
-        if t >= deadline or t >= timer_stop:
+        if (t >= deadline or t >= timer_stop or t <= quiz.available) and not (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
     elif Timer is None:
         #print("Timer is None.")
@@ -320,12 +325,13 @@ def uploadgrading(request, classroom, quiz_id):
         deadline.astimezone(timezone.utc).replace(tzinfo=None)
         #print(t)
         #print(deadline)
-        if ((t > deadline or t < quiz.available) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))) :
+        if ((t >= deadline or t <= quiz.available) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
 #################################################### Upload Section ####################################################
     try:
         code_temp = quiz.text_template_content
+        libs = None
         #my_globals.limit_grader()
         if request.method == "POST" and 'time_left' in request.POST:
             #print("this?")

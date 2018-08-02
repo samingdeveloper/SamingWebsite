@@ -4,6 +4,7 @@ from django.db.models.signals import pre_delete, m2m_changed, post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator, MaxValueValidator
 #from Assign_Management.models import Upload
 import math
@@ -19,6 +20,24 @@ class ClassRoom(models.Model):
     def __str__(self):
         return self.className
 
+class Rank(models.Model):
+    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    #elo = models.FloatField(default=0, validators=[MinValueValidator(0)])
+    rank_choices = (
+        (0, "Bronze"),
+        (1, "Silver"),
+        (2, "Gold"),
+        (3, "Platinum"),
+        (4, "Diamond"),
+        (5, "Master"),
+        (6, "Challenger"),
+    )
+    rank = models.CharField(max_length=100, choices=rank_choices, default=0)
+    fixture = models.BooleanField(default=False)
+    def __str__(self):
+        return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
+
 class Quiz(models.Model):
     quizTitle = models.CharField(unique=True, max_length=255, blank=True)
     quizDetail = models.TextField(blank=True,null=True)
@@ -26,11 +45,21 @@ class Quiz(models.Model):
     available = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
     hint = models.CharField(max_length=1024, blank=True, null=True)
+    rank_choices = (
+        (0, "Bronze"),
+        (1, "Silver"),
+        (2, "Gold"),
+        (3, "Platinum"),
+        (4, "Diamond"),
+        (5, "Master"),
+        (6, "Challenger"),
+    )
+    rank = models.CharField(max_length=100, choices=rank_choices, default=0)
     mode_choices = (
         ("Pass or Fail", "Pass or Fail"),
         ("Scoring", "Scoring")
     )
-    mode = models.CharField(max_length=100, choices=mode_choices)
+    mode = models.CharField(max_length=100, choices=mode_choices, default="Scoring")
     text_template_content = models.TextField(blank=True,null=True)
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
@@ -68,7 +97,7 @@ class QuizTimer(models.Model):
         return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
 
 class QuizTracker(models.Model):
-    quizDoneCount = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0),MaxValueValidator(100)])
+    quizDoneCount = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0),])
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
@@ -130,3 +159,31 @@ def clasroom_created(sender,instance,**kwargs):
 def clasroom_removed(sender,instance,**kwargs):
     Group.objects.get(name=instance.className+"_Teacher").delete()
     Group.objects.get(name=instance.className+"_TA").delete()
+
+@receiver(post_save, sender=QuizTracker, weak=False)
+def rank_update(sender,instance,**kwargs):
+    try:
+        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)#.update(rank=int(QuizTracker.objects.get(userId=instance.userId,classroom=instance.classroom).quizDoneCount/int((len(Quiz.objects.filter(classroom=instance.classroom))/7))))
+        if rank.fixture:
+            return None
+        rank.rank = int(QuizTracker.objects.get(userId=instance.userId,classroom=instance.classroom).quizDoneCount/int((len(Quiz.objects.filter(classroom=instance.classroom))/7))) - 1
+    except ObjectDoesNotExist:
+        rank = Rank(userId=instance.userId, classroom=instance.classroom)
+        if rank.fixture:
+            return None
+        rank.rank = int(QuizTracker.objects.get(userId=instance.userId, classroom=instance.classroom).quizDoneCount / int((len(Quiz.objects.filter(classroom=instance.classroom))/7))) -1
+    except ZeroDivisionError:
+        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
+        rank.rank = 0
+    rank.save()
+
+@receiver(pre_delete, sender=QuizTracker, weak=False)
+def rank_remove(sender,instance,**kwargs):
+    try:
+        rank = Rank.objects.get(userId=instance.userId,classroom=instance.classroom)
+        if rank.fixture:
+            return None
+        rank.delete()
+        rank.save()
+    except ObjectDoesNotExist:
+        pass

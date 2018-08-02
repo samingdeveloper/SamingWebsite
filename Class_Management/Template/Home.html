@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 {% load group_tags %}
+{% check_rank request.user request.session.classroom i.id as chkr %}
     <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
     <script src="{% static '/grading_code/js/popup.js' %}"></script>
 
@@ -52,11 +53,12 @@
 
             <div class="column middle">
             {%  for i in quiz %}
+                {% if chkr %}
                 <div class="boxassign">
                     <div class="nameassign">{{ i.quizTitle }}</div>
                 </div>
                 <div class="boxassign2">
-                    {%  if request.user.is_admin %}
+                    {%  if request.user|can_manage:request.session.classroom %}
                     <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id %}')" value="MOSS">
                     <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
                     <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
@@ -73,6 +75,7 @@
                         <p>Deadline : {{ i.deadline }}</p>
                     </div>
                 </div>
+                {% endif %}
                 {% endfor %}
 
                 {%  if request.user|can_manage:request.session.classroom %}
@@ -111,7 +114,7 @@
                         <select id="country" name="country" onchange="validate();">
                             <option value="Teacher"> Teacher</option>
                             <option value="TA"> TA</option>
-                            {% if request.user.is_admin %}
+                            {%  if request.user|can_manage:request.session.classroom %}
                             <option value="Admin"> Admin</option>
                             <option value="CSV"> CSV User </option>
                             {% endif %}
