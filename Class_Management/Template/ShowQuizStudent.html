@@ -1,6 +1,7 @@
 {% extends "NavBar.html" %}
 {% block content %}
 {% load static %}
+{% load group_tags %}
 
 
   <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/whacthAS.css' %}">
@@ -25,7 +26,9 @@
 
       <label for="showcode">Code:</label>
       <textarea type="text" id="showcode" name="showcodedetail" placeholder="">{{ code_to_show }}</textarea>
-      {% if request.user.is_admin %}
+      {% if request.user|can_manage:request.session.classroom %}
+      <label for="showtestcode">Test code:</label>
+      <textarea type="text" id="showtestcode" name="showtestcodeedetail" placeholder="">{{ quiz_to_show.text_testcode_content }}</textarea>
       <label for="showcase">Test case:</label>
       <textarea type="text" id="showcase" name="showcasedetail" placeholder="">{{ quiz_to_show.text_testcase_content }}</textarea>
       {% endif %}

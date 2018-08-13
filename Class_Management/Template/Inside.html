@@ -36,7 +36,7 @@
             {% if request.user.is_admin %}
                 <div style="margin-left:80%; margin-top:10px; margin-bottom:10px;">
                     <button class="butt" onclick="location.href='{% url 'Class_Management:EditClassroom' class.className %}'">Edit</button>
-                    <button class="butt" onclick="location.href='{% url 'Class_Management:DeleteClassroom' class.className %}'">Delete</button>
+                    <button class="butt" onclick="delClass('{% url 'Class_Management:DeleteClassroom' class.className %}', '{{ class.className }}')">Delete</button>
                 </div>
             {% endif %}
     {% endfor %}
@@ -52,4 +52,15 @@
                 </div>
 {% endif %}
 </body>
+<script>
+        function delClass(url,name) {
+            if (confirm("Delete "+name+' ?')){
+                location.href=url;
+                x = location.href;
+            }
+            else{
+                window.close();
+            }
+        }
+    </script>
 {% endblock %}

@@ -1,0 +1,211 @@
+
+{% load static %}
+<html lang="en">
+{% block content %}
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="png" href="{% static 'grading_code/images/logo.png' %}" />
+     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700|Lato:400,100,300,700,900' rel='stylesheet'
+        type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Saming</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/style_Assignment.css' %}">
+    <script src="{% static 'grading_code/js/navbar_Assignment.js' %}"></script>
+
+<!-- start Section of codemirror -->
+    <link rel="stylesheet" href="{% static 'grading_code/codemirror-5.39.2/doc/docs.css' %}">
+    <link rel="stylesheet" href="{% static 'grading_code/codemirror-5.39.2/lib/codemirror.css' %}">
+    <link rel="stylesheet" href="{% static 'grading_code/codemirror-5.39.2/theme/blackboard.css' %}">
+    <script  src="{% static 'grading_code/codemirror-5.39.2/lib/codemirror.js' %}"></script>
+    <script  src="{% static 'grading_code/codemirror-5.39.2/mode/python/python.js' %}"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- end -->
+</head>
+
+<body style="margin: 0;
+    background-color: #204056;
+    font-family: 'Lato', sans-serif;
+	font-size: 16px;
+    font-weight: 300;
+    overflow-y: auto;" onunload="myFunction()">
+    <div class="navbar">
+        <div class="logo">
+            <button class="logo1" onclick="myFunction1()">
+                <img src="{% static 'grading_code/images/Tap.png' %}" width="auto" height="30"> </button>
+            <span style="margin-left: 20px;">
+                <img src="{% static 'grading_code/images/saming.png' %}" width="auto" height="30"> </span>
+        </div>
+
+
+        <div class="dropdown">
+            <button class="dropbtn">{{ request.user.first_name }} {{ request.user.last_name }}
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="/Change_Password">
+                    <i class="fa fa-cog" style="font-size:18px; color: grey"></i> Change password</a>
+                <a href="/LogOut">
+                    <i class="fa fa-power-off" style="font-size:18px; color: grey"></i> Log out</a>
+            </div>
+        </div>
+
+    </div>
+    <!-- input assignment -->
+    <div id="mySidenav" class="sidenav">
+        <a href="{% url 'Class_Management:Home' request.session.classroom %}">Home</a>
+        {% if request.user.is_admin %}
+        <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom%}">CreateAssignment</a>
+        {% endif %}
+        {%  for i in quiz %}
+            <a href="{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}">{{ i.quizTitle }}</a>
+        {% endfor %}
+    </div>
+    <!-- input data in main ex. text or etc f -->
+
+<div id="main">
+        <div class="row">
+            <div class="column side">
+                <div class="scroll">
+                    <h1> {{ quizTitle }} </h1>
+                    <div class="p">
+                        <p>{{ quizDetail }}
+                        </p>
+                        <p>{{ Hint }}</p>
+                        <p id="Time_Up"></p>
+                        <p id="Deadline"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="column middle">
+                <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data" >
+                    {% csrf_token %}
+
+                    <textarea class="codemirror-textarea"  name="code-form-comment"  id="code-form-comment" >{{ code }}</textarea>
+
+                    <!--<option>blackboard</optionselected> //// back end -->
+                    <div id="nowtime" class="textarea1">
+                    </div>
+                    <input type="submit" class="button button1" name="code-form-submit" id="code-form-submit" value="RUN"/>
+                </form>
+            </div>
+            <div class="column side">
+                <div class="result">
+                    {{ exception }}
+                    <pre><span style="white-space: pre-line">{{ prints }}</span></pre>
+                    {% for case_result in display.case.values %}
+                        {% if case_result == 'PASS' or '==' in case_result %}
+                            <span style="color:#00ff00"> CASE {{ forloop.counter }}: {{ case_result }} </span><br><br>
+                        {% else %}
+                            <span style="color:#ff0000"> CASE {{ forloop.counter }}: {{ case_result }} </span><br><br>
+                        {% endif %}
+                    {% endfor %}
+                        {% if display.status == 'PASS' %}
+                            <span style="color:#00ff00"> RESULT: {{ display.status }} </span><br><br>
+                        {% elif display.status == 'FAIL' %}
+                            <span style="color:#ff0000"> RESULT: {{ display.status }} </span><br><br>
+                        {% endif %}
+                </div>
+                <!-- I don't know solotion in modified Browse file. You try it. -->
+                <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                    <input type="file" name="upload" style="display:none"/>
+               <input type="text"
+                       name="uploadtext"
+                       onkeydown="upload.value=uploadtext.value"
+                      onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()"
+                />
+                <input type="button"
+                       name="uploadbutton"
+                       class="button button1"
+                       value="UPLOAD"
+                       onclick="upload.click()"
+                       onmouseout="uploadtext.value=upload.value"
+                />
+                <input type="submit"  name="upload_submit" class="button button1" value="SUBMIT"/>
+                </form>
+            </div>
+        </div>
+
+    {% if message %}
+    <script>
+        alert("Size of file must be less than or equal to 1 mb\nand must endswith .py");
+    </script>
+    {% endif %}
+
+    <!-- codemirror theme -->
+    <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById("code-form-comment"), {
+       theme : "blackboard",
+       lineNumbers: true,
+       indentUnit: 4,
+       indentWithTabs: true,
+       });
+        editor.setSize("100%", 550);
+    </script>
+
+    <!-- time's up script -->
+    <script>
+        var deadline =  new Date({{ Deadtimestamp }});
+        if ("{{ Timer }}" == "False" ){
+            var time_up = null;
+        }
+        else {
+            var time_up = new Date({{ Timer }});
+        }
+        console.log(time_up);
+        console.log(deadline);
+        console.log(Date.now());
+        var mytime = setInterval(function(){ myCountFunction(); }, 1000);
+        try {
+            document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
+            document.getElementById("Time_Up").innerHTML = "Timer: " + time_up.toLocaleDateString() + ' ' + time_up.toLocaleTimeString();
+        }
+        catch(err){
+            document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
+        }
+    </script>
+    <script>
+        function myFunction() {
+                clearInterval(mytime);
+                //console.log("hello unload");
+                alert("Time's up!");
+                location.href='{% url 'Class_Management:Home' request.session.classroom %}';
+                x = location.href;
+            }
+            /*String.prototype.toHHMMSS = function () {
+            var sec_num = parseInt(this, 10); // don't forget the second param
+            var hours   = Math.floor(sec_num / 3600);
+            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            return hours+':'+minutes+':'+seconds;
+        };*/
+            function myCountFunction() {
+                if (time_up == null){
+                    if (Date.now() >= deadline) {
+                        console.log("Date.now() >= deadline");
+                        myFunction()
+                    }
+                    document.getElementById("nowtime").innerHTML = Date();
+                }
+                else if (Date.now() >= time_up || Date.now() >= deadline) {
+                    console.log("Date.now() >= deadline++");
+                    myFunction()
+                }
+                else {
+                    document.getElementById("nowtime").innerHTML = Date();
+                    console.log(time_up);
+                    console.log(deadline);
+                    console.log(Date());
+                }
+            }
+    </script>
+</div>
+
+</body>
+</html>
+{% endblock %}

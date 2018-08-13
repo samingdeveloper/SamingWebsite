@@ -1,6 +1,6 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404
 from .models import *
-from Assign_Management.models import Upload
+from Assign_Management.models import *
 from django.core import serializers
 from django.http import Http404
 from django.utils import timezone
@@ -32,7 +32,7 @@ def ClassSelect(request):
     }
     return render(request, "Inside.html", context)
 
-def Home(request,classroom):
+def Home(request,classroom,exam=False):
     add_status = 0
     var = request.user.userId
     action = request.POST.get("action","")
@@ -54,8 +54,8 @@ def Home(request,classroom):
                                                      className=classroom).creator.get_full_name,
                                                  'user_obj': User.objects.all(),
                                                  'user_group': user_group,
-                                                 'quiz': Quiz.objects.filter(
-                                                     classroom=ClassRoom.objects.get(className=classroom)),
+                                                 'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                                 'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                                  })
         try:
             if request.POST["country"] == "CSV":
@@ -68,7 +68,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
                 elif csv_file.multiple_chunks():
                     add_status = 2
@@ -77,7 +78,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
                 csv_data = csv_file.read().decode("utf-8")
                 #print(csv_data)
@@ -99,7 +101,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
             user_obj = User.objects.get(email=email)
             add_status = 1
@@ -111,7 +114,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
             g = Group.objects.get(name=status)
             g.user_set.add(user_obj)
@@ -120,7 +124,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
         except Exception as e:
             #print(e)
@@ -130,7 +135,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
 
     elif request.method == "POST" and action == 'delete':
@@ -144,11 +150,11 @@ def Home(request,classroom):
                                                      className=classroom).creator.get_full_name,
                                                  'user_obj': User.objects.all(),
                                                  'user_group': user_group,
-                                                 'quiz': Quiz.objects.filter(
-                                                     classroom=ClassRoom.objects.get(className=classroom)),
+                                                 'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                                 'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                                  })
         try:
-            if request.POST["country"] == "CSV" and request.user.is_admin:
+            if request.POST["country"] == "CSV":
                 add_status = 3
                 csv_file = request.FILES.get('upload_testcase', False)
                 if not csv_file.name.endswith('.csv'):
@@ -158,7 +164,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
                 elif csv_file.multiple_chunks():
                     add_status = 2
@@ -167,7 +174,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
@@ -189,7 +197,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
             user_obj = User.objects.get(email=email)
             add_status = 3
@@ -201,7 +210,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
             g = Group.objects.get(name=status)
             g.user_set.remove(user_obj)
@@ -210,7 +220,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
         except Exception as e:
             #print(e)
@@ -220,7 +231,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
         add_status = 3
         return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -228,7 +240,8 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)),
+                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
 
 
@@ -236,8 +249,10 @@ def Home(request,classroom):
         #print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
         if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
             quiz_set = Quiz.objects.filter(classroom__className=classroom)
+            exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')
         else:
-            quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()))
+            quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now()))
+            exam_set = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now())).order_by('name')
         data = serializers.serialize('json',quiz_set)
         request.session["quiz"]=json.loads(data)
         context = {
@@ -247,6 +262,8 @@ def Home(request,classroom):
             'user_obj':User.objects.all(),
             'user_group': user_group,
             'quiz':quiz_set,
+            'exam':exam_set,
+            'exam_picked':Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name')
         }
         return render(request,'Home.html',context)
 

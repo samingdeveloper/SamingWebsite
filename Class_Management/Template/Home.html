@@ -2,7 +2,9 @@
 {% block content %}
 {% load static %}
 {% load group_tags %}
-{% check_rank request.user request.session.classroom i.id as chkr %}
+{% load exam_tags %}
+{% load utility_tags %}
+{% check_rank request.user request.session.classroom i.id as chkr_rank %}
     <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
     <script src="{% static '/grading_code/js/popup.js' %}"></script>
 
@@ -52,40 +54,99 @@
             </div>
 
             <div class="column middle">
-            {%  for i in quiz %}
-                {% if chkr %}
-                <div class="boxassign">
-                    <div class="nameassign">{{ i.quizTitle }}</div>
-                </div>
-                <div class="boxassign2">
-                    {%  if request.user|can_manage:request.session.classroom %}
-                    <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id %}')" value="MOSS">
-                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
-                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
-                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
-                    {%  else %}
-                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
-                    {% endif %}
-                    <div class="detail">
-                        <p>Assignment name : {{ i.quizTitle }}</p>
-                        <p>Hint: {{ i.hint }}</p>
-                        {% if i.quiztimer_set.all.0.timer %}
-                            <p>Time: {{ i.quiztimer_set.all.0.timer_stop }} </p>
+                <button id="toggle" onclick="toggle();">Examination</button>
+                <div id="quiz_div" name="quiz_div" style="display:Block">
+                    {%  for i in quiz %}
+                        {% if chkr_rank %}
+                        <div class="boxassign">
+                            <div class="nameassign">{{ i.quizTitle }}</div>
+                        </div>
+                        <div class="boxassign2">
+                            {%  if request.user|can_manage:request.session.classroom %}
+                            <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
+                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
+                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
+                            {%  else %}
+                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
+                            {% endif %}
+                            <div class="detail">
+                                <p><strong>Assignment name:</strong>   {{ i.quizTitle }}</p>
+                                {% if i.quiztimer_set.all.0.timer %}
+                                <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
+                                {% endif %}
+                                <p><strong>Rank:</strong>   {{ i.get_rank_display }} </p>
+                                {%  if request.user|can_manage:request.session.classroom %}
+                                <p><strong>Available:</strong>   {{ i.available }}</p>
+                                {% endif %}
+                                <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
+                            </div>
+                        </div>
                         {% endif %}
-                        <p>Deadline : {{ i.deadline }}</p>
-                    </div>
+                        {% endfor %}
                 </div>
-                {% endif %}
-                {% endfor %}
+
+                <div id="exam_div" name="exam_div" style="display:None">
+                    {%  for i in exam %}
+                        <div class="boxassign">
+                            <div class="nameassign">{{ i.name }}</div>
+                        </div>
+                        <div class="boxassign2">
+                            {%  if request.user|can_manage:request.session.classroom %}
+                                <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExam' request.session.classroom i.id %}', '{{ i.name }}')" >Delete</button>
+                                <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExam' request.session.classroom i.id %}'">Edit</button>
+                                <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">View</button>
+                            {%  else %}
+                                <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">Open</button>
+                            {% endif %}
+                            <div class="detail">
+                                <p><strong>Examination:</strong>   {{ i.name }}</p>
+                                {%  if request.user|can_manage:request.session.classroom %}
+                                <p><strong>Available:</strong>   {{ i.available }}</p>
+                                {% endif %}
+                                <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div id="exam_quiz">
+                    {% for i,j in exam|zip:exam_picked %}
+                    <div id="{{ i.name }}" name="ex@m_quiz" style="display:none">
+                        {% your_exam request.user request.session.classroom j.picked as this_exam_quizes %}
+                        {% for exam_quiz in this_exam_quizes %}
+                            <div class="boxassign">
+                                <div class="nameassign">{{ exam_quiz.title }}</div>
+                            </div>
+                            <div class="boxassign2">
+                                <div class="detail">
+                                    <p><strong>Name:</strong>   {{ exam_quiz.title }}</p>
+                                    <p><strong>Detail:</strong> {{ exam_quiz.detail }}</p>
+                                </div>
+                            </div>
+                                {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
 
                 {%  if request.user|can_manage:request.session.classroom %}
                 <div class="tooltip">
-                    <button1>
-                        <span class="tooltiptext">Quiz</span>
-                        <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
-                            <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                        </a>
-                    </button1>
+                    <div id="quiz_tooltiptext" name="quiz_tooltiptext" style="display:block">
+                        <button1>
+                            <span class="tooltiptext">Quiz</span>
+                            <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
+                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                            </a>
+                        </button1>
+                    </div>
+
+                    <div id="exam_tooltiptext" name="exam_tooltiptext" style="display:none">
+                        <button1>
+                            <span class="tooltiptext">Exam</span>
+                            <a href="{% url 'Class_Management:Assign_Management:GenerateExam' request.session.classroom %}">
+                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                            </a>
+                        </button1>
+                    </div>
                 </div>
                 {% endif %}
             </div>
@@ -135,6 +196,30 @@
         </div>
     {% endif %}
 
+    <script>
+        function toggle(){
+            console.log(document.getElementById("toggle").innerHTML);
+            if (document.getElementById("toggle").innerHTML=="Examination") {
+                document.getElementById("exam_div").style.display = "block"; document.getElementById("quiz_div").style.display = "none";
+                document.getElementById("exam_tooltiptext").style.display = "block"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                document.getElementById("toggle").innerHTML = "Assignment";
+            }
+            else {
+                document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "block";
+                document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "block";
+                document.getElementById("toggle").innerHTML = "Examination";
+            }
+            console.log(document.getElementById("toggle").innerHTML);
+        }
+
+        function toggle2(arr){
+            if (arr[0]=="exam_quizes"){
+                document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "none";
+                document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                document.getElementById(arr[1]).style.display = "none";
+            }
+        }
+    </script>
     <script>
         // Get the modal
         var modal = document.getElementById('myModal');

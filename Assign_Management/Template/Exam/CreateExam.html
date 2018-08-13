@@ -1,0 +1,76 @@
+{% extends 'NavBar.html' %}
+{% block content %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/createassignment.css' %}">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui.css" %}"/>
+    <link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.css" %}"/>
+    <script src="{% static 'grading_code/js/pupupbtn.js' %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.js" %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-sliderAccess.js" %}"></script>
+
+<!-- input data in main ex. text or etc -->
+    <div id="main" >
+        <div class="center">
+                <h3>Create Examination</h3>
+        </div>
+        <div class="div">
+            <form action="{% url 'Class_Management:Assign_Management:GenerateExam' request.session.classroom %}" method="post" enctype="multipart/form-data"
+              > {% csrf_token %}
+                <label for="exam_name"><strong>Exam name:</strong></label>
+                <input type="text" id="exam_name" name="exam_name" placeholder="Exam name">
+
+                <label for="Exam_detail"><strong>Exam detail:</strong></label>
+                <textarea type="text" id="Exam_detail" name="Exam_detail" placeholder="Exam detail"></textarea>
+
+                {% for category in categories %}
+                <strong>{{ category }}:   </strong>
+                <input type="number" id="{{ category }}" name="pick_amount" min="0" max="100" style="width: 7%;
+                    border: 1px solid red;
+                    border-radius: 4px;
+                    border-color: gray;
+                    margin: 8px 0;"><br>
+                {% endfor %}
+
+                <label for="dateAvailable"><br><strong>Available:</strong></label>
+                <script type="text/javascript">
+                    $(function(){
+                    $("#dateAvailable").datetimepicker({
+                      dateFormat: 'yy-mm-dd',
+                      timeFormat: 'HH:mm:ss',
+                      });
+                });
+                </script>
+                <input type="text" name="dateAvailable" id="dateAvailable" placeholder="ex.2017-11-29 05:05:30">
+
+                <label for="dateInput"><strong>Deadline:</strong></label>
+                <script type="text/javascript">
+                    $(function(){
+                    $("#dateInput").datetimepicker({
+                      dateFormat: 'yy-mm-dd',
+                      timeFormat: 'HH:mm:ss',
+                      });
+                });
+                </script>
+                <input type="text" name="dateInput" id="dateInput" placeholder="ex.2017-11-29 07:07:32">
+
+                <input type="submit" value="Create">
+                {% if messages %}
+                {% for message in messages %}
+                <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <script>
+                        alert("{{ message }}");
+                    </script>
+                    {% endif %}
+                </p>
+    {% endfor %}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    <script>
+    jQuery("#jQueryUICalendar1").datepicker();
+    </script>
+{% endblock %}

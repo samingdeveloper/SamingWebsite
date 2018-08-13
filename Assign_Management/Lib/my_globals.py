@@ -3,6 +3,7 @@ from RestrictedPython.Utilities import utility_builtins
 from RestrictedPython.Guards import safe_builtins
 
 import importlib
+from . import test
 #import builtins
 #import resource
 #import time
@@ -49,6 +50,7 @@ def mgb(globe=globals(), libs=None): #return globals()['__builtins__'] without _
             del tb[i]
         except:
             continue
+    #tb['assert_equal'] = test.assert_equal
     tb.update(safe_builtins)
     tb.update(utility_builtins)
     tb.update(limited_builtins)

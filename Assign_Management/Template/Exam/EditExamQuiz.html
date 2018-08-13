@@ -1,0 +1,75 @@
+{% extends 'NavBar.html' %}
+{% block content %}
+{% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/createassignment.css' %}">
+    <link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui.css" %}"/>
+    <link rel="stylesheet" media="all" type="text/css" href="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.css" %}"/>
+    <script src="{% static 'grading_code/js/pupupbtn.js' %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-1.10.2.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-timepicker-addon.js" %}"></script>
+    <script type="text/javascript" src="{% static "library/js/jquerydatepicker/jquery-ui-sliderAccess.js" %}"></script>
+
+<!-- input data in main ex. text or etc -->
+    <div id="main" >
+        <div class="center">
+                <h3>Edit:Examination Quiz</h3>
+        </div>
+        <div class="div">
+            <form action="{% url 'Assign_Management:EditExamQuiz' request.session.classroom %}" method="post" enctype="multipart/form-data"
+              > {% csrf_token %}
+                <label for="exam_name">Exam name:</label>
+                <input type="text" id="exam_name" name="exam_name" value="{{ name }}">
+
+                <label for="Exam_detail">Exam detail:</label>
+                <textarea type="text" id="Exam_detail" name="Exam_detail" >{{ detail }}</textarea>
+
+                <label for="quiz_category">Category:</label>
+                <select name="quiz_category" id="quiz_category">
+                    {% for category in categories %}
+                        {% if category == exam_quiz.category %}
+                            <option value="{{ category }}" selected>{{ category }}</option>
+                        {% else %}
+                            <option value="{{ category }}">{{ category }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+
+                <label for="upload_template">Code template:</label>
+                <textarea type="text" id="upload_template" name="upload_template">{{ examedit.text_template_content }}</textarea>
+
+                <label for="test_code">Test code:</label>
+                <textarea type="text" id="test_code" name="test_code" >{{ examedit.text_testcode_content }}</textarea>
+
+                <label for="test_case">Test case:</label>
+                <textarea type="text" id="test_case" name="upload_testcase" >{{ examedit.text_testcase_content }}</textarea>
+
+                <label for="mode">Mode:</label>
+                <select id="mode" name="mode" >
+                    {% if exam_quiz.category == "Pass or Fail" %}
+                            <option value="Pass or Fail" selected> Pass or Fail</option>
+                            <option value="Scoring"> Scoring </option>
+                    {% else %}
+                            <option value="Pass or Fail"> Pass or Fail</option>
+                            <option value="Scoring" selected> Scoring </option>
+                </select>
+
+                <input type="submit" value="Create">
+                {% if messages %}
+                {% for message in messages %}
+                <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <script>
+                        alert("{{ message }}");
+                    </script>
+                    {% endif %}
+                </p>
+    {% endfor %}
+                {% endif %}
+            </form>
+        </div>
+    </div>
+    <script>
+    jQuery("#jQueryUICalendar1").datepicker();
+    </script>
+{% endblock %}

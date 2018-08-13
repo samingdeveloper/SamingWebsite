@@ -39,12 +39,14 @@ class Rank(models.Model):
         return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
 
 class Quiz(models.Model):
-    quizTitle = models.CharField(unique=True, max_length=255, blank=True)
+    quizTitle = models.CharField(unique=True, max_length=55, blank=True)
     quizDetail = models.TextField(blank=True,null=True)
     deadline = models.DateTimeField()
     available = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
-    hint = models.CharField(max_length=1024, blank=True, null=True)
+    hint = models.CharField(max_length=255, blank=True, null=True)
+    #exam = models.BooleanField(default=False)
+    category = models.ForeignKey('Assign_Management.Category', blank=True, null=True, on_delete=models.CASCADE ,related_name='category')
     rank_choices = (
         (0, "Bronze"),
         (1, "Silver"),
@@ -61,6 +63,7 @@ class Quiz(models.Model):
     )
     mode = models.CharField(max_length=100, choices=mode_choices, default="Scoring")
     text_template_content = models.TextField(blank=True,null=True)
+    text_testcode_content = models.TextField()
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
@@ -82,7 +85,7 @@ class QuizScore(models.Model):
     total_score = models.FloatField(blank=True, null=True, default=0.0)
     max_score = models.FloatField(blank=True, null=True, default=0.0)
     #code = models.TextField(blank=True, null=True)
-    code = models.ForeignKey("Assign_Management.Upload", on_delete=models.SET_NULL,null=True)
+    code = models.ForeignKey("Assign_Management.Upload", on_delete=models.SET_NULL,null=True,related_name='code')
     def __str__(self):
         return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
 
@@ -102,17 +105,6 @@ class QuizTracker(models.Model):
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
         return str(self.userId.userId) + " : " + self.classroom.className
-
-class AddTA(models.Model):
-    Email = models.CharField(max_length=255)
-    status_choice = (
-        ('Teacher', 'Teacher'),
-        ('TA', 'TA'),
-    )
-    title = models.CharField(max_length=100, choices=status_choice)
-
-    def __str__(self):
-        return self.Email + ' ' + '(' + self.title + ')'
 
 # ClassRom receiver
 @receiver(m2m_changed,sender=ClassRoom.user.through)

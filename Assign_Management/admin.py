@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.shortcuts import redirect
-from Assign_Management.models import Upload
+from Assign_Management.models import *
 
 def moss(modeladmin, request, queryset):
     import mosspy
@@ -26,3 +26,9 @@ class UploadAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Upload,UploadAdmin)
+admin.site.register(Category)
+admin.site.register(Exam_Data)
+admin.site.register(Exam_Quiz)
+admin.site.register(Exam_Upload)
+admin.site.register(Exam_Score)
+admin.site.register(Exam_Tracker)

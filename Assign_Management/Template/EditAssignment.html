@@ -24,25 +24,29 @@
                     <label for="assignmentdetail">Assignment detail:</label>
                     <textarea type="text" id="assignmentdetail" name="asdetail">{{ quizedit.quizDetail }}</textarea>
 
+                    <label for="lhint">Hint:</label>
+                    <input type="text" id="lhint" name="hint" value="{{ quizedit.hint }}">
+
+                    <label for="quiz_category">Category:</label>
+                    <select name="quiz_category" id="quiz_category">
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                    </select>
+
                     <label for="upload_template">Code template:</label>
                     <textarea type="text" id="upload_template" name="upload_template">{{ quizedit.text_template_content }}</textarea>
+
+                    <label for="test_code">Test code:</label>
+                     <textarea type="text" id="test_code" name="test_code" placeholder="Test code">{{ quizedit.text_testcode_content }}</textarea>
 
                     <label for="test_case">Test case:</label>
                     <textarea type="text" id="test_case" name="upload_testcase">{{ quizedit.text_testcase_content }}</textarea>
 
-                    <label for="mode">Mode:</label>
-                    <select name="mode">
-                            <option value="Pass or Fail"> Pass or Fail</option>
-                            <option value="Scoring"> Scoring </option>
-                    </select>
-
-                    <label for="hint">Hint:</label>
-                    <input type="text" id="lhint" name="hint" value="{{ quizedit.hint }}">
-
-                    <label for="timer">Timer:</label>
+                    <label for="ltimer">Timer:</label>
                     <input type="text" id="ltimer" name="timer" placeholder="{{ quiztedit.timer }}">
 
-                    <label for="deadline">Deadline:</label>
+                    <label for="dateInput">Deadline:</label>
                     <script type="text/javascript">
                         $(function(){
                         $("#dateInput").datetimepicker({
@@ -65,11 +69,18 @@
                     <input type="text" name="dateAvailable" id="dateAvailable" placeholder="{{ quizaedit }}">
 
                     <label for="redo">Restart:</label>
-                    <select name="redo">
+                    <select id="redo" name="redo">
                             <option value="No"> No </option>
                             <option value="Yes"> Yes </option>
                     </select>
-                        <input type="submit" value="Update">
+
+                    <label for="mode">Mode:</label>
+                    <select id="mode" name="mode" >
+                            <option value="Pass or Fail"> Pass or Fail</option>
+                            <option value="Scoring"> Scoring </option>
+                    </select>
+
+                    <input type="submit" value="Update">
                     {% if messages %}
                 {% for message in messages %}
                 <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>
