@@ -32,21 +32,21 @@ def ClassSelect(request):
     }
     return render(request, "Inside.html", context)
 
-def Home(request,classroom,exam=False):
+def Home(request,classroom):
     add_status = 0
-    var = request.user.userId
+    #var = request.user.userId
     action = request.POST.get("action","")
     request.session["classroom"] = classroom
     user_group = {"teacher":User.objects.filter(groups__name=classroom + "_Teacher"),
                      "ta":User.objects.filter(groups__name=classroom + "_TA"),
                      }
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
 
     elif request.method == "POST" and action == 'add':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
-        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True and request.POST["country"] != "CSV":
+        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() and request.POST["country"] != "CSV" and request.POST["country"] != "Cate":
             add_status = 4
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                                  'classname': classroom,
@@ -58,7 +58,23 @@ def Home(request,classroom,exam=False):
                                                  'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                                  })
         try:
-            if request.POST["country"] == "CSV":
+            if request.POST["country"] == "Cate":
+                add_status = 2
+                if request.POST["category"] != '':
+                    try:
+                        Category.objects.get_or_create(name=request.POST["category"], slug=request.POST["category"])
+                        add_status = 1
+                    except ObjectDoesNotExist:
+                        pass
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                                     'classname': classroom,
+                                                     'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                                     'user_obj': User.objects.all(),
+                                                     'user_group': user_group,
+                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                     })
+            elif request.POST["country"] == "CSV":
                 add_status = 1
                 csv_file = request.FILES.get('upload_testcase', False)
                 if not csv_file.name.endswith('.csv'):
@@ -104,9 +120,9 @@ def Home(request,classroom,exam=False):
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
-            user_obj = User.objects.get(email=email)
-            add_status = 1
-            if request.POST["country"] == "Admin" and request.user.is_admin:
+            elif request.POST["country"] == "Admin" and request.user.is_admin:
+                user_obj = User.objects.get(email=email)
+                add_status = 1
                 user_obj.is_admin = True
                 user_obj.save()
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -117,6 +133,7 @@ def Home(request,classroom,exam=False):
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
+            add_status = 1
             g = Group.objects.get(name=status)
             g.user_set.add(user_obj)
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -128,7 +145,7 @@ def Home(request,classroom,exam=False):
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
         except Exception as e:
-            #print(e)
+            print(e)
             add_status = 2
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
@@ -142,7 +159,7 @@ def Home(request,classroom,exam=False):
     elif request.method == "POST" and action == 'delete':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
-        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True and request.POST["country"] != "CSV":
+        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() is not True and (request.POST["country"] != "CSV" and request.POST["country"] != "Cate"):
             add_status = 4
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                                  'classname': classroom,
@@ -154,7 +171,23 @@ def Home(request,classroom,exam=False):
                                                  'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                                  })
         try:
-            if request.POST["country"] == "CSV":
+            if request.POST["country"] == "Cate":
+                add_status = 2
+                if request.POST["category"] != '':
+                    try:
+                        Category.objects.get(name=request.POST["category"], slug=request.POST["category"]).delete()
+                        add_status = 3
+                    except ObjectDoesNotExist:
+                        pass
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                                     'classname': classroom,
+                                                     'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
+                                                     'user_obj': User.objects.all(),
+                                                     'user_group': user_group,
+                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                     })
+            elif request.POST["country"] == "CSV":
                 add_status = 3
                 csv_file = request.FILES.get('upload_testcase', False)
                 if not csv_file.name.endswith('.csv'):
@@ -200,11 +233,12 @@ def Home(request,classroom,exam=False):
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
-            user_obj = User.objects.get(email=email)
-            add_status = 3
+
             if request.POST["country"] == "Admin" and request.user.is_admin:
+                user_obj = User.objects.get(email=email)
                 user_obj.is_admin = False
                 user_obj.save()
+                add_status = 3
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
@@ -213,6 +247,7 @@ def Home(request,classroom,exam=False):
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
+            add_status = 3
             g = Group.objects.get(name=status)
             g.user_set.remove(user_obj)
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -250,9 +285,11 @@ def Home(request,classroom,exam=False):
         if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
             quiz_set = Quiz.objects.filter(classroom__className=classroom)
             exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')
+            exam_quiz_pool = Exam_Quiz.objects.filter(classroom__className=classroom)
         else:
             quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now()))
             exam_set = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now())).order_by('name')
+            exam_quiz_pool = ()
         data = serializers.serialize('json',quiz_set)
         request.session["quiz"]=json.loads(data)
         context = {
@@ -263,6 +300,7 @@ def Home(request,classroom,exam=False):
             'user_group': user_group,
             'quiz':quiz_set,
             'exam':exam_set,
+            'exam_quiz_pool':exam_quiz_pool,
             'exam_picked':Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name')
         }
         return render(request,'Home.html',context)
@@ -421,30 +459,24 @@ def StudentScoreInfo(request,classroom,userId):
         #print(u_id[0])
         try:
             #print("try")
-            score = QuizScore.objects.filter(userId=User.objects.get(userId=u_id[0]), classroom=ClassRoom.objects.get(className=classroom))
             if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"]).exists():
                 quiz = Quiz.objects.filter(classroom__className=classroom)
+                exam = Exam_Data.objects.filter(classroom__className=classroom)
             else:
                 quiz = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()))
-            x = 0
-            y = 0
-            for i in score:
-                #print(i.total_score)
-                #print(i.passOrFail)
-                x += i.total_score + i.passOrFail
-                y += i.max_score
+                exam = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()))
             context = {
                 'var': User.objects.get(userId=userId),
                 'classname': classroom,
                 'User_objects': User.objects.all(),
                 'u_id': {'user_name': u_id[0]},
-                'totalscore': x,
-                'maxscore': y,
                 'quiz': quiz,
+                'exam': exam,
             }
             return render(request, 'ShowScoreStudent.html', context)
-        except:
+        except Exception as E:
             #print('noe')
+            print(E)
             return render(request, 'ShowScoreStudent.html')
 
 def StudentQuizListInfo(request,classroom,userId,quiz_id):
@@ -485,7 +517,7 @@ def StudentQuizInfo(request,classroom,userId,quiz_id,file_id):
     elif (Quiz.objects.get(pk=quiz_id).available > timezone.localtime(timezone.now()) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
-    elif request.method == 'POST' and request.user.is_admin or request.method == 'POST' and request.user.userId == userId:
+    elif request.method == 'POST' and (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])) or request.method == 'POST' and request.user.userId == userId:
         if userId != request.user.userId and not request.user.is_admin:
             return HttpResponseRedirect("/ClassRoom/"+classroom)
         score_pointer = QuizScore.objects.get(quizId=Quiz.objects.get(pk=quiz_id),
@@ -530,6 +562,90 @@ def StudentQuizInfo(request,classroom,userId,quiz_id,file_id):
             "file_id":file.id,
         }
         return render(request,'ShowQuizStudent.html',context)
+
+def StudentExamQuizList(request,classroom,userId,exam_data_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    elif (Exam_Data.objects.get(pk=exam_data_id).available > timezone.localtime(timezone.now()) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+    else:
+        context = {
+            'exam_quizes': Exam_Quiz.objects.filter(title__in=Exam_Tracker.objects.get(exam__pk=exam_data_id).picked,classroom__className=classroom),
+            'userId': userId,
+            'exam_data_id': exam_data_id
+        }
+        return render(request,'StudentExamQuizList.html',context)
+
+def StudentExamQuizFiles(request,classroom,userId,exam_data_id,exam_quiz_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+    elif (Exam_Data.objects.get(pk=exam_data_id).available > timezone.localtime(timezone.now()) or not(request.user.userId == userId) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+    else:
+        if request.method == 'POST':
+            title_list = request.POST.getlist("cb")
+            #print(title_list)
+            Exam_Upload.objects.filter(title__in=title_list).delete()
+        file_list = list(Exam_Upload.objects.filter(user__userId=userId,quiz__pk=exam_quiz_id))
+        try:
+            score_pointer = Exam_Score.objects.get(quiz__pk=exam_quiz_id, user__userId=userId)
+            score_pointer_render = score_pointer.code.title
+        except:
+            score_pointer_render = None
+        context = {
+            'file_list': file_list,
+            'userId': userId,
+            'exam_data_id': exam_data_id,
+            'exam_quiz_id': exam_quiz_id,
+            'score_pointer': score_pointer_render
+        }
+        return render(request,'StudentExamQuizFiles.html',context)
+
+def StudentExamQuiz(request,classroom,userId,exam_data_id,exam_quiz_id,file_id):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
+
+    elif (Exam_Data.objects.get(pk=exam_data_id).available > timezone.localtime(timezone.now()) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+
+    elif request.method == 'POST' and (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])) or request.method == 'POST' and request.user.userId == userId:
+        if userId != request.user.userId and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
+            return HttpResponseRedirect("/ClassRoom/"+classroom)
+        score_pointer = Exam_Score.objects.get(quiz__pk=exam_quiz_id)
+        if Exam_Quiz.objects.get(pk=exam_quiz_id).mode == "Scoring":
+            score_pointer.total_score = Exam_Upload.objects.get(pk=file_id).score
+        else:
+            score_pointer.passOrFail = Exam_Upload.objects.get(pk=file_id).score
+        score_pointer.code = Exam_Upload.objects.get(pk=file_id)
+        score_pointer.save()
+        return HttpResponseRedirect("/ClassRoom/"+classroom+'/StudentInfo/'+userId+'/Examination/'+exam_data_id+'/'+exam_quiz_id+'/')
+
+    else:
+        if userId != request.user.userId and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
+            return HttpResponseRedirect("/ClassRoom/"+classroom)
+        file = Exam_Upload.objects.get(pk=file_id)
+        quiz_to_show = Exam_Quiz.objects.get(pk=exam_quiz_id)
+        u_id = User.objects.get(userId=request.session['u_id'][0]).userId
+        try:
+            file.Uploadfile.open(mode="rb")
+            code_to_show = file.Uploadfile.read().replace(b"\r\r\n",b"\r\n").decode()
+            file.Uploadfile.close()
+        except Exception as e:
+            #print(e)
+            code_to_show = ""
+        context = {
+            'classname':ClassRoom.objects.get(className=classroom),
+            'User_objects':User.objects.all(),
+            'u_id': {'user_name': u_id, 'userId': userId},
+            'exam_data_id': exam_data_id,
+            'exam_quiz_id': exam_quiz_id,
+            'quiz_to_show':quiz_to_show,
+            "code_to_show":code_to_show,
+            "upload_time":file.uploadTime,
+            "file_title":file.title,
+            "file_id":file.id,
+        }
+        return render(request,'StudentExamQuiz.html',context)
 
 def Submit(request):
     if not request.user.is_authenticated:

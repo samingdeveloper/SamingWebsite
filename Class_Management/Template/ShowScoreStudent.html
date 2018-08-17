@@ -1,6 +1,7 @@
 {% extends "NavBar.html" %}
 {% block content %}
     {% load score_tags %}
+    {% load exam_tags %}
     {% load staticfiles %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
@@ -8,12 +9,13 @@
     <div id="main">
         <div class="center">
             <h2>Information</h2>
+            <button id="toggle" onclick="toggle();">Examination</button>
         </div>
 
-        <div class="back">
+        <div class="back" id="quiz" style="display:block">
             <table id="customers">
                 <tr>
-                    <th>Assignment Name</th>
+                    <th>Assignment</th>
                     <th>Mode</th>
                     <th>Score</th>
                     <th>Max Score</th>
@@ -43,6 +45,45 @@
             {% endif %}
             </table>
         </div>
+
+        <div class="back" id="exam" style="display:None">
+            <table id="customers">
+                <tr>
+                    <th>Examination</th>
+                    <th>Score</th>
+                    <th>Max Score</th>
+                </tr>
+                {%  for i in exam %}
+                <tr>
+                    <td>
+                        <a href="{% url 'Class_Management:StudentExamQuizList' request.session.classroom u_id.user_name i.id %}">{{ i.name }}</a>
+                    </td>
+                        <td>{% u_exam_score u_id.user_name i.classroom i.id %}</td>
+                        <td>{% u_exam_score u_id.user_name i.classroom i.id "Max" %}</td>
+                </tr>
+                {% endfor %}
+
+                {% if exam %}
+            <tr>
+            <td>Total Score</td>
+                <td>{% u_exam_score u_id.user_name request.session.classroom None "total" %}</td>
+                <td>{% u_exam_score u_id.user_name request.session.classroom None "total_max" %}</td>
+            </tr>
+            {% endif %}
+            </table>
+        </div>
     </div>
 
+<script>
+    function toggle(){
+        if (document.getElementById("toggle").innerHTML=="Examination") {
+            document.getElementById("exam").style.display = "block"; document.getElementById("quiz").style.display = "none";
+            document.getElementById("toggle").innerHTML = "Assignment";
+        }
+        else {
+            document.getElementById("exam").style.display = "none"; document.getElementById("quiz").style.display = "block";
+            document.getElementById("toggle").innerHTML = "Examination";
+        }
+    }
+</script>
 {% endblock %}

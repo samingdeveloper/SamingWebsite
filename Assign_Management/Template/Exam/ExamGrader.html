@@ -1,5 +1,6 @@
 
 {% load static %}
+{% load group_tags %}
 <html lang="en">
 {% block content %}
 <head>
@@ -57,9 +58,6 @@
         {% if request.user.is_admin %}
         <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom%}">CreateAssignment</a>
         {% endif %}
-        {%  for i in quiz %}
-            <a href="{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}">{{ i.quizTitle }}</a>
-        {% endfor %}
     </div>
     <!-- input data in main ex. text or etc f -->
 
@@ -67,12 +65,9 @@
         <div class="row">
             <div class="column side">
                 <div class="scroll">
-                    <h1> {{ quizTitle }} </h1>
+                    <h1> {{ title }} </h1>
                     <div class="p">
-                        <p>{{ quizDetail }}
-                        </p>
-                        <p>{{ Hint }}</p>
-                        <p id="Time_Up"></p>
+                        <p>{{ detail }}</p>
                         <p id="Deadline"></p>
                     </div>
                 </div>
@@ -145,65 +140,45 @@
     </script>
 
     <!-- time's up script -->
-    <script>
-        var deadline =  new Date({{ Deadtimestamp }});
-        if ("{{ Timer }}" == "False" ){
-            var time_up = null;
-        }
-        else {
-            var time_up = new Date({{ Timer }});
-        }
-        console.log(time_up);
-        console.log(deadline);
-        console.log(Date.now());
-        var mytime = setInterval(function(){ myCountFunction(); }, 1000);
-        try {
-            document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
-            document.getElementById("Time_Up").innerHTML = "Timer: " + time_up.toLocaleDateString() + ' ' + time_up.toLocaleTimeString();
-        }
-        catch(err){
-            document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
-        }
-    </script>
-    <script>
-        function myFunction() {
-                clearInterval(mytime);
-                //console.log("hello unload");
-                alert("Time's up!");
-                location.href='{% url 'Class_Management:Home' request.session.classroom %}';
-                x = location.href;
+        <script>
+            var deadline =  new Date({{ Deadtimestamp }});
+            console.log(deadline);
+            console.log(Date.now());
+            var mytime = setInterval(function(){ myCountFunction(); }, 1000);
+            try {
+                document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
             }
-            /*String.prototype.toHHMMSS = function () {
-            var sec_num = parseInt(this, 10); // don't forget the second param
-            var hours   = Math.floor(sec_num / 3600);
-            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-            var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-            if (hours   < 10) {hours   = "0"+hours;}
-            if (minutes < 10) {minutes = "0"+minutes;}
-            if (seconds < 10) {seconds = "0"+seconds;}
-            return hours+':'+minutes+':'+seconds;
-        };*/
-            function myCountFunction() {
-                if (time_up == null){
-                    if (Date.now() >= deadline) {
-                        console.log("Date.now() >= deadline");
-                        myFunction()
-                    }
-                    document.getElementById("nowtime").innerHTML = Date();
+            catch(err){
+                document.getElementById("Deadline").innerHTML = "Deadline: " + deadline.toLocaleDateString() + ' ' + deadline.toLocaleTimeString();
+            }
+        </script>
+        <script>
+            function myFunction() {
+                    clearInterval(mytime);
+                    alert("Time's up!");
+                    location.href='{% url 'Class_Management:Home' request.session.classroom %}';
+                    x = location.href;
                 }
-                else if (Date.now() >= time_up || Date.now() >= deadline) {
-                    console.log("Date.now() >= deadline++");
-                    myFunction()
+
+            function myCountFunction() {
+                if (Date.now() >= deadline) {
+                    {% if not request.user|can_manage:request.session.classroom %}
+                        console.log("Date.now() >= deadline++");
+                        myFunction()
+                    {% endif %}
+                    document.getElementById("nowtime").innerHTML = Date();
+                    //console.log(time_up);
+                    //console.log(deadline);
+                    console.log(Date());
                 }
                 else {
                     document.getElementById("nowtime").innerHTML = Date();
-                    console.log(time_up);
-                    console.log(deadline);
+                    //console.log(time_up);
+                    //console.log(deadline);
                     console.log(Date());
                 }
             }
-    </script>
+        </script>
 </div>
 
 </body>

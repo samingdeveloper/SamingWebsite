@@ -29,5 +29,3 @@ def u_score(userId, classroom, quizId, mode):
             return ''
     else:
         return score
-
-

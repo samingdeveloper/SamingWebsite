@@ -470,7 +470,7 @@ def GenerateExamQuiz(request,classroom):
     else:
         return render(request, 'Exam/CreateExamQuiz.html', {"categories": Category.objects.all()})
 
-def EditExamQuiz(request, classroom, quiz_id):
+def EditExamQuiz(request, classroom, exam_quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST":
@@ -590,7 +590,7 @@ def EditExamQuiz(request, classroom, quiz_id):
                   }
         return render(request, 'Exam/EditExamQuiz.html', context)
 
-def DeleteExamQuiz(request, classroom, quiz_id):
+def DeleteExamQuiz(request, classroom, exam_quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
     quiz = Quiz.objects.get(pk=quiz_id)
@@ -688,17 +688,6 @@ def uploadgrading(request, classroom, quiz_id):
                                                            'code': code_temp,
                                                            'Deadtimestamp': deadline.timestamp() * 1000,
                                                            })
-                fileName = str(request.user.userId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
-                #OSS = OverwriteStorage()
-                #in_sys_file = OSS.save(fileName, uploaded_to_file)
-                fuck_sake = Quiz.objects.get(id=quiz_id)
-                in_sys_file_location = os.getcwd()+"/media/"#+fuck_sake.classroom.className+'/'+request.user.userId+'/'+fuck_sake.quizTitle+'/'
-                temp_test = fuck_sake.classroom.className+'/'+request.user.userId+'/'+fuck_sake.quizTitle+'/'
-                sys.path.append(in_sys_file_location)
-                FSS = FileSystemStorage()#(location=in_sys_file_location,
-                                        #base_url=os.path.join(temp_test))
-                in_sys_file = FSS.save(fileName, uploaded_to_file)
-                in_sys_file_url = FSS.url(in_sys_file)
                 #print(FSS.path(in_sys_file))
                 #Upload.objects.get_or_create(title=in_sys_file, Uploadfile=in_sys_file ,user=request.user, quiz=quiz, classroom=quiz.classroom)
                 ####################################
@@ -801,6 +790,15 @@ def uploadgrading(request, classroom, quiz_id):
                     quizDoneCount.quizDoneCount += 1
                     quizDoneCount.save()
                 # print(str(test_case_count) + ' ' + str(Out_count))
+
+                fileName = str(request.user.userId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className) + request.FILES['upload'].name[-3:]
+                quiz_name = Quiz.objects.get(id=quiz_id)
+                in_sys_file_location = os.getcwd() + "/media/"  # +fuck_sake.classroom.className+'/'+request.user.userId+'/'+fuck_sake.quizTitle+'/'
+                temp_test = quiz_name.classroom.className + '/' + request.user.userId + '/' + quiz_name.quizTitle + '/'
+                sys.path.append(in_sys_file_location)
+                # FSS = FileSystemStorage()#(location=in_sys_file_location,#base_url=os.path.join(temp_test))
+                in_sys_file = FileSystemStorage().save(fileName, uploaded_to_file)
+                in_sys_file_url = FileSystemStorage().url(in_sys_file)
                 with open(in_sys_file_location + in_sys_file, 'w') as f:
                     f.write(temp_code)
                     Upload.objects.get_or_create(title=in_sys_file, Uploadfile=in_sys_file, user=request.user, quiz=quiz, classroom=quiz.classroom)
@@ -1154,7 +1152,7 @@ def exam_quiz(request, classroom, exam_data_id):
     return render(request, 'Home.html', context)
 
 #@timeout_decorator.timeout(6, use_signals=False)
-def exam_grader(request, classroom, quiz_id):
+def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
@@ -1166,71 +1164,38 @@ def exam_grader(request, classroom, quiz_id):
             print(e)
             return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
-    global deadline, timer_stop
+    global deadline
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
     t = timezone.localtime(timezone.now())  # offset-awared datetime
     t.astimezone(timezone.utc).replace(tzinfo=None)
-    quiz = Quiz.objects.get(pk=quiz_id)
-    try:
-        Timer = QuizTimer.objects.get(quizId=quiz,
-                                        userId=User.objects.get(userId=request.user.userId),
-                                        classroom=quiz.classroom,
-                                        ).timer_stop
-    except ObjectDoesNotExist:
-        Timer = None
+    exam_data = Exam_Data.objects.get(pk=exam_data_id)
+    exam_quiz = Exam_Quiz.objects.get(pk=exam_quiz_id)
+    exam_tracker = Exam_Tracker.objects.get(exam=exam_data,user=request.user)
     #set utc+7 check setting file 'Asia/Bangkok'
-    if Timer is not None:
-        deadline, timer_stop = timezone.localtime(quiz.deadline),timezone.localtime(Timer)
-        deadline.astimezone(timezone.utc).replace(tzinfo=None)
-        timer_stop.astimezone(timezone.utc).replace(tzinfo=None)
-        if (t >= deadline or t >= timer_stop or t <= quiz.available) and not (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
-            return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
-    elif Timer is None:
-        deadline =  timezone.localtime(quiz.deadline)
-        deadline.astimezone(timezone.utc).replace(tzinfo=None)
-        if ((t >= deadline or t <= quiz.available) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
-            return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+    deadline = timezone.localtime(exam_data.deadline)
+    deadline.astimezone(timezone.utc).replace(tzinfo=None)
+    if ((t >= deadline or t <= exam_data.available or exam_quiz.title not in exam_tracker.picked) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
+        return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
 #################################################### Upload Section ####################################################
     try:
-        code_temp = quiz.text_template_content
+        code_temp = exam_quiz.text_template_content
         libs = None
         #my_globals.limit_grader()
-        if request.method == "POST" and 'time_left' in request.POST:
-            time_left = request.POST.get("time_left",'')
-            try:
-                timer = QuizTimer.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
-                timer.timer = time_left
-                timer.save(update_fields=["timer"])
-            except ObjectDoesNotExist:
-                pass
-            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
-
-        elif request.method == 'POST' and 'upload_submit' in request.POST:
+        if request.method == 'POST' and 'upload_submit' in request.POST:
             if request.FILES['upload']:
                 uploaded_to_file = request.FILES['upload']
                 code = uploaded_to_file.read().decode("utf-8")
                 temp_code = code
                 if uploaded_to_file._size > 1048576 or not uploaded_to_file.name.endswith(".py"):
-                    return render(request, 'Exam/ExamGrader.html', {'quizTitle': quiz.quizTitle,
-                                                           'quizDetail': quiz.quizDetail,
-                                                           'Deadline': quiz.deadline,
-                                                           'Hint': quiz.hint,
-                                                           'Timer': False,
+                    return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                           'detail': exam_quiz.detail,
                                                            'message': True,
                                                            'code': code_temp,
                                                            'Deadtimestamp': deadline.timestamp() * 1000,
                                                            })
-                fileName = str(request.user.userId) + '_uploaded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className)+ uploaded_to_file.name[-3:]
-                fuck_sake = Quiz.objects.get(id=quiz_id)
-                in_sys_file_location = os.getcwd()+"/media/"
-                temp_test = fuck_sake.classroom.className+'/'+request.user.userId+'/'+fuck_sake.quizTitle+'/'
-                sys.path.append(in_sys_file_location)
-                FSS = FileSystemStorage()
-                in_sys_file = FSS.save(fileName, uploaded_to_file)
-                in_sys_file_url = FSS.url(in_sys_file)
                 code += '\n'
-                for case_line in quiz.text_testcase_content.splitlines():
+                for case_line in exam_quiz.text_testcase_content.splitlines():
                     if case_line.startswith('#lib') and len(case_line[5:]) != 0:
                         libs = case_line[5:].split(',')
                     code += case_line + "\n"
@@ -1256,36 +1221,26 @@ def exam_grader(request, classroom, quiz_id):
                 test_result = TextTestRunner().run(test_suite)
 #################################################### Result Section ####################################################
                 result = MyTestCase.result
-                if quiz.mode == "Pass or Fail" and test_result.wasSuccessful():
+                if exam_quiz.mode == "Pass or Fail" and test_result.wasSuccessful():
                     result['status'] = "PASS"
-                elif quiz.mode == "Pass or Fail" and test_result.wasSuccessful() == False:
+                elif exam_quiz.mode == "Pass or Fail" and test_result.wasSuccessful() == False:
                     result['status'] = "FAIL"
                     result['score'] = 0
-                elif quiz.mode == "Scoring" and my_globals.scr(result['case']) is True:
+                elif exam_quiz.mode == "Scoring" and my_globals.scr(result['case']) is True:
                     result['status'] = "PASS"
                 else:
                     result['status'] = "FAIL"
 
 #################################################### Query Section ####################################################
-                try:
-                    if QuizStatus.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom).status == False:
-                        QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,
-                        )
-                        quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
-                        quizDoneCount.quizDoneCount += 1
-                        quizDoneCount.save()
-                        quizStatus = QuizStatus.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
-                        quizStatus.status = True
-                        quizStatus.save()
-                except:
-                    QuizStatus.objects.create(quizId=quiz, userId=User.objects.get(userId=request.user.userId), classroom=quiz.classroom, status=True)
-                    QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
-                    quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
-                    quizDoneCount.quizDoneCount += 1
-                    quizDoneCount.save()
+                fileName = str(request.user.userId) + '_uploaded_' + str(exam_quiz.title) + '_' + str(exam_quiz.classroom.className) + request.FILES['upload'].name[-3:]
+                in_sys_file_location = os.getcwd() + "/media/"
+                temp_test = exam_quiz.classroom.className + '/' + request.user.userId + '/' + exam_quiz.title + '/'
+                sys.path.append(in_sys_file_location)
+                in_sys_file = FileSystemStorage().save(fileName, uploaded_to_file)
+                in_sys_file_url = FileSystemStorage().url(in_sys_file)
                 with open(in_sys_file_location + in_sys_file, 'w') as f:
                     f.write(temp_code)
-                    Upload.objects.get_or_create(title=in_sys_file, Uploadfile=in_sys_file, user=request.user, quiz=quiz, classroom=quiz.classroom)
+                    Exam_Upload.objects.get_or_create(title=in_sys_file, exam=exam_data, Uploadfile=in_sys_file, user=request.user, quiz=exam_quiz)
                 with open(in_sys_file_location + in_sys_file, 'a') as f:
                     f.write('\n\n')
                     for c,i in enumerate(result['case'].values()):
@@ -1294,69 +1249,62 @@ def exam_grader(request, classroom, quiz_id):
                     f.write("RESULT: %s" % result['status'])
                 with open(in_sys_file_location + in_sys_file, 'r') as f:
                     try:
-                        quiz_score = QuizScore.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom)
-                        if quiz.mode == "Scoring":
-                            if result['score'] >= quiz_score.total_score:
-                                quiz_score.total_score = result['score']
-                                quiz_score.passOrFail = 0
-                                quiz_score.max_score = result['max_score']
-                                quiz_score.code = Upload.objects.get(title=in_sys_file)  # f.read()
-                                quiz_score.save()
+                        exam_quiz_score = Exam_Score.objects.get(exam=exam_data, quiz=exam_quiz, user=request.user)
+                        if exam_quiz.mode == "Scoring":
+                            if result['score'] >= exam_quiz_score.total_score:
+                                exam_quiz_score.total_score = result['score']
+                                exam_quiz_score.passOrFail = 0
+                                exam_quiz_score.max_score = result['max_score']
+                                exam_quiz_score.code = Exam_Upload.objects.get(title=in_sys_file)  # f.read()
+                                exam_quiz_score.save()
                         else:
-                            if result['score'] >= quiz_score.passOrFail:
-                                quiz_score.total_score = 0
-                                quiz_score.passOrFail = result['score']
-                                quiz_score.max_score = result['max_score']
-                                quiz_score.code = Upload.objects.get(title=in_sys_file)  # f.read()
-                                quiz_score.save()
+                            if result['score'] >= exam_quiz_score.passOrFail:
+                                exam_quiz_score.total_score = 0
+                                exam_quiz_score.passOrFail = result['score']
+                                exam_quiz_score.max_score = result['max_score']
+                                exam_quiz_score.code = Exam_Upload.objects.get(title=in_sys_file)  # f.read()
+                                exam_quiz_score.save()
                     except ObjectDoesNotExist:
-                        if quiz.mode == "Scoring":
+                        if exam_quiz.mode == "Scoring":
                             x = (1,0)
                         else:
                             x = (0,1)
-                        quiz_score = QuizScore.objects.create(quizId=quiz,
-                                                              userId=User.objects.get(
-                                                              userId=request.user.userId),
-                                                              classroom=quiz.classroom,
+                        exam_quiz_score = Exam_Score.objects.create(exam=exam_data,
+                                                              quiz=exam_quiz,
+                                                              user=request.user,
                                                               total_score=result['score']*x[0],
                                                               passOrFail=result['score']*x[1],
                                                               max_score=result['max_score'],
-                                                              code=Upload.objects.get(title=in_sys_file)  # f.read(),
+                                                              code=Exam_Upload.objects.get(title=in_sys_file)  # f.read(),
                                                               )
-                    upload_instance = Upload.objects.get(title=in_sys_file, Uploadfile=in_sys_file, user=request.user,
-                                                         quiz=quiz, classroom=quiz.classroom)
-                    if quiz.mode == "Scoring":
-                        if quiz_score.total_score == None:
+                    upload_instance = Exam_Upload.objects.get(title=in_sys_file, exam=exam_data, Uploadfile=in_sys_file, user=request.user,
+                                                              quiz=exam_quiz)
+                    if exam_quiz.mode == "Scoring":
+                        if exam_quiz_score.total_score == None:
                             result['score'] = 0
                         upload_instance.score = result['score']
-                    elif quiz.mode == "Pass or Fail":
-                        if quiz_score.passOrFail == None:
+                    elif exam_quiz.mode == "Pass or Fail":
+                        if exam_quiz_score.passOrFail == None:
                             result['score'] = 0
                         upload_instance.score = result['score']
                     upload_instance.save(update_fields=["score"])
                     # print(eval('dir()'))
             try:
-                return render(request, 'Exam/ExamGrader.html', {'quizTitle': quiz.quizTitle,
-                                                       'quizDetail': quiz.quizDetail,
-                                                       'Deadline': quiz.deadline,
-                                                       'Hint': quiz.hint,
+                return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                       'detail': exam_quiz.detail,
                                                        'display': result,
                                                        'Case_Count': test_result.testsRun,
-                                                       'mode': quiz.mode,
+                                                       'mode': exam_quiz.mode,
                                                        'code': code_temp,
                                                        'prints': gradingstr_out,
-                                                       'Timer': timer_stop.timestamp() * 1000,
                                                        'Deadtimestamp': deadline.timestamp() * 1000, })
             except Exception as e:
                 # print(e)
-                return render(request, 'Exam/ExamGrader.html', {'quizTitle': quiz.quizTitle,
-                                                       'quizDetail': quiz.quizDetail,
-                                                       'Deadline': quiz.deadline,
-                                                       'Hint': quiz.hint,
+                return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                       'detail': exam_quiz.detail,
                                                        'display': result,
                                                        'Case_Count': test_result.testsRun,
                                                        'mode': quiz.mode,
-                                                       'Timer': False,
                                                        'code': code_temp,
                                                        'prints': gradingstr_out,
                                                        'Deadtimestamp': deadline.timestamp() * 1000, })
@@ -1366,19 +1314,17 @@ def exam_grader(request, classroom, quiz_id):
             code = request.POST['code-form-comment']
             code_temp = code
             if code == '':
-                return render(request, 'Exam/ExamGrader.html', {'quizTitle': quiz.quizTitle,
-                                                        'quizDetail': quiz.quizDetail,
-                                                        'Deadline': quiz.deadline,
-                                                        'Hint': quiz.hint,
+                return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                        'detail': exam_quiz.detail,
+                                                        'Deadline': exam_data.deadline,
                                                         'code': code,
-                                                       'Timer':timer_stop.timestamp()*1000,
                                                    'Deadtimestamp':deadline.timestamp()*1000,
                                                        })
             else:
                 rs = get_random_string(length=7)
-                fileName = str(request.user.userId) + '_coded_' + str(quiz.quizTitle) + '_' + str(quiz.classroom.className) + '_' + rs +'.py'
+                fileName = str(request.user.userId) + '_coded_' + str(exam_quiz.title) + '_' + str(exam_data.classroom.className) + '_' + rs +'.py'
                 code += '\n'
-                for case_line in quiz.text_testcase_content.splitlines():
+                for case_line in exam_quiz.text_testcase_content.splitlines():
                     if case_line.startswith('#lib') and len(case_line[5:]) != 0:
                         libs = case_line[5:].split(',')
                     code += case_line + "\n"
@@ -1406,35 +1352,20 @@ def exam_grader(request, classroom, quiz_id):
                 test_result = TextTestRunner().run(test_suite)
 #################################################### Result Section ####################################################
                 result = MyTestCase.result
-                if quiz.mode == "Pass or Fail" and test_result.wasSuccessful():
+                if exam_quiz.mode == "Pass or Fail" and test_result.wasSuccessful():
                     result['status'] = "PASS"
-                elif quiz.mode == "Pass or Fail" and test_result.wasSuccessful() is False:
+                elif exam_quiz.mode == "Pass or Fail" and test_result.wasSuccessful() is False:
                     result['status'] = "FAIL"
                     result['score'] = 0
-                elif quiz.mode == "Scoring" and my_globals.scr(result['case']) is True:
+                elif exam_quiz.mode == "Scoring" and my_globals.scr(result['case']) is True:
                     result['status'] = "PASS"
                 else:
                     result['status'] = "FAIL"
 
 #################################################### Query Section ####################################################
-                try:
-                    if QuizStatus.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom).status == False:
-                        QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
-                        quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
-                        quizDoneCount.quizDoneCount += 1
-                        quizDoneCount.save()
-                        quizStatus = QuizStatus.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
-                        quizStatus.status = True
-                        quizStatus.save()
-                except:
-                    QuizStatus.objects.create(quizId=quiz, userId=User.objects.get(userId=request.user.userId), classroom=quiz.classroom, status=True)
-                    QuizTracker.objects.update_or_create(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom,)
-                    quizDoneCount = QuizTracker.objects.get(userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom, )
-                    quizDoneCount.quizDoneCount += 1
-                    quizDoneCount.save()
                 with open('./media/' + fileName, 'w') as f:
                     f.write(code_temp)
-                    Upload.objects.get_or_create(title=fileName, Uploadfile=fileName, user=request.user, quiz=quiz, classroom=quiz.classroom)
+                    Exam_Upload.objects.get_or_create(title=fileName, exam=exam_data, Uploadfile=fileName, user=request.user, quiz=exam_quiz)
                 with open('./media/' + fileName, 'a') as f:
                     f.write('\n\n')
                     for c,i in enumerate(result['case'].values()):
@@ -1442,103 +1373,84 @@ def exam_grader(request, classroom, quiz_id):
                     f.write("RESULT: %s" % result['status'])
                 with open('./media/' + fileName, 'r') as f:
                     try:
-                        quiz_score = QuizScore.objects.get(quizId=quiz,userId=User.objects.get(userId=request.user.userId),classroom=quiz.classroom)
-                        if quiz.mode == "Scoring":
-                            if result['score'] >= quiz_score.total_score:
-                                quiz_score.total_score = result['score']
-                                quiz_score.passOrFail = 0
-                                quiz_score.max_score = result['max_score']
-                                quiz_score.code =  Upload.objects.get(title=fileName) #f.read()
-                                quiz_score.save()
+                        exam_quiz_score = Exam_Score.objects.get(exam=exam_data, quiz=exam_quiz, user=request.user)
+                        if exam_quiz.mode == "Scoring":
+                            if result['score'] >= exam_quiz_score.total_score:
+                                exam_quiz_score.total_score = result['score']
+                                exam_quiz_score.passOrFail = 0
+                                exam_quiz_score.max_score = result['max_score']
+                                exam_quiz_score.code = Exam_Upload.objects.get(title=fileName) #f.read()
+                                exam_quiz_score.save()
                         else:
-                            if result['score'] >= quiz_score.passOrFail:
-                                quiz_score.total_score = 0
-                                quiz_score.passOrFail = result['score']
-                                quiz_score.max_score = result['max_score']
-                                quiz_score.code = Upload.objects.get(title=fileName)  # f.read()
-                                quiz_score.save()
+                            if result['score'] >= exam_quiz_score.passOrFail:
+                                exam_quiz_score.total_score = 0
+                                exam_quiz_score.passOrFail = result['score']
+                                exam_quiz_score.max_score = result['max_score']
+                                exam_quiz_score.code = Exam_Upload.objects.get(title=fileName)  # f.read()
+                                exam_quiz_score.save()
+                        print(exam_quiz_score)
                     except ObjectDoesNotExist:
-                        if quiz.mode == "Scoring":
+                        if exam_quiz.mode == "Scoring":
                             x = (1,0)
                         else:
                             x = (0,1)
-                        quiz_score = QuizScore.objects.create(quizId=quiz,
-                                                              userId=User.objects.get(
-                                                                  userId=request.user.userId),
-                                                              classroom=quiz.classroom,
-                                                              total_score=result['score']*x[0],
-                                                              passOrFail=result['score']*x[1],
-                                                              max_score=result['max_score'],
-                                                              code=Upload.objects.get(title=fileName)  # f.read(),
-                                                              )
-                    upload_instance = Upload.objects.get(title=fileName, Uploadfile=fileName ,user=request.user, quiz=quiz, classroom=quiz.classroom)
-                    if quiz.mode == "Scoring":
-                        if quiz_score.total_score == None:
+                        exam_quiz_score = Exam_Score.objects.create(exam=exam_data,
+                                                                    quiz=exam_quiz,
+                                                                    user=request.user,
+                                                                    total_score=result['score'] * x[0],
+                                                                    passOrFail=result['score'] * x[1],
+                                                                    max_score=result['max_score'],
+                                                                    code=Exam_Upload.objects.get(title=fileName) # f.read(),
+                                                                    )
+                    upload_instance = Exam_Upload.objects.get(title=fileName, exam=exam_data, Uploadfile=fileName, user=request.user, quiz=exam_quiz)
+                    if exam_quiz.mode == "Scoring":
+                        if exam_quiz_score.total_score == None:
                             result['score'] = 0
                         upload_instance.score = result['score']
-                    elif quiz.mode == "Pass or Fail":
-                        if quiz_score.passOrFail == None:
+                    elif exam_quiz.mode == "Pass or Fail":
+                        if exam_quiz_score.passOrFail == None:
                             result['score'] = 0
                         upload_instance.score = result['score']
                     upload_instance.save(update_fields=["score"])
                     #print(eval('dir()'))
             try:
-                return render(request, 'Exam/ExamGrader.html', {'quizTitle': quiz.quizTitle,
-                                                       'quizDetail': quiz.quizDetail,
-                                                       'Deadline': quiz.deadline,
-                                                       'Hint': quiz.hint,
+                return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                       'detail': exam_quiz.detail,
                                                        'display': result,
                                                        'Case_Count': test_result.testsRun,
-                                                       'mode': quiz.mode,
+                                                       'mode': exam_quiz.mode,
                                                        'code': code_temp,
                                                        'prints': gradingstr_out,
-                                                       'Timer':timer_stop.timestamp()*1000,
                                                        'Deadtimestamp':deadline.timestamp()*1000,})
             except Exception as e:
-                return render(request, 'Exam/ExamGrader.html', {'quizTitle': quiz.quizTitle,
-                                                       'quizDetail': quiz.quizDetail,
-                                                       'Deadline': quiz.deadline,
-                                                       'Hint': quiz.hint,
-                                                       'display': result,
-                                                       'Case_Count': test_result.testsRun,
-                                                       'mode': quiz.mode,
-                                                       'code': code_temp,
-                                                       'prints': gradingstr_out,
-                                                       'Timer': False,
-                                                       'Deadtimestamp': deadline.timestamp() * 1000, })
+                return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                                'detail': exam_quiz.detail,
+                                                                'display': result,
+                                                                'Case_Count': test_result.testsRun,
+                                                                'mode': exam_quiz.mode,
+                                                                'code': code_temp,
+                                                                'prints': gradingstr_out,
+                                                                'Deadtimestamp': deadline.timestamp() * 1000, })
         else:
             try:
-                Timer = QuizTimer.objects.get(quizId=quiz, userId=User.objects.get(userId=request.user.userId),
-                                              classroom=quiz.classroom, )
-                if Timer.timer:
-                    if not Timer.start:
-                        Timer.timer_stop = timezone.now() + timezone.timedelta(seconds=Timer.timer)
-                    Timer.start = True
-                    Timer.save(update_fields=["timer_stop","start"])
-                    return render(request, 'Exam/ExamGrader.html', {'quizTitle': quiz.quizTitle,
-                                                           'quizDetail': quiz.quizDetail,
-                                                           'Deadline': quiz.deadline,
-                                                           'Hint': quiz.hint,
-                                                           'Timer': Timer.timer_stop.timestamp() * 1000,
+                return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                           'detail': exam_quiz.detail,
+                                                           'Deadline': exam_data.deadline,
                                                            'code': code_temp,
                                                            'Deadtimestamp': deadline.timestamp() * 1000,
                                                            })
 
             except ObjectDoesNotExist:
-                return render(request, 'Exam/ExamGrader.html', {'quizTitle':quiz.quizTitle,
-                                                   'quizDetail':quiz.quizDetail,
-                                                   'Deadline':quiz.deadline,
-                                                   'Hint':quiz.hint,
-                                                    'Timer':False,
+                return render(request, 'Exam/ExamGrader.html', {'title': exam_quiz.title,
+                                                    'detail': exam_quiz.detail,
+                                                    'Deadline': exam_data.deadline,
                                                     'code': code_temp,
-                                                    'Deadtimestamp':deadline.timestamp()*1000,
+                                                    'Deadtimestamp': deadline.timestamp()*1000,
                 })
     except Exception as e:
-        return render(request, 'Exam/ExamGrader.html',{'quizTitle':quiz.quizTitle,
-                                                'quizDetail':quiz.quizDetail,
-                                                'Deadline':quiz.deadline,
-                                                'Hint':quiz.hint,
-                                                'Timer':False,
+        return render(request, 'Exam/ExamGrader.html',{'title': exam_quiz.title,
+                                                'detail': exam_quiz.detail,
+                                                'Deadline':exam_data.deadline,
                                                 'exception':e,
                                                 'code':code_temp,
                                                 'Deadtimestamp':deadline.timestamp()*1000,

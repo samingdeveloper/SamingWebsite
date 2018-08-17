@@ -63,6 +63,7 @@
                         </div>
                         <div class="boxassign2">
                             {%  if request.user|can_manage:request.session.classroom %}
+                            <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id %}')" value="MOSS">
                             <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
                             <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
                             <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
@@ -119,6 +120,11 @@
                             </div>
                             <div class="boxassign2">
                                 <div class="detail">
+                                    {%  if request.user|can_manage:request.session.classroom %}
+                                        <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">View</button>
+                                    {%  else %}
+                                        <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">Open</button>
+                                    {% endif %}
                                     <p><strong>Name:</strong>   {{ exam_quiz.title }}</p>
                                     <p><strong>Detail:</strong> {{ exam_quiz.detail }}</p>
                                 </div>
@@ -128,7 +134,28 @@
                     {% endfor %}
                 </div>
 
-                {%  if request.user|can_manage:request.session.classroom %}
+                {% if request.user|can_manage:request.session.classroom %}
+                <div id="exam_quiz_pool" style="display:none">
+                    {% for exam_quiz in exam_quiz_pool %}
+                            <div class="boxassign">
+                                <div class="nameassign">{{ exam_quiz.title }}</div>
+                            </div>
+                            <div class="boxassign2">
+                                {%  if request.user|can_manage:request.session.classroom %}
+                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ i.title }}')" >Delete</button>
+                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
+                                    <button class="delete" onclick="">View</button>
+                                {%  else %}
+                                    <button class="delete" onclick="">Open</button>
+                                {% endif %}
+                                <div class="detail">
+                                    <p><strong>Name:</strong>   {{ exam_quiz.title }}</p>
+                                    <p><strong>Detail:</strong> {{ exam_quiz.detail }}</p>
+                                </div>
+                            </div>
+                                {% endfor %}
+                </div>
+
                 <div class="tooltip">
                     <div id="quiz_tooltiptext" name="quiz_tooltiptext" style="display:block">
                         <button1>
@@ -165,7 +192,8 @@
                         <br>
                         <label for="email" id="e_mail">Email:</label>
                         <input type="text" id="email" name="firstemail" placeholder="Add e-mail..">
-
+                        <label for="category" id="category1" style="display:none">Category:</label>
+                        <input type="text" id="category" name="category" style="display:none" placeholder="Add category..">
                         <label for="test_case" id="t1" style="display:none">CSV:</label>
                         <input type="file" name="upload_testcase" style="display:none" id="csv_file" />
                         <input type="text" name="uploadtext_testcase" id="uploadtext_testcase" style="display:none" onkeydown="test_case.value=testtext_case.value" onchange="document.getElementById('uploadtext_testcase').value = this.value.split('\\').pop().split('/').pop()">
@@ -177,6 +205,7 @@
                             <option value="TA"> TA</option>
                             {%  if request.user|can_manage:request.session.classroom %}
                             <option value="Admin"> Admin</option>
+                            <option value="Cate"> Category </option>
                             <option value="CSV"> CSV User </option>
                             {% endif %}
                         </select>
@@ -198,17 +227,37 @@
 
     <script>
         function toggle(){
-            console.log(document.getElementById("toggle").innerHTML);
-            if (document.getElementById("toggle").innerHTML=="Examination") {
-                document.getElementById("exam_div").style.display = "block"; document.getElementById("quiz_div").style.display = "none";
-                document.getElementById("exam_tooltiptext").style.display = "block"; document.getElementById("quiz_tooltiptext").style.display = "none";
-                document.getElementById("toggle").innerHTML = "Assignment";
+            for (i=0; i<document.getElementsByName("ex@m_quiz").length; i++){
+                document.getElementsByName("ex@m_quiz")[i].style.display = "none";
             }
-            else {
-                document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "block";
-                document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "block";
-                document.getElementById("toggle").innerHTML = "Examination";
-            }
+            {% if request.user|can_manage:request.session.classroom %}
+                if (document.getElementById("toggle").innerHTML=="Examination") {
+                    document.getElementById("exam_div").style.display = "block"; document.getElementById("quiz_div").style.display = "none"; document.getElementById("exam_quiz_pool").style.display = "none";
+                    document.getElementById("exam_tooltiptext").style.display = "block"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                    document.getElementById("toggle").innerHTML = "Pool";
+                }
+                else if (document.getElementById("toggle").innerHTML=="Pool") {
+                    document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "none"; document.getElementById("exam_quiz_pool").style.display = "block";
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                    document.getElementById("toggle").innerHTML = "Assignment";
+                }
+                else if (document.getElementById("toggle").innerHTML=="Assignment") {
+                    document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "block"; document.getElementById("exam_quiz_pool").style.display = "none";
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "block";
+                    document.getElementById("toggle").innerHTML = "Examination";
+                }
+            {% else %}
+                if (document.getElementById("toggle").innerHTML=="Examination") {
+                    document.getElementById("exam_div").style.display = "block"; document.getElementById("quiz_div").style.display = "none";
+                    document.getElementById("exam_tooltiptext").style.display = "block"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                    document.getElementById("toggle").innerHTML = "Assignment";
+                }
+                else if (document.getElementById("toggle").innerHTML=="Assignment") {
+                    document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "block";
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "block";
+                    document.getElementById("toggle").innerHTML = "Examination";
+                }
+            {% endif %}
             console.log(document.getElementById("toggle").innerHTML);
         }
 
@@ -216,7 +265,7 @@
             if (arr[0]=="exam_quizes"){
                 document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "none";
                 document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none";
-                document.getElementById(arr[1]).style.display = "none";
+                document.getElementById(arr[1]).style.display = "block";
             }
         }
     </script>
@@ -268,14 +317,25 @@
              var four = document.getElementById("e_mail");
              var five = document.getElementById("email");
              console.log(selectedValue);
-                if (selectedValue == "CSV")
+               if (selectedValue == "CSV")
                {
                 one.style.display = "block";
                 two.style.display = "block";
                 three.style.display = "block";
                 four.style.display = "none";
                 five.style.display = "none";
+                document.getElementById("category").style.display = "none";
+                document.getElementById("category1").style.display = "none";
                 //alert("Please select a card type");
+               }
+               else if (selectedValue == "Cate"){
+                one.style.display = "none";
+                two.style.display = "none";
+                three.style.display = "none";
+                four.style.display = "none";
+                five.style.display = "none";
+                document.getElementById("category").style.display = "block";
+                document.getElementById("category1").style.display = "block";
                }
                else{
                      one.style.display = "none";
@@ -283,6 +343,8 @@
                      three.style.display = "none";
                      four.style.display = "block";
                      five.style.display = "block";
+                     document.getElementById("category").style.display = "none";
+                     document.getElementById("category1").style.display = "none";
                }
             }
     </script>

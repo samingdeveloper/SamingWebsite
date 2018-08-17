@@ -12,5 +12,4 @@ print(a(2),b(2),c(2))
 
 
 CASE 1: 4 == 4
-CASE 2: 8 != 4
-RESULT: FAIL
+RESULT: PASS

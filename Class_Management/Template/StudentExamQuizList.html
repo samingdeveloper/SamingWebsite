@@ -1,0 +1,34 @@
+{% extends "NavBar.html" %}
+{% block content %}
+    {% load score_tags %}
+    {% load exam_tags %}
+    {% load staticfiles %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
+
+    <div id="main">
+        <div class="center">
+            <h2>Information</h2>
+        </div>
+
+        <div class="back" id="exam" >
+            <table id="customers">
+                <tr>
+                    <th>Name</th>
+                    <th>Score</th>
+                    <th>Max Score</th>
+                </tr>
+                {%  for i in exam_quizes %}
+                <tr>
+                    <td>
+                        <a href="{% url 'Class_Management:StudentExamQuizFiles' request.session.classroom userId exam_data_id i.id %}">{{ i.title }}</a>
+                    </td>
+                        <td>{% u_exam_quiz_score u_id.user_name i.classroom i.id %}</td>
+                        <td>{% u_exam_quiz_score u_id.user_name i.classroom i.id "Max" %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

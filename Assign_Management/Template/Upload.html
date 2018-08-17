@@ -1,5 +1,6 @@
 
 {% load static %}
+{% load group_tags %}
 <html lang="en">
 {% block content %}
 <head>
@@ -186,15 +187,20 @@
         };*/
             function myCountFunction() {
                 if (time_up == null){
-                    if (Date.now() >= deadline) {
-                        console.log("Date.now() >= deadline");
-                        myFunction()
-                    }
+                    {% if not request.user|can_manage:request.session.classroom %}
+                        if (Date.now() >= deadline) {
+                            console.log("Date.now() >= deadline");
+                            myFunction()
+                        }
+                    {% endif %}
                     document.getElementById("nowtime").innerHTML = Date();
                 }
                 else if (Date.now() >= time_up || Date.now() >= deadline) {
-                    console.log("Date.now() >= deadline++");
-                    myFunction()
+                    {% if not request.user|can_manage:request.session.classroom %}
+                        console.log("Date.now() >= deadline++");
+                        myFunction()
+                    {% endif %}
+                    document.getElementById("nowtime").innerHTML = Date();
                 }
                 else {
                     document.getElementById("nowtime").innerHTML = Date();

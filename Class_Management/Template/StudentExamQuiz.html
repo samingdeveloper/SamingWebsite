@@ -1,0 +1,43 @@
+{% extends "NavBar.html" %}
+{% block content %}
+{% load static %}
+{% load group_tags %}
+
+
+  <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/whacthAS.css' %}">
+  <script src="{% static 'grading_code/js/animation.js' %}"></script>
+
+
+  <div id="main">
+    <div class="center">
+      <h2>Information</h2>
+    </div>
+    <div class="back">
+      <table id="customers">
+        <tr>
+          <th>{{ u_id.user_name }}</th>
+        </tr>
+      </table>
+      <p><strong>Assignment name:</strong> {{ quiz_to_show.quizTitle }}</p>
+      <p><strong>Assignment detail:</strong> {{ quiz_to_show.quizDetail }}</p>
+      <p><strong>File name:</strong> {{ file_title }}</p>
+      <p><strong>Uploadtime:</strong> {{ upload_time }}</p>
+      <p><strong>Deadline:</strong> {{ quiz_to_show.deadline }}</p>
+
+      <label for="showcode">Code:</label>
+      <textarea type="text" id="showcode" name="showcodedetail" placeholder="">{{ code_to_show }}</textarea>
+      {% if request.user|can_manage:request.session.classroom %}
+      <label for="showtestcode">Test code:</label>
+      <textarea type="text" id="showtestcode" name="showtestcodeedetail" placeholder="">{{ quiz_to_show.text_testcode_content }}</textarea>
+      <label for="showcase">Test case:</label>
+      <textarea type="text" id="showcase" name="showcasedetail" placeholder="">{{ quiz_to_show.text_testcase_content }}</textarea>
+      {% endif %}
+
+      <form action="{% url 'Class_Management:StudentExamQuiz' request.session.classroom u_id.userId exam_data_id exam_quiz_id file_id%}" method="POST">
+        {% csrf_token %}
+        <input id="set" type="submit" value="SET"/>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
