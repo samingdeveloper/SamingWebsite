@@ -16,13 +16,13 @@
                 <h3>Edit:Examination Quiz</h3>
         </div>
         <div class="div">
-            <form action="{% url 'Assign_Management:EditExamQuiz' request.session.classroom %}" method="post" enctype="multipart/form-data"
+            <form action="{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id%}" method="post" enctype="multipart/form-data"
               > {% csrf_token %}
                 <label for="exam_name">Exam name:</label>
-                <input type="text" id="exam_name" name="exam_name" value="{{ name }}">
+                <input type="text" id="exam_name" name="exam_name" value="{{ exam_quiz.title }}">
 
-                <label for="Exam_detail">Exam detail:</label>
-                <textarea type="text" id="Exam_detail" name="Exam_detail" >{{ detail }}</textarea>
+                <label for="exam_detail">Exam detail:</label>
+                <textarea type="text" id="exam_detail" name="exam_detail" >{{ exam_quiz.detail }}</textarea>
 
                 <label for="quiz_category">Category:</label>
                 <select name="quiz_category" id="quiz_category">
@@ -36,25 +36,32 @@
                 </select>
 
                 <label for="upload_template">Code template:</label>
-                <textarea type="text" id="upload_template" name="upload_template">{{ examedit.text_template_content }}</textarea>
+                <textarea type="text" id="upload_template" name="upload_template">{{ exam_quiz.text_template_content }}</textarea>
 
                 <label for="test_code">Test code:</label>
-                <textarea type="text" id="test_code" name="test_code" >{{ examedit.text_testcode_content }}</textarea>
+                <textarea type="text" id="test_code" name="test_code" >{{ exam_quiz.text_testcode_content }}</textarea>
 
                 <label for="test_case">Test case:</label>
-                <textarea type="text" id="test_case" name="upload_testcase" >{{ examedit.text_testcase_content }}</textarea>
+                <textarea type="text" id="test_case" name="upload_testcase" >{{ exam_quiz.text_testcase_content }}</textarea>
+
+                <label for="redo">Restart:</label>
+                    <select id="redo" name="redo">
+                            <option value="No" selected> No </option>
+                            <option value="Yes"> Yes </option>
+                    </select>
 
                 <label for="mode">Mode:</label>
                 <select id="mode" name="mode" >
-                    {% if exam_quiz.category == "Pass or Fail" %}
+                    {% if exam_quiz.mode == "Pass or Fail" %}
                             <option value="Pass or Fail" selected> Pass or Fail</option>
                             <option value="Scoring"> Scoring </option>
                     {% else %}
                             <option value="Pass or Fail"> Pass or Fail</option>
                             <option value="Scoring" selected> Scoring </option>
+                    {% endif %}
                 </select>
 
-                <input type="submit" value="Create">
+                <input type="submit" value="Update">
                 {% if messages %}
                 {% for message in messages %}
                 <p {% if message.tags == error %} class="alert alert-danger"{% endif %}>

@@ -63,7 +63,7 @@
                         </div>
                         <div class="boxassign2">
                             {%  if request.user|can_manage:request.session.classroom %}
-                            <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id %}')" value="MOSS">
+                            <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id 0%}')" value="MOSS">
                             <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
                             <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
                             <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
@@ -71,7 +71,6 @@
                             <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
                             {% endif %}
                             <div class="detail">
-                                <p><strong>Assignment name:</strong>   {{ i.quizTitle }}</p>
                                 {% if i.quiztimer_set.all.0.timer %}
                                 <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
                                 {% endif %}
@@ -100,7 +99,7 @@
                                 <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">Open</button>
                             {% endif %}
                             <div class="detail">
-                                <p><strong>Examination:</strong>   {{ i.name }}</p>
+                                <p><strong>Examination Detail:</strong>   {{ i.detail }}</p>
                                 {%  if request.user|can_manage:request.session.classroom %}
                                 <p><strong>Available:</strong>   {{ i.available }}</p>
                                 {% endif %}
@@ -125,7 +124,6 @@
                                     {%  else %}
                                         <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">Open</button>
                                     {% endif %}
-                                    <p><strong>Name:</strong>   {{ exam_quiz.title }}</p>
                                     <p><strong>Detail:</strong> {{ exam_quiz.detail }}</p>
                                 </div>
                             </div>
@@ -142,14 +140,11 @@
                             </div>
                             <div class="boxassign2">
                                 {%  if request.user|can_manage:request.session.classroom %}
+                                     <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom exam_quiz.id 1%}')" value="MOSS">
                                     <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ i.title }}')" >Delete</button>
                                     <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
-                                    <button class="delete" onclick="">View</button>
-                                {%  else %}
-                                    <button class="delete" onclick="">Open</button>
                                 {% endif %}
                                 <div class="detail">
-                                    <p><strong>Name:</strong>   {{ exam_quiz.title }}</p>
                                     <p><strong>Detail:</strong> {{ exam_quiz.detail }}</p>
                                 </div>
                             </div>
@@ -170,6 +165,15 @@
                         <button1>
                             <span class="tooltiptext">Exam</span>
                             <a href="{% url 'Class_Management:Assign_Management:GenerateExam' request.session.classroom %}">
+                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                            </a>
+                        </button1>
+                    </div>
+
+                    <div id="pool_tooltiptext" name="pool_tooltiptext" style="display:none">
+                        <button1>
+                            <span class="tooltiptext">Pool</span>
+                            <a href="{% url 'Class_Management:Assign_Management:GenerateExamQuiz' request.session.classroom %}">
                                 <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
                             </a>
                         </button1>
@@ -233,28 +237,28 @@
             {% if request.user|can_manage:request.session.classroom %}
                 if (document.getElementById("toggle").innerHTML=="Examination") {
                     document.getElementById("exam_div").style.display = "block"; document.getElementById("quiz_div").style.display = "none"; document.getElementById("exam_quiz_pool").style.display = "none";
-                    document.getElementById("exam_tooltiptext").style.display = "block"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                    document.getElementById("exam_tooltiptext").style.display = "block"; document.getElementById("quiz_tooltiptext").style.display = "none"; document.getElementById("pool_tooltiptext").style.display = "none";
                     document.getElementById("toggle").innerHTML = "Pool";
                 }
                 else if (document.getElementById("toggle").innerHTML=="Pool") {
                     document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "none"; document.getElementById("exam_quiz_pool").style.display = "block";
-                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none"; document.getElementById("pool_tooltiptext").style.display = "block";
                     document.getElementById("toggle").innerHTML = "Assignment";
                 }
                 else if (document.getElementById("toggle").innerHTML=="Assignment") {
                     document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "block"; document.getElementById("exam_quiz_pool").style.display = "none";
-                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "block";
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "block"; document.getElementById("pool_tooltiptext").style.display = "none";
                     document.getElementById("toggle").innerHTML = "Examination";
                 }
             {% else %}
                 if (document.getElementById("toggle").innerHTML=="Examination") {
                     document.getElementById("exam_div").style.display = "block"; document.getElementById("quiz_div").style.display = "none";
-                    document.getElementById("exam_tooltiptext").style.display = "block"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none"; document.getElementById("pool_tooltiptext").style.display = "none";
                     document.getElementById("toggle").innerHTML = "Assignment";
                 }
                 else if (document.getElementById("toggle").innerHTML=="Assignment") {
                     document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "block";
-                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "block";
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none"; document.getElementById("pool_tooltiptext").style.display = "none";
                     document.getElementById("toggle").innerHTML = "Examination";
                 }
             {% endif %}

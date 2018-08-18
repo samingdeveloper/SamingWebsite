@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^generate_exam_quiz/', views.GenerateExamQuiz, name='GenerateExamQuiz'),
     url(r'^edit_exam/(?P<exam_data_id>[0-9]+)/', views.EditExam, name='EditExam'),
     url(r'^edit_exam_quiz/(?P<exam_quiz_id>[0-9]+)/', views.EditExamQuiz, name='EditExamQuiz'),
-    url(r'^MOSS/(?P<quiz_id>[0-9]+)/', views.moss, name='MOSS'),
+    url(r'^MOSS/(?P<quiz_id>[0-9]+)/(?P<mode>[0-9]+)/$', views.moss, name='MOSS'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

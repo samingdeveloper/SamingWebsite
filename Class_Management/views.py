@@ -46,7 +46,7 @@ def Home(request,classroom):
     elif request.method == "POST" and action == 'add':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
-        if ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() and request.POST["country"] != "CSV" and request.POST["country"] != "Cate":
+        if not ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() and request.POST["country"] != "CSV" and request.POST["country"] != "Cate":
             add_status = 4
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                                  'classname': classroom,
@@ -121,7 +121,6 @@ def Home(request,classroom):
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              })
             elif request.POST["country"] == "Admin" and request.user.is_admin:
-                user_obj = User.objects.get(email=email)
                 add_status = 1
                 user_obj.is_admin = True
                 user_obj.save()
@@ -135,7 +134,7 @@ def Home(request,classroom):
                                              })
             add_status = 1
             g = Group.objects.get(name=status)
-            g.user_set.add(user_obj)
+            g.user_set.add(User.objects.get(email=email))
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
@@ -249,7 +248,7 @@ def Home(request,classroom):
                                              })
             add_status = 3
             g = Group.objects.get(name=status)
-            g.user_set.remove(user_obj)
+            g.user_set.remove(User.objects.get(email=email))
             return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
@@ -282,6 +281,14 @@ def Home(request,classroom):
 
     else:
         #print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
+        if ClassRoom.objects.get(className=classroom).user.filter(email=request.user.email).exists() is True or (request.POST["country"] != "CSV" and request.POST["country"] != "Cate"):
+            try:
+                QuizTracker.objects.get(userId=request.user,classroom__className=classroom)
+            except ObjectDoesNotExist:
+                QuizTracker.objects.create(userId=request.user,classroom=ClassRoom.objects.get(className=classroom))
+            except Exception as E:
+                print(E)
+
         if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
             quiz_set = Quiz.objects.filter(classroom__className=classroom)
             exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')

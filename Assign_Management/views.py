@@ -145,61 +145,75 @@ def DeleteAssign(request, classroom, quiz_id):
     quiz.delete()
     return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
-def regen(require_regen):
-    test_temp = Quiz.objects.create(
-        quizTitle=require_regen["quizTitle"],
-        quizDetail=require_regen["quizDetail"],
-        deadline=require_regen["deadline"],
-        available=require_regen["available"],
-        category=Category.objects.get(name=require_regen["category"]),
-        hint=require_regen["hint"],
-        text_testcase_content=require_regen["text_testcase_content"],
-        text_template_content=require_regen["text_template_content"],
-        mode=require_regen["mode"],
-        classroom=require_regen["classroom"]
-    )
-    GenerateAssign_instance_temp = test_temp
-    get_tracker = QuizTracker.objects.filter(
-        classroom=GenerateAssign_instance_temp.classroom)  # reference at QuizTracker
-    for k in get_tracker:
-        QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                            userId=k.userId,
-                                            classroom=GenerateAssign_instance_temp.classroom,
-                                            status=False,
-                                            )
-    #print("k1 has passed")
-    try:
+def regen(require_regen,mode=None):
+    if mode == None:
+        test_temp = Quiz.objects.create(
+            quizTitle=require_regen["quizTitle"],
+            quizDetail=require_regen["quizDetail"],
+            deadline=require_regen["deadline"],
+            available=require_regen["available"],
+            category=Category.objects.get(name=require_regen["category"]),
+            hint=require_regen["hint"],
+            text_testcode_content=require_regen["text_testcode_content"],
+            text_testcase_content=require_regen["text_testcase_content"],
+            text_template_content=require_regen["text_template_content"],
+            mode=require_regen["mode"],
+            classroom=require_regen["classroom"]
+        )
+        GenerateAssign_instance_temp = test_temp
+        get_tracker = QuizTracker.objects.filter(
+            classroom=GenerateAssign_instance_temp.classroom)  # reference at QuizTracker
         for k in get_tracker:
-            tracker = QuizTracker.objects.get(userId=k.userId,
-                                              classroom=GenerateAssign_instance_temp.classroom,
-                                              )
-            if tracker.quizDoneCount > 0:
-                tracker.quizDoneCount -= 1
-            tracker.save(update_fields=["quizDoneCount"])
+            QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
+                                                userId=k.userId,
+                                                classroom=GenerateAssign_instance_temp.classroom,
+                                                status=False,
+                                                )
+        #print("k1 has passed")
+        try:
+            for k in get_tracker:
+                tracker = QuizTracker.objects.get(userId=k.userId,
+                                                  classroom=GenerateAssign_instance_temp.classroom,
+                                                  )
+                if tracker.quizDoneCount > 0:
+                    tracker.quizDoneCount -= 1
+                tracker.save(update_fields=["quizDoneCount"])
 
-        if require_regen["Timer"] != '':
-            #print("timeryes")
-            Timer_temp = ''
-            for i in require_regen["Timer"]:
-                if i == ' ':
-                    pass
-                else:
-                    Timer_temp += i
-            require_regen["Timer"] = Timer_temp
-            o = require_regen["Timer"].split(':')
-            x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
-            for j in get_tracker:
-                QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                                   userId=j.userId,
-                                                   classroom=GenerateAssign_instance_temp.classroom,
-                                                   timer=x,
-                                                   )
-        #print("k2 has passed")
-    except Exception as e:
-        #print("k2 has failed")
-        #print(e)
-        pass
-    return test_temp
+            if require_regen["Timer"] != '':
+                #print("timeryes")
+                Timer_temp = ''
+                for i in require_regen["Timer"]:
+                    if i == ' ':
+                        pass
+                    else:
+                        Timer_temp += i
+                require_regen["Timer"] = Timer_temp
+                o = require_regen["Timer"].split(':')
+                x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
+                for j in get_tracker:
+                    QuizTimer.objects.update_or_create(quizId=GenerateAssign_instance_temp,
+                                                       userId=j.userId,
+                                                       classroom=GenerateAssign_instance_temp.classroom,
+                                                       timer=x,
+                                                       )
+            #print("k2 has passed")
+        except Exception as e:
+            #print("k2 has failed")
+            #print(e)
+            pass
+        return test_temp
+    elif mode == "exam_quiz":
+        test_temp = Exam_Quiz.objects.create(
+            title=require_regen["title"],
+            detail=require_regen["detail"],
+            category=Category.objects.get(name=require_regen["category"]),
+            text_testcode_content=require_regen["text_testcode_content"],
+            text_testcase_content=require_regen["text_testcase_content"],
+            text_template_content=require_regen["text_template_content"],
+            mode=require_regen["mode"],
+            classroom=require_regen["classroom"]
+        )
+        return test_temp
 
 def EditAssign(request, classroom, quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
@@ -253,6 +267,7 @@ def EditAssign(request, classroom, quiz_id):
                                  "available":Available,
                                  "category":Cate,
                                  "hint":Hint,
+                                 "text_testcode_content":test_code,
                                  "text_testcase_content":test_case,
                                  "text_template_content":code_template,
                                  "mode":mode,
@@ -287,6 +302,18 @@ def EditAssign(request, classroom, quiz_id):
                     for j in get_tracker:
                         try:
                             timer = QuizTimer.objects.get(quizId=quiz,
+                                                          userId=j.userId,
+                                                          classroom=quiz.classroom,
+                                                          )
+                            if timer.start:
+                                timer.timer = x
+                                timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
+                            else:
+                                timer.timer = x
+                                timer.timer_stop = None
+                            timer.save(update_fields=["timer", "timer_stop"])
+                        except ObjectDoesNotExist:
+                            timer = QuizTimer.objects.create(quizId=quiz,
                                                           userId=j.userId,
                                                           classroom=quiz.classroom,
                                                           )
@@ -438,6 +465,8 @@ def GenerateExamQuiz(request,classroom):
         try:
             if request.POST['exam_name'] == '':
                 raise ValueError("Exam must have a name!")
+            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
+                raise ValueError("Test code and Test case must not blank!")
             code_template = request.POST.get('upload_template', '')
 
 #################################################### Check Testcase ####################################################
@@ -475,8 +504,10 @@ def EditExamQuiz(request, classroom, exam_quiz_id):
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST":
         try:
-            if request.POST['asname'] == '':
-                raise ValueError("Assignment must have a name!")
+            if request.POST['exam_name'] == '':
+                raise ValueError("Exam must have a name!")
+            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
+                raise ValueError("Test code and Test case must not blank!")
             code_template = request.POST.get('upload_template', '')
 
 #################################################### Check Testcase ####################################################
@@ -494,98 +525,44 @@ def EditExamQuiz(request, classroom, exam_quiz_id):
             eval(compile(test_code + '\n' + test_case, 'gradingstr', 'exec'), restricted_globals, locals())
 ########################################################################################################################
 
-            quiz = Quiz.objects.get(pk=quiz_id)
-            OSS = OverwriteStorage()
-            var = request.user.userId
-            Assignment = request.POST.get('asname', '')
-            Assignment_Detail = request.POST.get('asdetail', '')
-            Deadline = request.POST.get('dateInput', '')
-            Available = request.POST.get('dateAvailable', '')
-            Hint = request.POST.get('hint', '')
+            exam_quiz = Exam_Quiz.objects.get(pk=exam_quiz_id)
+            exam_name = request.POST.get('exam_name', '')
+            exam_detail = request.POST.get('exam_detail', '')
             Cate = request.POST.get('quiz_category', '')
-            Timer = request.POST.get('timer', '')
-            asd = request.FILES.get('upload_testcase', False)
-            asdf = request.FILES.get('upload_template', False)
             mode = request.POST.get('mode', '')
             redo = request.POST.get('redo', '')
             ### Define Section ###
-            #if (Assignment != quiz.quizTitle or dab != quiz.text_testcase_content:
-            #quiz_old = {
-            #"title":quiz.quizTitle,
-            #"testcase":quiz.text_testcase_content,
-            #}
-            if (redo == "Yes"): #or quiz_old["title"] != Assignment or quiz_old["testcase"] != dab):
-                quiz.delete()
-                regen({"quizTitle":Assignment,
-                                 "quizDetail":Assignment_Detail,
-                                 "deadline":Deadline,
-                                 "available":Available,
+            if (redo == "Yes"):
+                exam_quiz.delete()
+                regen({"title":exam_name,
+                                 "detail":exam_detail,
                                  "category":Cate,
-                                 "hint":Hint,
+                                 "text_testcode_content": test_code,
                                  "text_testcase_content":test_case,
                                  "text_template_content":code_template,
                                  "mode":mode,
-                                 "classroom":quiz.classroom,
-                                 "Timer":Timer,
-                                 })
-                #print("ppl=sh!t")
+                                 "classroom":exam_quiz.classroom,
+                                 },"exam_quiz")
 
             else:
-                get_tracker = QuizTracker.objects.filter(classroom=quiz.classroom)  # reference at QuizTracker
-                quiz.quizTitle = Assignment
-                quiz.quizDetail = Assignment_Detail
-                quiz.deadline = Deadline
-                quiz.available = Available
-                quiz.category = Category.objects.get(name=Cate)
-                quiz.hint = Hint
-                quiz.text_testcase_content = test_case
-                quiz.text_template_content = code_template
-                quiz.mode = mode
-                quiz.save()
-                if Timer != '':
-                    # print("timeryes")
-                    Timer_temp = ''
-                    for i in Timer:
-                        if i == ' ':
-                            pass
-                        else:
-                            Timer_temp += i
-                    Timer = Timer_temp
-                    o = Timer.split(':')
-                    x = int(o[0]) * 3600 + int(o[1]) * 60 + int(o[2])
-                    for j in get_tracker:
-                        try:
-                            timer = QuizTimer.objects.get(quizId=quiz,
-                                                          userId=j.userId,
-                                                          classroom=quiz.classroom,
-                                                          )
-                            if timer.start:
-                                timer.timer = x
-                                timer.timer_stop = timezone.now() + timezone.timedelta(seconds=timer.timer)
-                            else:
-                                timer.timer = x
-                                timer.timer_stop = None
-                            timer.save(update_fields=["timer", "timer_stop"])
-                        except Exception as e:
-                            #print(e)
-                            continue
+                exam_quiz.title = exam_name
+                exam_quiz.detail = exam_detail
+                exam_quiz.category = Category.objects.get(name=Cate)
+                exam_quiz.text_testcode_content = test_code
+                exam_quiz.text_testcase_content = test_case
+                exam_quiz.text_template_content = code_template
+                exam_quiz.mode = mode
+                exam_quiz.save()
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
         except Exception as E:
             from django.contrib import messages
             messages.error(request, E)
-            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/EditAssign/' + quiz_id, {"categories": Category.objects.all()})
+            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/edit_exam_quiz/' + exam_quiz_id, {"categories": Category.objects.all()})
 
 
     else:
-        quiz = Quiz.objects.get(pk=quiz_id)
-        try:
-            quizTimer = QuizTimer.objects.get(quizId=quiz)
-        except:
-            quizTimer = ''
-        context = {'quizedit': quiz,
-                   'quiztedit': quizTimer,
-                   'quizdedit': quiz.deadline,
-                   'quizaedit': quiz.available,
+        exam_quiz = Exam_Quiz.objects.get(pk=exam_quiz_id)
+        context = {'exam_quiz': exam_quiz,
                    'categories': Category.objects.all(),
                   }
         return render(request, 'Exam/EditExamQuiz.html', context)
@@ -593,23 +570,18 @@ def EditExamQuiz(request, classroom, exam_quiz_id):
 def DeleteExamQuiz(request, classroom, exam_quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
-    quiz = Quiz.objects.get(pk=quiz_id)
-    quizStatus = QuizStatus.objects.filter(quizId=quiz, classroom=quiz.classroom, )
-    for j in quizStatus:
-        if j.status:
-            quizDoneCount = QuizTracker.objects.get(
-                            userId=j.userId,
-                            classroom=quiz.classroom, )
-            #print(quizDoneCount)
-            if quizDoneCount.quizDoneCount != 0:
-                try:
-                    quizDoneCount.quizDoneCount -= 1
-                    quizDoneCount.save(update_fields=["quizDoneCount"])
-                except quizDoneCount.DoesNotExist:
-                    pass
-        elif j.status is not True:
-            pass
-    quiz.delete()
+    exam_quiz = Exam_Quiz.objects.get(pk=exam_quiz_id)
+    try:
+        for tracker in Exam_Tracker.objects.filter(picked__contains='{'+exam_quiz.title+'}'):
+            try:
+                tracker.picked.remove(exam_quiz.title)
+            except Exception as E:
+                print(E)
+                tracker.picked = []
+            tracker.save()
+    except Exception as E:
+        print(E)
+    exam_quiz.delete()
     return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
 #################################################### AutoGrader Section ####################################################
@@ -618,13 +590,8 @@ def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
-        try:
-            if Rank.objects.get(userId=request.user, classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank:
-                return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
-        except Exception as e:
-            print(e)
-            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+    elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True or Rank.objects.get(userId=request.user, classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank)and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
@@ -1156,13 +1123,8 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
-        try:
-            if Rank.objects.get(userId=request.user, classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank:
-                return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
-        except Exception as e:
-            print(e)
-            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+    elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True or Rank.objects.get(userId=request.user,classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank) and not (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
@@ -1458,8 +1420,8 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
 
 
 #################################################### Measurement Of Software Similarity ####################################################
-def moss(request, classroom, quiz_id):
-    if request.user.is_admin:
+def moss(request, classroom, quiz_id, mode):
+    if (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])) and mode is '0':
         userid = 367349587
         m = mosspy.Moss(userid, "python")
         for i in QuizScore.objects.filter(quizId__pk=quiz_id):
@@ -1470,6 +1432,18 @@ def moss(request, classroom, quiz_id):
                 continue
         url = m.send()  # Submission Report URL
         #print("Report Url: " + url)
+        return redirect(url)
+    elif (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])) and mode == '1':
+        userid = 367349587
+        m = mosspy.Moss(userid, "python")
+        for i in Exam_Score.objects.filter(quiz__pk=quiz_id):
+            try:
+                m.addFile(i.code.Uploadfile.path)
+            except Exception as E:
+                # print(E)
+                continue
+        url = m.send()  # Submission Report URL
+        # print("Report Url: " + url)
         return redirect(url)
     else:
         return HttpResponseRedirect("/ClassRoom/"+classroom)

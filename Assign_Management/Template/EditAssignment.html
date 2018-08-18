@@ -46,17 +46,6 @@
                     <label for="ltimer">Timer:</label>
                     <input type="text" id="ltimer" name="timer" placeholder="{{ quiztedit.timer }}">
 
-                    <label for="dateInput">Deadline:</label>
-                    <script type="text/javascript">
-                        $(function(){
-                        $("#dateInput").datetimepicker({
-                          dateFormat: 'yy-mm-dd',
-                          timeFormat: 'HH:mm:ss',
-                          });
-                    });
-                    </script>
-                    <input type="text" name="dateInput" id="dateInput" placeholder="{{ quizdedit }}">
-
                     <label for="dateAvailable">Available:</label>
                     <script type="text/javascript">
                         $(function(){
@@ -68,16 +57,31 @@
                     </script>
                     <input type="text" name="dateAvailable" id="dateAvailable" placeholder="{{ quizaedit }}">
 
+                    <label for="dateInput">Deadline:</label>
+                    <script type="text/javascript">
+                        $(function(){
+                        $("#dateInput").datetimepicker({
+                          dateFormat: 'yy-mm-dd',
+                          timeFormat: 'HH:mm:ss',
+                          });
+                    });
+                    </script>
+                    <input type="text" name="dateInput" id="dateInput" placeholder="{{ quizdedit }}">
                     <label for="redo">Restart:</label>
                     <select id="redo" name="redo">
-                            <option value="No"> No </option>
+                            <option value="No" selected> No </option>
                             <option value="Yes"> Yes </option>
                     </select>
 
                     <label for="mode">Mode:</label>
                     <select id="mode" name="mode" >
-                            <option value="Pass or Fail"> Pass or Fail</option>
+                    {% if quizedit.mode == "Pass or Fail" %}
+                            <option value="Pass or Fail" selected> Pass or Fail</option>
                             <option value="Scoring"> Scoring </option>
+                    {% else %}
+                            <option value="Pass or Fail"> Pass or Fail</option>
+                            <option value="Scoring" selected> Scoring </option>
+                    {% endif %}
                     </select>
 
                     <input type="submit" value="Update">
