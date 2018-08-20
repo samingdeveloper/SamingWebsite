@@ -1,6 +1,6 @@
 ############# framework ############# 
 Django==2.0.3
-django-session-timeout
+#django-session-timeout
 #django-mathfilters
 #django-globals
 #django-bootstrap4
