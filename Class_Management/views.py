@@ -347,13 +347,23 @@ def EditClassroom(request,classroom):
         classname = request.POST["classname"]
         creator = request.POST["creator"]
         if classname is not '' and bool(re.match('^[a-zA-Z0-9]+$',classname)):
+            from django.db import IntegrityError
             try:
-                group = Group.objects.get(name=classroom + "_Teacher")
+                group_teacher = Group.objects.get(name=classroom + "_Teacher")
+                group_ta = Group.objects.get(name=classroom + "_TA")
             except ObjectDoesNotExist:
-                
-            Group.objects.filter(name=group.name).update(name=classname + "_Teacher")
-            group = Group.objects.get(name=classroom + "_TA")
-            Group.objects.filter(name=group.name).update(name=classname + "_TA")
+                classroom_instance.className = classname
+                classroom_instance.creator = User.objects.get(pk=creator)
+                classroom_instance.save()
+                return HttpResponseRedirect('/ClassRoom')
+            try:
+                Group.objects.filter(name=group_teacher.name).update(name=classname + "_Teacher")
+            except IntegrityError:
+                Group.objects.filter(name=group_teacher.name).delete()
+            try:
+                Group.objects.filter(name=group_ta.name).update(name=classname + "_TA")
+            except IntegrityError:
+                Group.objects.filter(name=group_ta.name).delete()
             classroom_instance.className = classname
             classroom_instance.creator = User.objects.get(pk=creator)
             classroom_instance.save()
