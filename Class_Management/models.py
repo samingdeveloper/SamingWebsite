@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Max
-from django.db.models.signals import pre_delete, m2m_changed, post_save
+from django.db.models.signals import pre_delete, m2m_changed, pre_save, post_save
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -142,15 +142,25 @@ def classroom_user_changed(sender,instance,action,pk_set,**kwargs):
                 print(E)
                 continue
 
+@receiver(pre_save,sender=ClassRoom)
+def classroom_create(sender,instance,**kwargs):
+    import re
+    if not (bool(re.match('^[a-zA-Z0-9]+$', instance.className))):
+        raise ValueError("Classname must contains only alphabet or numeric.")
+
 @receiver(post_save,sender=ClassRoom)
 def clasroom_created(sender,instance,**kwargs):
     Group.objects.update_or_create(name=instance.className+"_Teacher")
     Group.objects.update_or_create(name=instance.className+"_TA")
 
+
 @receiver(pre_delete,sender=ClassRoom)
 def clasroom_removed(sender,instance,**kwargs):
-    Group.objects.get(name=instance.className+"_Teacher").delete()
-    Group.objects.get(name=instance.className+"_TA").delete()
+    try:
+        Group.objects.get(name=instance.className+"_Teacher").delete()
+        Group.objects.get(name=instance.className+"_TA").delete()
+    except Exception as E:
+        print(E)
 
 @receiver(post_save, sender=QuizTracker, weak=False)
 def rank_update(sender,instance,**kwargs):

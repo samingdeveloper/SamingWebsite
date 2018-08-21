@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 #from LogIn_Management.models import extraauth,Tracker
 from Assign_Management import views
 import json
+import re
 
 User = get_user_model()
 def index(request):
@@ -322,14 +323,15 @@ def GenerateClassroom(request):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
     elif request.method == "POST":
+        import re
         classname = request.POST["classname"]
-        if classname is not '':
+        if classname is not '' and bool(re.match('^[a-zA-Z0-9]+$',classname)):
             classroom_instance = ClassRoom.objects.create(className=classname,creator=request.user)
             classroom_instance.user.add(request.user)
             classroom_instance.save()
             return HttpResponseRedirect('/ClassRoom')
         else:
-            messages.error(request, 'Classes must have a name!')
+            messages.error(request, 'Classname is not valid!')
             return render(request, 'CreateClassroom.html')
     else:
         return render(request, 'CreateClassroom.html')
@@ -344,8 +346,11 @@ def EditClassroom(request,classroom):
                       }
         classname = request.POST["classname"]
         creator = request.POST["creator"]
-        if classname is not '':
-            group = Group.objects.get(name=classroom + "_Teacher")
+        if classname is not '' and bool(re.match('^[a-zA-Z0-9]+$',classname)):
+            try:
+                group = Group.objects.get(name=classroom + "_Teacher")
+            except ObjectDoesNotExist:
+                
             Group.objects.filter(name=group.name).update(name=classname + "_Teacher")
             group = Group.objects.get(name=classroom + "_TA")
             Group.objects.filter(name=group.name).update(name=classname + "_TA")
@@ -358,7 +363,7 @@ def EditClassroom(request,classroom):
                 "classname":classroom,
                 "creator":User.objects.filter(is_admin=True)
             }
-            messages.error(request, 'Classes must have a name!')
+            messages.error(request, 'Classname is not valid!')
             return render(request, 'EditClassroom.html', context)
     else:
         context={

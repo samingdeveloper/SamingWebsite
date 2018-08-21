@@ -8,12 +8,12 @@ from Assign_Management.storage import OverwriteStorage
 from django.contrib.auth import get_user_model
 import sys,os,datetime,importlib,unittest,timeout_decorator,mosspy,contextlib
 from io import StringIO
-from RestrictedPython import compile_restricted,utility_builtins,limited_builtins
+#from RestrictedPython import compile_restricted,utility_builtins,limited_builtins
 #from RestrictedPython.Guards import safe_builtins
 from unittest import TextTestRunner
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from django.conf import settings
+#from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
 from .Lib import my_globals

@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/(?P<quiz_id>[0-9]+)/(?P<file_id>[0-9]+)/$', views.StudentQuizInfo, name='StudentQuizInfo'),
     url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/Examination/(?P<exam_data_id>[0-9]+)/$', views.StudentExamQuizList, name='StudentExamQuizList'),
     url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/Examination/(?P<exam_data_id>[0-9]+)/(?P<exam_quiz_id>[0-9]+)/$', views.StudentExamQuizFiles, name='StudentExamQuizFiles'),
-url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/Examination/(?P<exam_data_id>[0-9]+)/(?P<exam_quiz_id>[0-9]+)/(?P<file_id>[0-9]+)/$', views.StudentExamQuiz, name='StudentExamQuiz'),
+    url(r'^(?P<classroom>[\w\ .@+-]+)/StudentInfo/(?P<userId>[\w.@+-]+)/Examination/(?P<exam_data_id>[0-9]+)/(?P<exam_quiz_id>[0-9]+)/(?P<file_id>[0-9]+)/$', views.StudentExamQuiz, name='StudentExamQuiz'),
     url(r'^Submit/$', views.Submit, name='SubmitRoom'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -78,11 +78,25 @@ class UserAdmin(BaseUserAdmin):
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
                 counter = 0
-                for line in lines:
+                total = 0
+                failed_counter = -1
+                failed_list = []
+                for num,line in enumerate(lines):
                     fields = line.replace(',', '\t').split('\t')
                     # print(fields)
+                    total = num
+                    if num is 0:
+                        fields[0] = fields[0][1:]
                     try:
-                        if request.POST.get('text') == "import":
+                        if not bool(re.match('^[a-zA-Z0-9]+$', str(fields[0]).rstrip())):
+                            try:
+                                print(repr(fields[0][1:]))
+                            except Exception as e:
+                                print(e)
+                            failed_counter += 1
+                            failed_list.append(fields[0])
+                            continue
+                        elif request.POST.get('text') == "import":
                             u, created = User.objects.update_or_create(userId=fields[0],
                                                                        email=fields[1],
                                                                        first_name=fields[2],
@@ -99,21 +113,22 @@ class UserAdmin(BaseUserAdmin):
                                 User.objects.get(userId=fields[0],
                                                  email=fields[1],
                                                  first_name=fields[2],
-                                                 last_name=fields[3].delete())
+                                                 last_name=fields[3]).delete()
                                 counter += 1
                             else:
-                                User.objects.get(userId=fields[0].delete())
+                                User.objects.get(userId=fields[0]).delete()
                                 counter += 1
                     except Exception as e:
-                        # print(e)
+                        print(e)
                         continue
                 if request.POST.get('text') == "import":
-                    status = " users were imported."
+                    status = str(counter)+'/'+str(total)+" users were imported.\n"+str(failed_counter)+' failed: '+','.join(failed_list)[:-1]
                 else:
-                    status = " users were deleted."
-                self.message_user(request, str(counter)+status)
+                    status = str(counter)+'/'+str(total)+" users were deleted.\n"+str(failed_counter)+' failed: '+','.join(failed_list)[:-1]
+                self.message_user(request,status)
                 return HttpResponseRedirect("../")
             except Exception as e:
+                print(e)
                 self.message_user(request, e, level=messages.ERROR)
                 return HttpResponseRedirect("../")
 

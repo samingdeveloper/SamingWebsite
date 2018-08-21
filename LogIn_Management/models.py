@@ -1,8 +1,10 @@
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.contrib.auth.models import  (
     AbstractBaseUser, BaseUserManager, PermissionsMixin
 )
-
+import re
 
 # Create your models here.
 
@@ -12,8 +14,8 @@ class UserManager(BaseUserManager):
             raise ValueError("Users must have an email.")
         if not password:
             raise ValueError("Users must have a password.")
-        if not userId:
-            raise ValueError("Users must have a userId.")
+        if not userId or not bool(re.match('^[a-zA-Z0-9]+$', userId)):
+            raise ValueError("Users must have an userId and/or must be valid.")
         if not first_name or not last_name:
             raise ValueError("Users must have a name.")
         user_obj = self.model(
@@ -98,6 +100,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # extend extra data
+
+@receiver(pre_save,sender=User)
+def create_user(sender,instance,**kwargs):
+    if not bool(re.match('^[a-zA-Z0-9]+$', instance.userId)):
+        raise ValueError("userId must contains only alphabet or numeric.")
 
 '''class extraauth(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
