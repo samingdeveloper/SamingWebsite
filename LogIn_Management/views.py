@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.template import loader
 from django.contrib import messages
 from django.contrib.auth import (authenticate,login,logout,get_user_model)
+from django.contrib.auth.decorators import login_required
 from django.middleware.csrf import CsrfViewMiddleware
 from Class_Management import Template
 #from .models import Tracker
@@ -47,6 +48,7 @@ def LogIn_Page(request):
 def LogOut_Page(request):
     return render(request, 'LogIn_Page.html')
 
+@login_required
 def Change_Password(request):
     if request.method == "POST":
         new_pass = request.POST.get("newpassword")
@@ -89,9 +91,3 @@ def Forgot_Password(request):
          # if reason:
             # CSRF failed
            # raise PermissionException() # do what you need to do here'''
-
-def Admin_Panel(request):
-    if not request.user.is_authenticated or not request.user.is_admin:
-        return HttpResponseRedirect('/LogOut')
-    else:
-        return render(request, 'AdminPanel/AdminPanel.html')

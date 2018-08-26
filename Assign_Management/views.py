@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect
+from django.contrib.auth.decorators import login_required
 #from django.http import HttpResponse
 #from django.template import loader
 #from django.middleware.csrf import CsrfViewMiddleware
@@ -50,7 +51,7 @@ def AssignmentDetail(request):
     return render(request, 'Home.html')
 
 
-
+@login_required
 def GenerateAssign(request,classroom):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -122,7 +123,7 @@ def GenerateAssign(request,classroom):
     else:
         return render(request, 'CreateAssignment.html', {"categories": Category.objects.all()})
 
-
+@login_required
 def DeleteAssign(request, classroom, quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -215,6 +216,7 @@ def regen(require_regen,mode=None):
         )
         return test_temp
 
+@login_required
 def EditAssign(request, classroom, quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -349,6 +351,7 @@ def EditAssign(request, classroom, quiz_id):
         return render(request, 'EditAssignment.html', context)
 
 #################################################### Examination Section ####################################################
+@login_required
 def GenerateExam(request,classroom):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -397,6 +400,7 @@ def GenerateExam(request,classroom):
     else:
         return render(request, 'Exam/CreateExam.html', {"categories": Category.objects.all()})
 
+@login_required
 def EditExam(request, classroom, exam_data_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -452,12 +456,14 @@ def EditExam(request, classroom, exam_data_id):
                    }
         return render(request, 'Exam/EditExam.html', context)
 
+@login_required
 def DeleteExam(request, classroom, exam_data_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
     Exam_Data.objects.get(pk=exam_data_id).delete()
     return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
+@login_required
 def GenerateExamQuiz(request,classroom):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -499,6 +505,7 @@ def GenerateExamQuiz(request,classroom):
     else:
         return render(request, 'Exam/CreateExamQuiz.html', {"categories": Category.objects.all()})
 
+@login_required
 def EditExamQuiz(request, classroom, exam_quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -567,6 +574,7 @@ def EditExamQuiz(request, classroom, exam_quiz_id):
                   }
         return render(request, 'Exam/EditExamQuiz.html', context)
 
+@login_required
 def DeleteExamQuiz(request, classroom, exam_quiz_id):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -585,7 +593,8 @@ def DeleteExamQuiz(request, classroom, exam_quiz_id):
     return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
 
 #################################################### AutoGrader Section ####################################################
-#@timeout_decorator.timeout(6, use_signals=False)
+@login_required
+@timeout_decorator.timeout(6, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -626,7 +635,7 @@ def uploadgrading(request, classroom, quiz_id):
     try:
         code_temp = quiz.text_template_content
         libs = None
-        #my_globals.limit_grader()
+        my_globals.limit_grader()
         if request.method == "POST" and 'time_left' in request.POST:
             #print("this?")
             time_left = request.POST.get("time_left",'')
@@ -1094,6 +1103,7 @@ def uploadgrading(request, classroom, quiz_id):
                                                 'Deadtimestamp':deadline.timestamp()*1000,
                                             })
 
+@login_required
 def exam_quiz(request, classroom, exam_data_id):
     request.session["classroom"] = classroom
     user_group = {"teacher": User.objects.filter(groups__name=classroom + "_Teacher"),
@@ -1118,7 +1128,8 @@ def exam_quiz(request, classroom, exam_data_id):
     }
     return render(request, 'Home.html', context)
 
-#@timeout_decorator.timeout(6, use_signals=False)
+@login_required
+@timeout_decorator.timeout(6, use_signals=False)
 def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -1143,7 +1154,7 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     try:
         code_temp = exam_quiz.text_template_content
         libs = None
-        #my_globals.limit_grader()
+        my_globals.limit_grader()
         if request.method == 'POST' and 'upload_submit' in request.POST:
             if request.FILES['upload']:
                 uploaded_to_file = request.FILES['upload']
@@ -1420,6 +1431,7 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
 
 
 #################################################### Measurement Of Software Similarity ####################################################
+@login_required
 def moss(request, classroom, quiz_id, mode):
     if (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])) and mode is '0':
         userid = 367349587

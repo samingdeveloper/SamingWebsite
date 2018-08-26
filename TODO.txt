@@ -10,6 +10,7 @@
 #9.ask before delete anything.
 #10.test case checking before create quiz.
 #11.Exam for each pool and each pool have n quiz then random quiz from selected pool. #allow can_mange to mange category and exam_quiz in home.l
-12.Check all URL.
-13.improve system file management (delete cache).
-14.Backup POSTGRES.
+#12.Check all URL.
+13.improve system file management (delete cache). #basic by django
+14.Backup POSTGRES. # with cronjob
+#15.session life time

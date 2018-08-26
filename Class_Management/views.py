@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import login_required
 #from LogIn_Management.models import extraauth,Tracker
 from Assign_Management import views
 import json
@@ -20,7 +21,10 @@ def index(request):
     }
     return render(request, 'Classroom.html', context)
 
+@login_required
 def inside(request,className):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect('/LogOut')
     try:
         quiz = ClassRoom.objects.get(pk=className)
     except ClassRoom.DoesNotExist:
@@ -33,6 +37,7 @@ def ClassSelect(request):
     }
     return render(request, "Inside.html", context)
 
+@login_required
 def Home(request,classroom):
     add_status = 0
     #var = request.user.userId
@@ -41,7 +46,7 @@ def Home(request,classroom):
     user_group = {"teacher":User.objects.filter(groups__name=classroom + "_Teacher"),
                      "ta":User.objects.filter(groups__name=classroom + "_TA"),
                      }
-    if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
+    if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
     elif request.method == "POST" and action == 'add':
@@ -282,7 +287,7 @@ def Home(request,classroom):
 
     else:
         #print(Quiz.objects.filter(classroom=ClassRoom.objects.get(className=classroom)))
-        if ClassRoom.objects.get(className=classroom).user.filter(email=request.user.email).exists() is True or (request.POST["country"] != "CSV" and request.POST["country"] != "Cate"):
+        if ClassRoom.objects.get(className=classroom).user.filter(email=request.user.email).exists() is True or (request.POST.get("country",None) != "CSV" and request.POST.get("country",None) != "Cate"):
             try:
                 QuizTracker.objects.get(userId=request.user,classroom__className=classroom)
             except ObjectDoesNotExist:
@@ -313,12 +318,14 @@ def Home(request,classroom):
         }
         return render(request,'Home.html',context)
 
+@login_required
 def About(request, classroom):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
     else:
         return render(request,'About.html')
 
+@login_required
 def GenerateClassroom(request):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
@@ -336,6 +343,7 @@ def GenerateClassroom(request):
     else:
         return render(request, 'CreateClassroom.html')
 
+@login_required
 def EditClassroom(request,classroom):
     if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
@@ -383,6 +391,7 @@ def EditClassroom(request,classroom):
         }
         return render(request, 'EditClassroom.html', context)
 
+@login_required
 def DeleteClassroom(request,classroom):
     if not request.user.is_authenticated or not request.user.is_admin:
         return HttpResponseRedirect('/LogOut')
@@ -391,6 +400,7 @@ def DeleteClassroom(request,classroom):
         ClassRoom.objects.get(className=classroom).delete()
         return HttpResponseRedirect('/ClassRoom')
 
+@login_required
 def export_score_csv(classroom):
     import csv
     from django.utils.encoding import smart_str
@@ -442,6 +452,7 @@ def export_score_csv(classroom):
             continue
     return response
 
+@login_required
 def Manual(request,classroom):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -450,6 +461,7 @@ def Manual(request,classroom):
         #return None
         return render(request, "./manual/index.html")
 
+@login_required
 def StudentInfo(request,classroom):
     #var = request.user.userId
     if not request.user.is_authenticated:
@@ -470,7 +482,7 @@ def StudentInfo(request,classroom):
         }
         return render(request,'ShowStudent.html',context)
 
-
+@login_required
 def StudentScoreInfo(request,classroom,userId):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -501,6 +513,7 @@ def StudentScoreInfo(request,classroom,userId):
             print(E)
             return render(request, 'ShowScoreStudent.html')
 
+@login_required
 def StudentQuizListInfo(request,classroom,userId,quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -532,6 +545,7 @@ def StudentQuizListInfo(request,classroom,userId,quiz_id):
         }
         return render(request,'ShowQuizListStudent.html',context)
 
+@login_required
 def StudentQuizInfo(request,classroom,userId,quiz_id,file_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -585,6 +599,7 @@ def StudentQuizInfo(request,classroom,userId,quiz_id,file_id):
         }
         return render(request,'ShowQuizStudent.html',context)
 
+@login_required
 def StudentExamQuizList(request,classroom,userId,exam_data_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -598,6 +613,7 @@ def StudentExamQuizList(request,classroom,userId,exam_data_id):
         }
         return render(request,'StudentExamQuizList.html',context)
 
+@login_required
 def StudentExamQuizFiles(request,classroom,userId,exam_data_id,exam_quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -623,6 +639,7 @@ def StudentExamQuizFiles(request,classroom,userId,exam_data_id,exam_quiz_id):
         }
         return render(request,'StudentExamQuizFiles.html',context)
 
+@login_required
 def StudentExamQuiz(request,classroom,userId,exam_data_id,exam_quiz_id,file_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')

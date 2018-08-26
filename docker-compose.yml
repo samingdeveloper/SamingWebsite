@@ -17,12 +17,17 @@ services:
       - web
 
   db:
-    image: postgres:10-alpine
+    #image: postgres:10-alpine
     container_name: docker_django_db
+    build:
+      context: .
+      dockerfile: Dockerfile.pg
     restart: always
-    #volumes:
-    #  - ./postgresql/local_postgres_data:/var/lib/postgresql/data
-    #  - ./postgresql/local_postgres_data_backups:/backups
+    #command: echo "hello bitch!"
+    volumes:
+      #- ./postgresql/local_postgres_data:/var/lib/postgresql/data
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./postgresql/local_postgres_data_backups:/backups
     expose:
       - "5432"
     #ports:
@@ -41,7 +46,7 @@ services:
     #command: python manage.py runserver 0.0.0.0:8000
     restart: always
     #command: uwsgi --ini SamingDev.ini
-    command: bash -c "gunicorn SamingDev.wsgi -b 0.0.0.0:8000 --workers 3"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && gunicorn SamingDev.wsgi -b 0.0.0.0:8000 --workers 3"
     volumes:
       - .:/code
       #- ./static:/code/static
@@ -53,3 +58,18 @@ services:
       - "8000"
     depends_on:
     - db
+
+  cron:
+    container_name: docker_django_cron
+    build:
+      context: .
+      dockerfile: cron2/Dockerfile
+    image: docker_django_cron
+    restart: always
+    volumes:
+      - ./postgresql/local_postgres_data_backups/:/var/backup/
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "90"
+    depends_on:
+      - db

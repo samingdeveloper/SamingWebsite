@@ -174,6 +174,9 @@ def rank_update(sender,instance,**kwargs):
         if rank.fixture:
             return None
         rank.rank = int(QuizTracker.objects.get(userId=instance.userId, classroom=instance.classroom).quizDoneCount / int((len(Quiz.objects.filter(classroom=instance.classroom))/7))) -1
+    except ValueError:
+        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
+        rank.rank = 0
     except ZeroDivisionError:
         rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
         rank.rank = 0

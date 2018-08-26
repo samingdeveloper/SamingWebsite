@@ -4,7 +4,6 @@
 {% load group_tags %}
 {% load exam_tags %}
 {% load utility_tags %}
-{% check_rank request.user request.session.classroom i.id as chkr_rank %}
     <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
     <script src="{% static '/grading_code/js/popup.js' %}"></script>
 
@@ -57,6 +56,7 @@
                 <button id="toggle" onclick="toggle();">Examination</button>
                 <div id="quiz_div" name="quiz_div" style="display:Block">
                     {%  for i in quiz %}
+                        {% check_rank request.user request.session.classroom i.id as chkr_rank %}
                         {% if chkr_rank %}
                         <div class="boxassign">
                             <div class="nameassign">{{ i.quizTitle }}</div>
@@ -253,12 +253,10 @@
             {% else %}
                 if (document.getElementById("toggle").innerHTML=="Examination") {
                     document.getElementById("exam_div").style.display = "block"; document.getElementById("quiz_div").style.display = "none";
-                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none"; document.getElementById("pool_tooltiptext").style.display = "none";
                     document.getElementById("toggle").innerHTML = "Assignment";
                 }
                 else if (document.getElementById("toggle").innerHTML=="Assignment") {
                     document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "block";
-                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none"; document.getElementById("pool_tooltiptext").style.display = "none";
                     document.getElementById("toggle").innerHTML = "Examination";
                 }
             {% endif %}
