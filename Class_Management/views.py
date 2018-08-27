@@ -14,6 +14,7 @@ import json
 import re
 
 User = get_user_model()
+@login_required
 def index(request):
     list_classroom = ClassRoom.objects.all()
     context = {
@@ -31,6 +32,7 @@ def inside(request,className):
         raise Http404("Classroom does not exist")
     return render(request, 'Inside.html', {'quiz': quiz})
 
+@login_required
 def ClassSelect(request):
     context={
         "list_class": ClassRoom.objects.all()
