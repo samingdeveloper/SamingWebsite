@@ -5,7 +5,7 @@ from RestrictedPython.Guards import safe_builtins
 import importlib
 from . import test
 #import builtins
-#import resource
+import resource
 #import time
 ############################## uploadgrading ##############################
 
@@ -65,7 +65,7 @@ def scr(case_dict): #import libs #not ready
 
 ############################## limit_uploadgrading ##############################
 
-'''def limit_memory():
+def limit_memory():
     #soft, hard = resource.getrlimit(resource.RLIMIT_AS)
     resource.setrlimit(resource.RLIMIT_AS, (150*1024*1024, get_memory() * 1024 / 2.5)) #(get_memory() * 1024 / 3, hard))
 
@@ -144,9 +144,11 @@ def limit_childrenusage():
         print ('%-25s (%-10s) = %s' % (desc, name, getattr(usage, name)))
 
 def limit_grader():
-    limit_memory()
+    #limit_memory()
     limit_cpu()
-    limit_stack()
-    limit_info()
-    limit_selfusage()
-    limit_childrenusage()'''
+    limit_nproc()
+    #limit_heap()
+    #limit_stack()
+    #limit_info()
+    #limit_selfusage()
+    #limit_childrenusage()

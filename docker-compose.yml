@@ -27,7 +27,7 @@ services:
     volumes:
       #- ./postgresql/local_postgres_data:/var/lib/postgresql/data
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./postgresql/local_postgres_data_backups:/backups
+      - ./postgresql/local_postgres_data_backups:/backups/
     expose:
       - "5432"
     #ports:
@@ -67,7 +67,7 @@ services:
     image: docker_django_cron
     restart: always
     volumes:
-      - ./postgresql/local_postgres_data_backups/:/var/backup/
+      - ./postgresql/local_postgres_data_backups/:/backups/
       - /var/run/docker.sock:/var/run/docker.sock
     expose:
       - "90"
