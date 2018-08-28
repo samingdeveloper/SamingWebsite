@@ -152,3 +152,73 @@ def limit_grader():
     #limit_info()
     #limit_selfusage()
     #limit_childrenusage()
+
+############################## export_csv_score ##############################
+def exam_score(ExamScore_list,count,name_quiz,obj_exam,start):
+    count = count
+    obj_all = 0
+    obj_all_temp = []
+    if ExamScore_list == []:
+        return obj_all
+    for index, obj in enumerate(ExamScore_list):
+        count+=1
+        try:
+            if ExamScore_list[index+1].user == ExamScore_list[index].user:
+                if obj.quiz.title != name_quiz[2+count]:
+                    obj_all_temp.append(0)
+                    for i in name_quiz[3+count:-2]:
+                        if obj.quiz.title == i:
+                            obj_all_temp.append(obj.passOrFail + obj.total_score)
+                            break
+                        obj_all_temp.append(0)
+
+                else:
+                    obj_all_temp.append(obj.passOrFail+obj.total_score)
+
+            else:
+                if obj.quiz.title != name_quiz[2+count]:
+                    for i in name_quiz[3+count:-2]:
+                        if obj.quiz.title == i:
+                            obj_all_temp.append(obj.passOrFail + obj.total_score)
+                            break
+                        obj_all_temp.append(0)
+
+                else:
+                    obj_all_temp.append(obj.passOrFail+obj.total_score)
+
+                if sum(obj_all_temp) > obj.max_score:
+                    obj_all = obj.exam.max_score
+                else:
+                    obj_all = sum(obj_all_temp)
+                #count = count
+                if start == 0:
+                    start = index + 1
+                else:
+                    start = start + 1
+                return {"obj_all": obj_all, "start": start}
+
+        except IndexError:
+            if obj.quiz.title != name_quiz[2 + count]:
+                for i in name_quiz[3+count:-2]:
+                    if obj.quiz.title == i:
+                        obj_all_temp.append(obj.passOrFail + obj.total_score)
+                        break
+                    obj_all_temp.append(0)
+
+            else:
+                obj_all_temp.append(obj.passOrFail + obj.total_score)
+
+            try:
+                if sum(obj_all_temp) > obj.max_score:
+                    obj_all = obj.exam.max_score
+                else:
+                    obj_all = sum(obj_all_temp)
+            except Exception as E:
+                print(E)
+            #count = count
+            if start == 0:
+                start = index + 1
+            else:
+                start = start + 1
+            #raise ValueError(obj_all)
+            return {"obj_all": obj_all, "start": start}

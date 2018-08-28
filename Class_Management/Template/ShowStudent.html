@@ -25,7 +25,9 @@
           <th>Name</th>
             <th>Email</th>
           <th>Progress</th>
-          <th>Rank</th>
+          {% comment %}
+            <th>Rank</th>
+          {% endcomment %}
         </tr>
         {% for i in User_objects %}
         {% if not i.is_admin or request.user|can_manage:request.session.classroom %}
@@ -41,9 +43,11 @@
                   </div>
             </div>
           </td>
+          {% comment %}
           <td>
             {{ i|get_rank:request.session.classroom }}
           </td>
+          {% endcomment %}
         </tr>
                       <script>
 

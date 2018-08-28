@@ -14,7 +14,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Users must have an email.")
         if not password:
             raise ValueError("Users must have a password.")
-        if not userId or not bool(re.match('^[a-zA-Z0-9]+$', userId)):
+        if not userId or not bool(re.match('^[a-zA-Z0-9_]+$', userId)):
             raise ValueError("Users must have an userId and/or must be valid.")
         if not first_name or not last_name:
             raise ValueError("Users must have a name.")
@@ -103,7 +103,7 @@ class Profile(models.Model):
 
 @receiver(pre_save,sender=User)
 def create_user(sender,instance,**kwargs):
-    if not bool(re.match('^[a-zA-Z0-9]+$', instance.userId)):
+    if not bool(re.match('^[a-zA-Z0-9_]+$', instance.userId)):
         raise ValueError("userId must contains only alphabet or numeric.")
 
 '''class extraauth(models.Model):

@@ -14,25 +14,25 @@ def can_manage(user, classname):
     except:
         return False
 
-@register.filter(name='get_rank')
-def get_rank(user, classname):
-    try:
-        rank = Rank.objects.get(userId=user, classroom__className=classname)
-        return rank.rank_choices[int(rank.rank)][1]
-    except ObjectDoesNotExist:
-        rank = Rank(userId=user, classroom=ClassRoom.objects.get(className=classname))
-        rank.save()
-        return rank.get_rank_display()
+#@register.filter(name='get_rank')
+#def get_rank(user, classname):
+#    try:
+#        rank = Rank.objects.get(userId=user, classroom__className=classname)
+#        return rank.rank_choices[int(rank.rank)][1]
+#    except ObjectDoesNotExist:
+#        rank = Rank(userId=user, classroom=ClassRoom.objects.get(className=classname))
+#        rank.save()
+#        return rank.get_rank_display()
 
-@register.simple_tag
-def check_rank(user, classname, quiz):
-    try:
-        if can_manage(user, classname) or Rank.objects.get(userId=user, classroom__className=classname).rank >= Quiz.objects.get(pk=quiz).rank:
-            return True
-    except ObjectDoesNotExist:
-        if can_manage(user, classname) or Rank(userId=user, classroom=ClassRoom.objects.get(classname=classname)).rank >= Quiz.objects.get(pk=quiz).rank:
-            return True
-    return False
+#@register.simple_tag
+#def check_rank(user, classname, quiz):
+#    try:
+#        if can_manage(user, classname) or Rank.objects.get(userId=user, classroom__className=classname).rank >= Quiz.objects.get(pk=quiz).rank:
+#            return True
+#    except ObjectDoesNotExist:
+#        if can_manage(user, classname) or Rank(userId=user, classroom=ClassRoom.objects.get(classname=classname)).rank >= Quiz.objects.get(pk=quiz).rank:
+#            return True
+#    return False
 
 '''@register.filter(name='has_group')
 def has_group(user, group_name):

@@ -14,34 +14,34 @@
     <div id="main" >
         <div id="exam_quiz">
             <div class="center">
-                    <h3>Create:Examination Quiz</h3>
+                    <h3><strong>Create:Examination Quiz</strong></h3>
             </div>
             <div class="div">
                 <form action="{% url 'Class_Management:Assign_Management:GenerateExamQuiz' request.session.classroom %}" method="post" enctype="multipart/form-data"
                   > {% csrf_token %}
-                    <label for="exam_name">Exam name:</label>
+                    <label for="exam_name"><strong>Exam name:</strong></label>
                     <input type="text" id="exam_name" name="exam_name" placeholder="Exam name">
 
-                    <label for="exam_detail">Exam detail:</label>
+                    <label for="exam_detail"><strong>Exam detail:</strong></label>
                     <textarea type="text" id="exam_detail" name="exam_detail" placeholder="Exam detail"></textarea>
 
-                    <label for="quiz_category">Category:</label>
+                    <label for="quiz_category"><strong>Category:</strong></label>
                     <select name="quiz_category" id="quiz_category">
                         {% for category in categories %}
                             <option value="{{ category }}">{{ category }}</option>
                         {% endfor %}
                         </select>
 
-                    <label for="upload_template">Code template:</label>
+                    <label for="upload_template"><strong>Code template:</strong></label>
                     <textarea type="text" id="upload_template" name="upload_template" placeholder="Code template"></textarea>
 
-                    <label for="test_code">Test code:</label>
+                    <label for="test_code"><strong>Test code:</strong></label>
                     <textarea type="text" id="test_code" name="test_code" placeholder="Test code"></textarea>
 
-                    <label for="test_case">Test case:</label>
+                    <label for="test_case"><strong>Test case:</strong></label>
                     <textarea type="text" id="test_case" name="upload_testcase" placeholder="# lib math,sys,os&#10;assert_equal(actual,expected,points,[Optional]hidden=False by default)"></textarea>
 
-                    <label for="mode">Mode:</label>
+                    <label for="mode"><strong>Mode:</strong></label>
                     <select id="mode" name="mode" >
                         <option value="Pass or Fail"> Pass or Fail</option>
                         <option value="Scoring"> Scoring </option>

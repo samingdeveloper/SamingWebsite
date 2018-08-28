@@ -23,8 +23,8 @@
                     <td>
                         <a href="{% url 'Class_Management:StudentExamQuizFiles' request.session.classroom userId exam_data_id i.id %}">{{ i.title }}</a>
                     </td>
-                        <td>{% u_exam_quiz_score u_id.user_name i.classroom i.id %}</td>
-                        <td>{% u_exam_quiz_score u_id.user_name i.classroom i.id "Max" %}</td>
+                        <td>{% u_exam_quiz_score userId i.classroom i.id %}</td>
+                        <td>{% u_exam_quiz_score userId i.classroom i.id "Max" %}</td>
                 </tr>
                 {% endfor %}
             </table>

@@ -18,35 +18,42 @@
         <div class="div">
                 <form action="{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom quizedit.id %}" method="post" enctype="multipart/form-data"
                   > {% csrf_token %}
-                    <label for="assignmentname">Assignment name:</label>
+                    <label for="assignmentname"><strong>Assignment name:</strong></label>
                     <input type="text" id="assignmentname" name="asname" value="{{ quizedit.quizTitle }}">
 
-                    <label for="assignmentdetail">Assignment detail:</label>
+                    <label for="assignmentdetail"><strong>Assignment detail:</strong></label>
                     <textarea type="text" id="assignmentdetail" name="asdetail">{{ quizedit.quizDetail }}</textarea>
 
-                    <label for="lhint">Hint:</label>
+                    <label for="lhint"><strong>Hint:</strong></label>
                     <input type="text" id="lhint" name="hint" value="{{ quizedit.hint }}">
 
-                    <label for="quiz_category">Category:</label>
+                    <label for="Quiz_Max_Score"><strong>Max Score:</strong></label>
+                    <input type="number" id="Quiz_Max_Score" name="quiz_max_score" min="0" max="100" style="width: 7%;
+                    border: 1px solid red;
+                    border-radius: 4px;
+                    border-color: gray;
+                    margin: 8px 0;"><br>
+
+                    <label for="quiz_category"><strong>Category:</strong></label>
                     <select name="quiz_category" id="quiz_category">
                     {% for category in categories %}
                         <option value="{{ category }}">{{ category }}</option>
                     {% endfor %}
                     </select>
 
-                    <label for="upload_template">Code template:</label>
+                    <label for="upload_template"><strong>Code template:</strong></label>
                     <textarea type="text" id="upload_template" name="upload_template">{{ quizedit.text_template_content }}</textarea>
 
-                    <label for="test_code">Test code:</label>
+                    <label for="test_code"><strong>Test code:</strong></label>
                      <textarea type="text" id="test_code" name="test_code" placeholder="Test code">{{ quizedit.text_testcode_content }}</textarea>
 
-                    <label for="test_case">Test case:</label>
+                    <label for="test_case"><strong>Test case:</strong></label>
                     <textarea type="text" id="test_case" name="upload_testcase">{{ quizedit.text_testcase_content }}</textarea>
 
-                    <label for="ltimer">Timer:</label>
+                    <label for="ltimer"><strong>Timer:</strong></label>
                     <input type="text" id="ltimer" name="timer" placeholder="{{ quiztedit.timer }}">
 
-                    <label for="dateAvailable">Available:</label>
+                    <label for="dateAvailable"><strong>Available:</strong></label>
                     <script type="text/javascript">
                         $(function(){
                         $("#dateAvailable").datetimepicker({
@@ -57,7 +64,7 @@
                     </script>
                     <input type="text" name="dateAvailable" id="dateAvailable" placeholder="{{ quizaedit }}">
 
-                    <label for="dateInput">Deadline:</label>
+                    <label for="dateInput"><strong>Deadline:</strong></label>
                     <script type="text/javascript">
                         $(function(){
                         $("#dateInput").datetimepicker({
@@ -67,13 +74,13 @@
                     });
                     </script>
                     <input type="text" name="dateInput" id="dateInput" placeholder="{{ quizdedit }}">
-                    <label for="redo">Restart:</label>
+                    <label for="redo"><strong>Restart:</strong></label>
                     <select id="redo" name="redo">
                             <option value="No" selected> No </option>
                             <option value="Yes"> Yes </option>
                     </select>
 
-                    <label for="mode">Mode:</label>
+                    <label for="mode"><strong>Mode:</strong></label>
                     <select id="mode" name="mode" >
                     {% if quizedit.mode == "Pass or Fail" %}
                             <option value="Pass or Fail" selected> Pass or Fail</option>

@@ -1,5 +1,6 @@
 from django.shortcuts import render,HttpResponseRedirect,get_object_or_404
 from .models import *
+from Assign_Management.Lib import my_globals
 from Assign_Management.models import *
 from django.core import serializers
 from django.http import Http404
@@ -64,6 +65,10 @@ def Home(request,classroom):
                                                  'user_group': user_group,
                                                  'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                  'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                 'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     name__in=[classroom + "_Teacher",
+                                                               classroom + "_TA"]).exists() else (),
                                                  })
         try:
             if request.POST["country"] == "Cate":
@@ -81,6 +86,10 @@ def Home(request,classroom):
                                                      'user_group': user_group,
                                                      'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                      'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
                                                      })
             elif request.POST["country"] == "CSV":
                 add_status = 1
@@ -94,6 +103,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                             name__in=[classroom + "_Teacher",
+                                                                       classroom + "_TA"]).exists() else (),
                                              })
                 elif csv_file.multiple_chunks():
                     add_status = 2
@@ -104,6 +117,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                             name__in=[classroom + "_Teacher",
+                                                                       classroom + "_TA"]).exists() else (),
                                              })
                 csv_data = csv_file.read().decode("utf-8")
                 #print(csv_data)
@@ -127,6 +144,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
                                              })
             elif request.POST["country"] == "Admin" and request.user.is_admin:
                 add_status = 1
@@ -139,6 +160,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
                                              })
             add_status = 1
             g = Group.objects.get(name=status)
@@ -150,6 +175,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     name__in=[classroom + "_Teacher",
+                                                               classroom + "_TA"]).exists() else (),
                                              })
         except Exception as e:
             print(e)
@@ -161,6 +190,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     name__in=[classroom + "_Teacher",
+                                                               classroom + "_TA"]).exists() else (),
                                              })
 
     elif request.method == "POST" and action == 'delete':
@@ -176,6 +209,10 @@ def Home(request,classroom):
                                                  'user_group': user_group,
                                                  'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                  'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                 'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     name__in=[classroom + "_Teacher",
+                                                               classroom + "_TA"]).exists() else (),
                                                  })
         try:
             if request.POST["country"] == "Cate":
@@ -193,6 +230,10 @@ def Home(request,classroom):
                                                      'user_group': user_group,
                                                      'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                      'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
                                                      })
             elif request.POST["country"] == "CSV":
                 add_status = 3
@@ -206,6 +247,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                             name__in=[classroom + "_Teacher",
+                                                                       classroom + "_TA"]).exists() else (),
                                              })
                 elif csv_file.multiple_chunks():
                     add_status = 2
@@ -216,6 +261,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                             name__in=[classroom + "_Teacher",
+                                                                       classroom + "_TA"]).exists() else (),
                                              })
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
@@ -239,6 +288,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
                                              })
 
             if request.POST["country"] == "Admin" and request.user.is_admin:
@@ -253,6 +306,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
                                              })
             add_status = 3
             g = Group.objects.get(name=status)
@@ -264,6 +321,10 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     name__in=[classroom + "_Teacher",
+                                                               classroom + "_TA"]).exists() else (),
                                              })
         except Exception as e:
             #print(e)
@@ -275,6 +336,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
                                              })
         add_status = 3
         return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -284,6 +346,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                             'exam_quiz_pool': Exam_Quiz.objects.filter(classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
                                              })
 
 
@@ -334,7 +397,7 @@ def GenerateClassroom(request):
     elif request.method == "POST":
         import re
         classname = request.POST["classname"]
-        if classname is not '' and bool(re.match('^[a-zA-Z0-9]+$',classname)):
+        if classname is not '' and bool(re.match('^[a-zA-Z0-9_]+$',classname)):
             classroom_instance = ClassRoom.objects.create(className=classname,creator=request.user)
             classroom_instance.user.add(request.user)
             classroom_instance.save()
@@ -356,7 +419,7 @@ def EditClassroom(request,classroom):
                       }
         classname = request.POST["classname"]
         creator = request.POST["creator"]
-        if classname is not '' and bool(re.match('^[a-zA-Z0-9]+$',classname)):
+        if classname is not '' and bool(re.match('^[a-zA-Z0-9_]+$',classname)):
             from django.db import IntegrityError
             try:
                 group_teacher = Group.objects.get(name=classroom + "_Teacher")
@@ -402,17 +465,25 @@ def DeleteClassroom(request,classroom):
         ClassRoom.objects.get(className=classroom).delete()
         return HttpResponseRedirect('/ClassRoom')
 
-@login_required
 def export_score_csv(classroom):
     import csv
-    from django.utils.encoding import smart_str
+    #from django.utils.encoding import smart_str
     from django.http import HttpResponse
     obj_quiz = Quiz.objects.filter(classroom__className=classroom).order_by("quizTitle")
+    obj_exam = Exam_Data.objects.filter(classroom__className=classroom).order_by("name")
     name_quiz = ["userId","Classroom"]
+    max_all = 0
     for i in obj_quiz:
         name_quiz.append(i.quizTitle)
+        max_all += i.max_score
+    for i in obj_exam:
+        name_quiz.append(i.name)
+        max_all += i.max_score
     name_quiz.append("TotalScore")
+    name_quiz.append("MaxScore")
     obj_all = []
+    #count = -1
+    #start = 0
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename=Quiscore.csv'
     writer = csv.writer(response, csv.excel)
@@ -420,39 +491,111 @@ def export_score_csv(classroom):
     writer.writerow(
         name_quiz
     )
-    QuizScore_list = list(QuizScore.objects.filter(classroom__className=classroom).exclude(userId__is_admin=True).order_by("quizId__quizTitle", "userId__userId"))
-
-    for index, obj in enumerate(QuizScore_list):
-        try:
-            if QuizScore_list[index+1].userId == QuizScore_list[index].userId:
-                obj_all.append(obj.passOrFail+obj.total_score)
-                #print(obj_all)
-                continue
-            else:
-                #print("end")
-                obj_all.append(obj.passOrFail + obj.total_score)
-                if len(obj_quiz) - len(obj_all) != 0:
-                    for i in range(0, len(obj_quiz) - len(obj_all)):
-                        obj_all.append(0)
-                obj_all.append(sum(obj_all))
-                obj_all.insert(0, obj.classroom.className)
-                obj_all.insert(0, obj.userId.userId)
-                writer.writerow(smart_str(obj_all))
-                obj_all = []
-                continue
-        except Exception as E:
-            #print(E)
-            obj_all.append(obj.passOrFail + obj.total_score)
-            if len(obj_quiz) - len(obj_all) != 0:
-                for i in range(0, len(obj_quiz) - len(obj_all)):
+    #QuizScore_list = list(QuizScore.objects.filter(classroom__className=classroom).order_by("quizId__quizTitle", "userId__userId"))#.exclude(userId__is_admin=True, userId__groups__name__in=[classroom+"_Teacher", classroom+"_TA"]).order_by("quizId__quizTitle", "userId__userId"))
+    #ExamScore_list = list(Exam_Score.objects.filter(exam__classroom__className=classroom).order_by("exam__name", "user__userId"))#.exclude(user__is_admin=True, user__groups__name__in=[classroom+"_Teacher", classroom+"_TA"]).order_by("exam__name", "user__userId"))
+    for class_user in ClassRoom.objects.get(className=classroom).user.all().order_by("userId").exclude(is_admin=True).exclude(groups__name__in=[classroom+"_Teacher", classroom+"_TA"]):
+        for title in name_quiz[2:-2]:
+            try:
+                Quiz_Score = QuizScore.objects.get(quizId__quizTitle=title,userId__userId=class_user)
+                Quiz_Inst = Quiz.objects.get(quizTitle=title,classroom__className=classroom)
+                if Quiz_Score.passOrFail+Quiz_Score.total_score > Quiz_Inst.max_score:
+                    obj_all.append(Quiz_Inst.max_score)
+                else:
+                    obj_all.append(Quiz_Score.passOrFail+Quiz_Score.total_score)
+            except ObjectDoesNotExist:
+                try:
+                    ExamScore = Exam_Score.objects.get(exam__name=title,user__userId=class_user)
+                    ExamInst = Exam_Data.objects.get(name=title, classroom__className=classroom)
+                    if ExamScore.passOrFail+ExamScore.total_score > ExamInst.max_score:
+                        obj_all.append(ExamInst.max_score)
+                    else:
+                        obj_all.append(ExamScore.passOrFail+ExamScore.total_score)
+                except ObjectDoesNotExist:
                     obj_all.append(0)
-            obj_all.append(sum(obj_all))
-            obj_all.insert(0, obj.classroom.className)
-            obj_all.insert(0, obj.userId.userId)
-            writer.writerow(obj_all)
-            obj_all = []
-            continue
+        obj_all.append(sum(obj_all))
+        obj_all.append(max_all)
+        obj_all.insert(0, classroom)
+        obj_all.insert(0, class_user)
+        writer.writerow(obj_all)
+        obj_all = []
     return response
+    #for index, obj in enumerate(QuizScore_list):
+    #    count+=1
+    #    try:
+    #        if QuizScore_list[index+1].userId == QuizScore_list[index].userId:
+    #            if obj.quizId.quizTitle != name_quiz[2+count]:
+    #                obj_all.append(0)
+    #                for i in name_quiz[3+count:-2]:
+    #                    if obj.quizId.quizTitle == i:
+    #                        obj_all.append(obj.passOrFail + obj.total_score)
+    #                        break
+    #                    obj_all.append(0)
+    #                    #continue
+    #            else:
+    #                obj_all.append(obj.passOrFail+obj.total_score)
+    #                #print(obj_all)
+    #                #continue
+    #        else:
+    #            #print("end")
+    #            if obj.quizId.quizTitle != name_quiz[2+count]:
+    #                for i in name_quiz[3+count:-2]:
+    #                    if obj.quizId.quizTitle == i:
+    #                        obj_all.append(obj.passOrFail + obj.total_score)
+    #                        break
+    #                    obj_all.append(0)
+    #                    #continue
+    #            else:
+    #                obj_all.append(obj.passOrFail+obj.total_score)
+    #            if len(obj_quiz) - len(obj_all) != 0:
+    #                for i in range(0, len(obj_quiz) - len(obj_all)):
+    #                    obj_all.append(0)
+    #            try:
+    #                res = my_globals.exam_score(ExamScore_list[start:],count,name_quiz,obj_exam,start)
+    #                obj_all.append(res["obj_all"])
+    #                start = res["start"]
+    #            except TypeError:
+    #                obj_all.append(0)
+    #            #raise ValueError(obj_all,start)
+    #            obj_all.append(sum(obj_all))
+    #            obj_all.append(max_all)
+    #            obj_all.insert(0, obj.classroom.className)
+    #            obj_all.insert(0, obj.userId.userId)
+    #            writer.writerow(obj_all)
+    #            obj_all = []
+    #            count = -1
+    #            #continue
+    #    except IndexError:
+    #        if obj.quizId.quizTitle != name_quiz[2 + count]:
+    #            #obj_all.append(0)
+    #            for i in name_quiz[3+count:-2]:
+    #                if obj.quizId.quizTitle == i:
+    #                    obj_all.append(obj.passOrFail + obj.total_score)
+    #                    break
+    #                obj_all.append(0)
+    #                #continue
+    #        else:
+    #            obj_all.append(obj.passOrFail + obj.total_score)
+    #            # print(obj_all)
+    #            #continue
+    #        if len(obj_quiz) - len(obj_all) != 0:
+    #            for i in range(0, len(obj_quiz) - len(obj_all)):
+    #                obj_all.append(0)
+    #        try:
+    #            res = my_globals.exam_score(ExamScore_list[start:], count, name_quiz, obj_exam, start)
+    #            obj_all.append(res["obj_all"])
+    #            start = res["start"]
+    #        except TypeError:
+    #            obj_all.append(0)
+    #        #raise ValueError(obj_all, start)
+    #        obj_all.append(sum(obj_all))
+    #        obj_all.append(max_all)
+    #        obj_all.insert(0, obj.classroom.className)
+    #        obj_all.insert(0, obj.userId.userId)
+    #        writer.writerow(obj_all)
+    #        obj_all = []
+    #        count = -1
+    #        #continue
+    #return response
 
 @login_required
 def Manual(request,classroom):
@@ -609,7 +752,7 @@ def StudentExamQuizList(request,classroom,userId,exam_data_id):
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
     else:
         context = {
-            'exam_quizes': Exam_Quiz.objects.filter(title__in=Exam_Tracker.objects.get(exam__pk=exam_data_id).picked,classroom__className=classroom),
+            'exam_quizes': Exam_Quiz.objects.filter(title__in=Exam_Tracker.objects.get(exam__pk=exam_data_id,user__userId=request.user).picked,classroom__className=classroom),
             'userId': userId,
             'exam_data_id': exam_data_id
         }
@@ -652,7 +795,7 @@ def StudentExamQuiz(request,classroom,userId,exam_data_id,exam_quiz_id,file_id):
     elif request.method == 'POST' and (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])) or request.method == 'POST' and request.user.userId == userId:
         if userId != request.user.userId and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
             return HttpResponseRedirect("/ClassRoom/"+classroom)
-        score_pointer = Exam_Score.objects.get(quiz__pk=exam_quiz_id)
+        score_pointer = Exam_Score.objects.get(quiz__pk=exam_quiz_id,user__userId=userId)
         if Exam_Quiz.objects.get(pk=exam_quiz_id).mode == "Scoring":
             score_pointer.total_score = Exam_Upload.objects.get(pk=file_id).score
         else:

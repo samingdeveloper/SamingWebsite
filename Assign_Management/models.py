@@ -6,6 +6,7 @@ from django.db.models.signals import *
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.files.storage import FileSystemStorage
 
 User = get_user_model()
@@ -51,6 +52,7 @@ class Exam_Data(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     available = models.DateTimeField()
     deadline = models.DateTimeField()
+    max_score = models.FloatField(default=0, validators=[MinValueValidator(0),])
     def __str__(self):
         return self.classroom.className + ' : ' + self.name
 

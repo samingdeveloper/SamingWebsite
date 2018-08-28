@@ -20,23 +20,23 @@ class ClassRoom(models.Model):
     def __str__(self):
         return self.className
 
-class Rank(models.Model):
-    userId = models.ForeignKey(User, on_delete=models.CASCADE)
-    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
-    #elo = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    rank_choices = (
-        (0, "Bronze"),
-        (1, "Silver"),
-        (2, "Gold"),
-        (3, "Platinum"),
-        (4, "Diamond"),
-        (5, "Master"),
-        (6, "Challenger"),
-    )
-    rank = models.SmallIntegerField(choices=rank_choices, default=0)
-    fixture = models.BooleanField(default=False)
-    def __str__(self):
-        return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
+#class Rank(models.Model):
+#    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+#    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+#    #elo = models.FloatField(default=0, validators=[MinValueValidator(0)])
+#    rank_choices = (
+#        (0, "Bronze"),
+#        (1, "Silver"),
+#        (2, "Gold"),
+#        (3, "Platinum"),
+#        (4, "Diamond"),
+#        (5, "Master"),
+#        (6, "Challenger"),
+#    )
+#    rank = models.SmallIntegerField(choices=rank_choices, default=0)
+#    fixture = models.BooleanField(default=False)
+#    def __str__(self):
+#        return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
 
 class Quiz(models.Model):
     quizTitle = models.CharField(unique=True, max_length=55, blank=True)
@@ -47,21 +47,22 @@ class Quiz(models.Model):
     hint = models.CharField(max_length=255, blank=True, null=True)
     #exam = models.BooleanField(default=False)
     category = models.ForeignKey('Assign_Management.Category', blank=True, null=True, on_delete=models.CASCADE ,related_name='category')
-    rank_choices = (
-        (0, "Bronze"),
-        (1, "Silver"),
-        (2, "Gold"),
-        (3, "Platinum"),
-        (4, "Diamond"),
-        (5, "Master"),
-        (6, "Challenger"),
-    )
-    rank = models.SmallIntegerField(choices=rank_choices, default=0)
+    #rank_choices = (
+    #    (0, "Bronze"),
+    #    (1, "Silver"),
+    #    (2, "Gold"),
+    #    (3, "Platinum"),
+    #    (4, "Diamond"),
+    #    (5, "Master"),
+    #    (6, "Challenger"),
+    #)
+    #rank = models.SmallIntegerField(choices=rank_choices, default=0)
     mode_choices = (
         ("Pass or Fail", "Pass or Fail"),
         ("Scoring", "Scoring")
     )
     mode = models.CharField(max_length=100, choices=mode_choices, default="Scoring")
+    max_score = models.FloatField(default=0, validators=[MinValueValidator(0), ])
     text_template_content = models.TextField(blank=True,null=True)
     text_testcode_content = models.TextField()
     text_testcase_content = models.TextField()
@@ -162,33 +163,37 @@ def clasroom_removed(sender,instance,**kwargs):
     except Exception as E:
         print(E)
 
-@receiver(post_save, sender=QuizTracker, weak=False)
-def rank_update(sender,instance,**kwargs):
-    try:
-        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)#.update(rank=int(QuizTracker.objects.get(userId=instance.userId,classroom=instance.classroom).quizDoneCount/int((len(Quiz.objects.filter(classroom=instance.classroom))/7))))
-        if rank.fixture:
-            return None
-        rank.rank = int(QuizTracker.objects.get(userId=instance.userId,classroom=instance.classroom).quizDoneCount/int((len(Quiz.objects.filter(classroom=instance.classroom))/7))) - 1
-    except ObjectDoesNotExist:
-        rank = Rank(userId=instance.userId, classroom=instance.classroom)
-        if rank.fixture:
-            return None
-        rank.rank = int(QuizTracker.objects.get(userId=instance.userId, classroom=instance.classroom).quizDoneCount / int((len(Quiz.objects.filter(classroom=instance.classroom))/7))) -1
-    except ValueError:
-        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
-        rank.rank = 0
-    except ZeroDivisionError:
-        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
-        rank.rank = 0
-    rank.save()
-
-@receiver(pre_delete, sender=QuizTracker, weak=False)
-def rank_remove(sender,instance,**kwargs):
-    try:
-        rank = Rank.objects.get(userId=instance.userId,classroom=instance.classroom)
-        if rank.fixture:
-            return None
-        rank.delete()
-        rank.save()
-    except ObjectDoesNotExist:
-        pass
+#@receiver(post_save, sender=QuizTracker, weak=False)
+#def rank_update(sender,instance,**kwargs):
+#    try:
+#        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)#.update(rank=int(QuizTracker.objects.get(userId=instance.userId,classroom=instance.classroom).quizDoneCount/int((len(Quiz.objects.filter(classroom=instance.classroom))/7))))
+#        if rank.fixture:
+#            return None
+#        rank.rank = int(QuizTracker.objects.get(userId=instance.userId,classroom=instance.classroom).quizDoneCount/int((len(Quiz.objects.filter(classroom=instance.classroom))/7))) - 1
+#    except ObjectDoesNotExist:
+#        rank = Rank(userId=instance.userId, classroom=instance.classroom)
+#        if rank.fixture:
+#            return None
+#        try:
+#            rank.rank = int(QuizTracker.objects.get(userId=instance.userId, classroom=instance.classroom).quizDoneCount / int((len(Quiz.objects.filter(classroom=instance.classroom))/7))) -1
+#        except ZeroDivisionError:
+#            rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
+#            rank.rank = 0
+#    except ValueError:
+#        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
+#        rank.rank = 0
+#    except ZeroDivisionError:
+#        rank = Rank.objects.get(userId=instance.userId, classroom=instance.classroom)
+#        rank.rank = 0
+#    rank.save()
+#
+#@receiver(pre_delete, sender=QuizTracker, weak=False)
+#def rank_remove(sender,instance,**kwargs):
+#    try:
+#        rank = Rank.objects.get(userId=instance.userId,classroom=instance.classroom)
+#        if rank.fixture:
+#            return None
+#        rank.delete()
+#        rank.save()
+#    except ObjectDoesNotExist:
+#        pass

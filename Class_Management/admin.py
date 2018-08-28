@@ -57,7 +57,7 @@ class QuizScoreAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ClassRoom,ClassRoomAdmin)
-admin.site.register(Rank)
+#admin.site.register(Rank)
 admin.site.register(Quiz)
 admin.site.register(QuizStatus)
 admin.site.register(QuizScore,QuizScoreAdmin)

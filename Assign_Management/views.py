@@ -59,6 +59,12 @@ def GenerateAssign(request,classroom):
         try:
             if request.POST['asname'] == '':
                 raise ValueError("Assignment must have a name!")
+            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
+                raise ValueError("Test code and Test case must not blank!")
+            elif request.POST['dateAvailable'] == '':
+                raise ValueError("Please specific available date.")
+            elif request.POST['dateInput'] == '':
+                raise ValueError("Please specific deadline.")
             code_template = request.POST.get('upload_template', '')
 
 #################################################### Check Testcase ####################################################
@@ -86,10 +92,11 @@ def GenerateAssign(request,classroom):
             Hint = request.POST.get('hint','')
             Cate = request.POST.get('quiz_category', '')
             Timer = request.POST.get('timer','')
+            MaxScore = float(request.POST.get('quiz_max_score', ''))
             #dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
             mode = request.POST.get('mode','')
-            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline, available=Available, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
-            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline ,available=Available, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline, available=Available, max_score=MaxScore, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline ,available=Available, max_score=MaxScore, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
             get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
             for k in get_tracker:
                 QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
@@ -158,6 +165,7 @@ def regen(require_regen,mode=None):
             text_testcode_content=require_regen["text_testcode_content"],
             text_testcase_content=require_regen["text_testcase_content"],
             text_template_content=require_regen["text_template_content"],
+            max_score=require_regen["MaxScore"],
             mode=require_regen["mode"],
             classroom=require_regen["classroom"]
         )
@@ -224,6 +232,12 @@ def EditAssign(request, classroom, quiz_id):
         try:
             if request.POST['asname'] == '':
                 raise ValueError("Assignment must have a name!")
+            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
+                raise ValueError("Test code and Test case must not blank!")
+            elif request.POST['dateAvailable'] == '':
+                raise ValueError("Please specific available date.")
+            elif request.POST['dateInput'] == '':
+                raise ValueError("Please specific deadline.")
             code_template = request.POST.get('upload_template', '')
 
 #################################################### Check Testcase ####################################################
@@ -251,6 +265,7 @@ def EditAssign(request, classroom, quiz_id):
             Hint = request.POST.get('hint', '')
             Cate = request.POST.get('quiz_category', '')
             Timer = request.POST.get('timer', '')
+            MaxScore = float(request.POST.get('quiz_max_score', ''))
             asd = request.FILES.get('upload_testcase', False)
             asdf = request.FILES.get('upload_template', False)
             mode = request.POST.get('mode', '')
@@ -275,6 +290,7 @@ def EditAssign(request, classroom, quiz_id):
                                  "mode":mode,
                                  "classroom":quiz.classroom,
                                  "Timer":Timer,
+                                 "MaxScore":MaxScore,
                                  })
                 #print("ppl=sh!t")
 
@@ -286,6 +302,7 @@ def EditAssign(request, classroom, quiz_id):
                 quiz.available = Available
                 quiz.category = Category.objects.get(name=Cate)
                 quiz.hint = Hint
+                quiz.text_testcode_content = test_code
                 quiz.text_testcase_content = test_case
                 quiz.text_template_content = code_template
                 quiz.mode = mode
@@ -359,12 +376,17 @@ def GenerateExam(request,classroom):
         try:
             if request.POST['exam_name'] == '':
                 raise ValueError("Exam must have a name!")
+            elif request.POST['dateAvailable'] == '':
+                raise ValueError("Please specific available date.")
+            elif request.POST['dateInput'] == '':
+                raise ValueError("Please specific deadline.")
             import random
             Exam = request.POST.get('exam_name', '')
             Detail = request.POST.get('exam_detail', '')
             Deadline = request.POST.get('dateInput', '')
             Available = request.POST.get('dateAvailable', '')
-            GenerateExam_instance = Exam_Data.objects.create(name=Exam, detail=Detail, deadline=Deadline, available=Available, classroom=ClassRoom.objects.get(className=classroom))
+            MaxScore = float(request.POST.get('exam_max_score', ''))
+            GenerateExam_instance = Exam_Data.objects.create(name=Exam, detail=Detail, deadline=Deadline, available=Available, max_score=MaxScore, classroom=ClassRoom.objects.get(className=classroom))
             GenerateExam_instance.save()
 
 #################################################### Random examination for each user from pool. ####################################################
@@ -408,15 +430,20 @@ def EditExam(request, classroom, exam_data_id):
         try:
             if request.POST['exam_name'] == '':
                 raise ValueError("Exam must have a name!")
+            elif request.POST['dateAvailable'] == '':
+                raise ValueError("Please specific available date.")
+            elif request.POST['dateInput'] == '':
+                raise ValueError("Please specific deadline.")
             import random
             Exam = request.POST.get('exam_name', '')
             Detail = request.POST.get('exam_detail', '')
             Deadline = request.POST.get('dateInput', '')
             Available = request.POST.get('dateAvailable', '')
+            MaxScore = float(request.POST.get('exam_max_score', ''))
 
             if request.POST['redo'] == "Yes":
                 Exam_Data.objects.get(pk=exam_data_id).delete()
-                GenerateExam_instance = Exam_Data.objects.create(name=Exam, detail=Detail, deadline=Deadline,available=Available,classroom=ClassRoom.objects.get(className=classroom))
+                GenerateExam_instance = Exam_Data.objects.create(name=Exam, detail=Detail, deadline=Deadline,available=Available,classroom=ClassRoom.objects.get(className=classroom),max_score=MaxScore)
                 GenerateExam_instance.save()
 
                 #################################################### Random examination for each user from pool. ####################################################
@@ -443,7 +470,15 @@ def EditExam(request, classroom, exam_data_id):
                     Exam_tracker.picked = picked_this
                     Exam_tracker.save()
                 #####################################################################################################################################################
-
+            else:
+                exam_data = Exam_Data.objects.get(pk=exam_data_id)
+                exam_data.name = Assignment
+                exam_data.detail = Assignment_Detail
+                exam_data.deadline = Deadline
+                exam_data.available = Available
+                exam_data.classroom = ClassRoom.objects.get(className=classroom)
+                exam_data.max_score = MaxScore
+                exam_data.save()
             return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
         except Exception as E:
             from django.contrib import messages
@@ -594,13 +629,16 @@ def DeleteExamQuiz(request, classroom, exam_quiz_id):
 
 #################################################### AutoGrader Section ####################################################
 @login_required
-@timeout_decorator.timeout(6, use_signals=False)
+#@timeout_decorator.timeout(6, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True or Rank.objects.get(userId=request.user, classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank)and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
+    elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+
+    #elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True or Rank.objects.get(userId=request.user, classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank)and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
+    #    return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline, timer_stop
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
@@ -635,7 +673,7 @@ def uploadgrading(request, classroom, quiz_id):
     try:
         code_temp = quiz.text_template_content
         libs = None
-        my_globals.limit_grader()
+        #my_globals.limit_grader()
         if request.method == "POST" and 'time_left' in request.POST:
             #print("this?")
             time_left = request.POST.get("time_left",'')
@@ -1129,13 +1167,15 @@ def exam_quiz(request, classroom, exam_data_id):
     return render(request, 'Home.html', context)
 
 @login_required
-@timeout_decorator.timeout(6, use_signals=False)
+#@timeout_decorator.timeout(6, use_signals=False)
 def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True or Rank.objects.get(userId=request.user,classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank) and not (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])):
+    elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True) and not (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])):
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+    #elif (ClassRoom.objects.get(className=classroom).user.filter(userId=request.user.userId).exists() != True or Rank.objects.get(userId=request.user,classroom__className=classroom).rank < Quiz.objects.get(pk=quiz_id).rank) and not (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])):
+    #    return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
 
     global deadline
     timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
@@ -1154,7 +1194,7 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     try:
         code_temp = exam_quiz.text_template_content
         libs = None
-        my_globals.limit_grader()
+        #my_globals.limit_grader()
         if request.method == 'POST' and 'upload_submit' in request.POST:
             if request.FILES['upload']:
                 uploaded_to_file = request.FILES['upload']

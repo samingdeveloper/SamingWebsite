@@ -19,36 +19,43 @@
             <div class="div">
                 <form action="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}" method="post" enctype="multipart/form-data"
                   > {% csrf_token %}
-                    <label for="assignmentname">Assignment name:</label>
+                    <label for="assignmentname"><strong>Assignment name:</strong></label>
                     <input type="text" id="assignmentname" name="asname" placeholder="Assignment name">
 
-                    <label for="assignmentdetail">Assignment detail:</label>
+                    <label for="assignmentdetail"><strong>Assignment detail:</strong></label>
                     <textarea type="text" id="assignmentdetail" name="asdetail" placeholder="Assignment detail"></textarea>
 
-                    <label for="lhint">Hint:</label>
+                    <label for="lhint"><strong>Hint:</strong></label>
                     <input type="text" id="lhint" name="hint" placeholder="Hint">
 
-                    <label for="quiz_category">Category:</label>
+                    <label for="Quiz_Max_Score"><strong>Max Score:</strong></label>
+                    <input type="number" id="Quiz_Max_Score" name="quiz_max_score" min="0" max="100" style="width: 7%;
+                    border: 1px solid red;
+                    border-radius: 4px;
+                    border-color: gray;
+                    margin: 8px 0;"><br>
+
+                    <label for="quiz_category"><strong>Category:</strong></label>
                         <select name="quiz_category" id="quiz_category">
                         {% for category in categories %}
                             <option value="{{ category }}">{{ category }}</option>
                         {% endfor %}
                         </select>
 
-                    <label for="upload_template">Code template:</label>
+                    <label for="upload_template"><strong>Code template:</strong></label>
                     <textarea type="text" id="upload_template" name="upload_template" placeholder="Code template"></textarea>
 
-                    <label for="test_code">Test code:</label>
+                    <label for="test_code"><strong>Test code:</strong></label>
                     <textarea type="text" id="test_code" name="test_code" placeholder="Test code"></textarea>
 
 
-                    <label for="test_case">Test case:</label>
+                    <label for="test_case"><strong>Test case:</strong></label>
                     <textarea type="text" id="test_case" name="upload_testcase" placeholder="# lib math,sys,os&#10;assert_equal(actual,expected,points,[Optional]hidden=False by default)"></textarea>
 
-                    <label for="ltimer">Timer:</label>
+                    <label for="ltimer"><strong>Timer:</strong></label>
                     <input type="text" id="ltimer" name="timer" placeholder="Hour:Minute:Second  ex.1:00:00 or 1:30:30">
 
-                    <label for="dateAvailable">Available:</label>
+                    <label for="dateAvailable"><strong>Available:</strong></label>
                     <script type="text/javascript">
                         $(function(){
                         $("#dateAvailable").datetimepicker({
@@ -59,7 +66,7 @@
                     </script>
                     <input type="text" name="dateAvailable" id="dateAvailable" placeholder="ex.2017-11-29 05:05:30">
 
-                                        <label for="dateInput">Deadline:</label>
+                    <label for="dateInput"><strong>Deadline:</strong></label>
                     <script type="text/javascript">
                         $(function(){
                         $("#dateInput").datetimepicker({
@@ -70,7 +77,7 @@
                     </script>
                     <input type="text" name="dateInput" id="dateInput" placeholder="ex.2017-11-29 07:07:32">
 
-                    <label for="mode">Mode:</label>
+                    <label for="mode"><strong>Mode:</strong></label>
                         <select id="mode" name="mode" >
                                 <option value="Pass or Fail"> Pass or Fail</option>
                                 <option value="Scoring"> Scoring </option>

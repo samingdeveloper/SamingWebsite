@@ -18,13 +18,13 @@
         <div class="div">
             <form action="{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id%}" method="post" enctype="multipart/form-data"
               > {% csrf_token %}
-                <label for="exam_name">Exam name:</label>
+                <label for="exam_name"><strong>Exam name:</strong></label>
                 <input type="text" id="exam_name" name="exam_name" value="{{ exam_quiz.title }}">
 
-                <label for="exam_detail">Exam detail:</label>
+                <label for="exam_detail"><strong>Exam detail:</strong></label>
                 <textarea type="text" id="exam_detail" name="exam_detail" >{{ exam_quiz.detail }}</textarea>
 
-                <label for="quiz_category">Category:</label>
+                <label for="quiz_category"><strong>Category:</strong></label>
                 <select name="quiz_category" id="quiz_category">
                     {% for category in categories %}
                         {% if category == exam_quiz.category %}
@@ -35,22 +35,22 @@
                     {% endfor %}
                 </select>
 
-                <label for="upload_template">Code template:</label>
+                <label for="upload_template"><strong>Code template:</strong></label>
                 <textarea type="text" id="upload_template" name="upload_template">{{ exam_quiz.text_template_content }}</textarea>
 
-                <label for="test_code">Test code:</label>
+                <label for="test_code"><strong>Test code:</strong></label>
                 <textarea type="text" id="test_code" name="test_code" >{{ exam_quiz.text_testcode_content }}</textarea>
 
-                <label for="test_case">Test case:</label>
+                <label for="test_case"><strong>Test case:</strong></label>
                 <textarea type="text" id="test_case" name="upload_testcase" >{{ exam_quiz.text_testcase_content }}</textarea>
 
-                <label for="redo">Restart:</label>
+                <label for="redo"><strong>Restart:</strong></label>
                     <select id="redo" name="redo">
                             <option value="No" selected> No </option>
                             <option value="Yes"> Yes </option>
                     </select>
 
-                <label for="mode">Mode:</label>
+                <label for="mode"><strong>Mode:</strong></label>
                 <select id="mode" name="mode" >
                     {% if exam_quiz.mode == "Pass or Fail" %}
                             <option value="Pass or Fail" selected> Pass or Fail</option>

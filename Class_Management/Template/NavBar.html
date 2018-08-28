@@ -32,7 +32,7 @@
             <div id="content">
                 <div class="tab">
                     <button class="tablinks" onclick="location.href='/ClassRoom/{{request.session.classroom}}';"  id="defaultOpen">
-                        Steam
+                        Stream
                     </button>
                     <button class="tablinks" onclick="location.href='{% url 'Class_Management:StudentInfo' request.session.classroom %}';">
                         Student
@@ -56,8 +56,9 @@
                     <i class="fa fa-cog" style="font-size:18px; color: grey"></i> Change password</a>
                 <a href="/LogOut">
                     <i class="fa fa-power-off" style="font-size:18px; color: grey"></i> Log out</a>
-                <a href="#Rank">
+                {% comment %} <a href="#Rank">
                     <i class="fa fa-cog" style="font-size:18px; color: grey"></i> {{ request.user|get_rank:request.session.classroom }}</a>
+                {% endcomment %}
                 </a>
             </div>
         </div>

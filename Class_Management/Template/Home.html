@@ -56,8 +56,10 @@
                 <button id="toggle" onclick="toggle();">Examination</button>
                 <div id="quiz_div" name="quiz_div" style="display:Block">
                     {%  for i in quiz %}
-                        {% check_rank request.user request.session.classroom i.id as chkr_rank %}
-                        {% if chkr_rank %}
+                        {% comment %}
+                             check_rank request.user request.session.classroom i.id as chkr_rank
+                             if chkr_rank
+                        {% endcomment %}
                         <div class="boxassign">
                             <div class="nameassign">{{ i.quizTitle }}</div>
                         </div>
@@ -74,14 +76,14 @@
                                 {% if i.quiztimer_set.all.0.timer %}
                                 <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
                                 {% endif %}
-                                <p><strong>Rank:</strong>   {{ i.get_rank_display }} </p>
+                                {% comment %} <p><strong>Rank:</strong>   {{ i.get_rank_display }} </p> {% endcomment %}
                                 {%  if request.user|can_manage:request.session.classroom %}
                                 <p><strong>Available:</strong>   {{ i.available }}</p>
                                 {% endif %}
                                 <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
                             </div>
                         </div>
-                        {% endif %}
+                        {% comment %} {% endif %} {% endcomment %}
                         {% endfor %}
                 </div>
 
@@ -145,7 +147,7 @@
                                     <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
                                 {% endif %}
                                 <div class="detail">
-                                    <p><strong>Detail:</strong> {{ exam_quiz.detail }}</p>
+                                    <p><strong>Category:</strong> {{ exam_quiz.category }}</p>
                                 </div>
                             </div>
                                 {% endfor %}
