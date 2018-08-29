@@ -24,8 +24,8 @@ def u_exam_score(userId, classroom, exam_data_id=None, mode=None):
             score_res = 0
             for i in exam_score:
                 score_res += i.total_score + i.passOrFail
-            if score_res > sum([value.max_score for value in Exam_Data.objects.filter(classroom__className=classroom)]):
-                score_res = sum([value.max_score for value in Exam_Data.objects.filter(classroom__className=classroom)])
+            if score_res > sum([value.max_score for value in exam_data_score]):
+                score_res = sum([value.max_score for value in exam_data_score])
             return score_res
         except ObjectDoesNotExist:
             return ''

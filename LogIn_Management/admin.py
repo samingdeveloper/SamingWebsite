@@ -3,6 +3,7 @@ from django.contrib import admin
 from Class_Management.models import ClassRoom
 from .models import *
 from django.conf.urls import url
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -68,6 +69,7 @@ class UserAdmin(BaseUserAdmin):
         if request.method == 'POST' and request.user.is_admin:
             try:
                 from django.contrib import messages
+                from django.core.validators import validate_email
                 csv_file = request.FILES.get('upload_testcase', False)
                 if not csv_file.name.endswith('.csv'):
                     self.message_user(request, "file must endswith '.csv'", level=messages.ERROR)
@@ -85,12 +87,15 @@ class UserAdmin(BaseUserAdmin):
                     fields = line.replace(',', '\t').split('\t')
                     # print(fields)
                     total = num
-                    if num is 0:
-                        fields[0] = fields[0][1:]
+                    #if num is 0:
+                    #    if fields[0].startswith('/'):
+                    #        fields[0] = fields[0][1:]
+                    #    else:
+                    #        pass
                     try:
-                        if not bool(re.match('^[a-zA-Z0-9]+$', str(fields[0]).rstrip())):
+                        if not bool(re.match('^[a-zA-Z0-9\w.@+_-]+$', str(fields[0]).rstrip())):
                             try:
-                                print(repr(fields[0][1:]))
+                                raise ValueError(fields[0][:-1].rstrip())
                             except Exception as e:
                                 print(e)
                             failed_counter += 1
@@ -109,17 +114,45 @@ class UserAdmin(BaseUserAdmin):
                                 pass
                             u.save()
                         elif request.POST.get('text') == "delete":
+                            print(fields,len(fields))
                             if len(fields) == 4:
-                                User.objects.get(userId=fields[0],
-                                                 email=fields[1],
-                                                 first_name=fields[2],
-                                                 last_name=fields[3]).delete()
-                                counter += 1
+                                try:
+                                    User.objects.get(userId=fields[0]).delete()
+                                                     #email=fields[1],
+                                                     #first_name=fields[2],
+                                                     #last_name=fields[3]).delete()
+                                    counter += 1
+                                except ObjectDoesNotExist:
+                                    failed_counter += 1
+                                    failed_list.append(fields[0])
+                            elif len(fields) == 1:
+                                try:
+                                    validate_email(fields[0][:-1].rstrip())
+                                    User.objects.get(email=fields[0].rstrip()).delete()
+                                    counter += 1
+                                except ObjectDoesNotExist:
+                                    failed_counter += 1
+                                    failed_list.append(fields[0].rstrip())
+                                except Exception as E:
+                                    print(E)
+                                    try:
+                                        User.objects.get(userId=fields[0].rstrip()).delete()
+                                        counter += 1
+                                    except ObjectDoesNotExist:
+                                        failed_counter += 1
+                                        failed_list.append(fields[0].rstrip())
+
                             else:
-                                User.objects.get(userId=fields[0]).delete()
-                                counter += 1
+                                try:
+                                    User.objects.get(userId=fields[0]).delete()
+                                    counter += 1
+                                except ObjectDoesNotExist:
+                                    failed_counter += 1
+                                    failed_list.append(fields[0])
                     except Exception as e:
                         print(e)
+                        failed_counter += 1
+                        failed_list.append(fields[0])
                         continue
                 if request.POST.get('text') == "import":
                     status = str(counter)+'/'+str(total)+" users were imported.\n"+str(failed_counter)+' failed: '+','.join(failed_list)[:-1]

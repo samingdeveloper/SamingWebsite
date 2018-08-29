@@ -125,17 +125,61 @@ def Home(request,classroom):
                 csv_data = csv_file.read().decode("utf-8")
                 #print(csv_data)
                 lines = csv_data.split("\n")
-                for line in lines:
-                    fields = line
+                from django.core.validators import validate_email
+                counter = 0
+                total = 0
+                failed_counter = -1
+                failed_list = []
+                for num,line in enumerate(lines):
+                    fields = line.replace(',', '\t').split('\t')
                     #print(fields)
                     try:
-                        try:
-                            validate_email(fields)
-                            ClassRoom.objects.get(className=classroom).user.add(User.objects.get(email=fields.rstrip()))
-                        except:
-                            ClassRoom.objects.get(className=classroom).user.add(User.objects.get(userId=fields.rstrip()))
+                        if not bool(re.match('^[a-zA-Z0-9\w.@+_-]+$', str(fields[0]).rstrip())):
+                            try:
+                                raise ValueError(fields[0][:-1].rstrip())
+                            except Exception as e:
+                                print(e)
+                            failed_counter += 1
+                            failed_list.append(fields[0])
+                            continue
+                        elif len(fields)==1:
+                            try:
+                                validate_email(fields[0][:-1].rstrip())
+                                ClassRoom.objects.get(className=classroom).user.add(User.objects.get(email=fields[0][:-1].rstrip()))
+                                counter += 1
+                                #print("success")
+                            except ObjectDoesNotExist:
+                                failed_counter += 1
+                                failed_list.append(fields[0].rstrip())
+                            except Exception as E:
+                                #print(E)
+                                try:
+                                    ClassRoom.objects.get(className=classroom).user.add(User.objects.get(userId=fields[0][:-1].rstrip()))
+                                    counter += 1
+                                except ObjectDoesNotExist:
+                                    failed_counter += 1
+                                    failed_list.append(fields[0].rstrip())
+                        else:
+                            try:
+                                validate_email(fields[0].rstrip())
+                                ClassRoom.objects.get(className=classroom).user.add(User.objects.get(email=fields[0].rstrip()))
+                                counter += 1
+                                #print("success")
+                            except ObjectDoesNotExist:
+                                failed_counter += 1
+                                failed_list.append(fields[0].rstrip())
+                            except Exception as E:
+                                #print(E)
+                                try:
+                                    ClassRoom.objects.get(className=classroom).user.add(User.objects.get(userId=fields[0].rstrip()))
+                                    counter += 1
+                                except ObjectDoesNotExist:
+                                    failed_counter += 1
+                                    failed_list.append(fields[0].rstrip())
                     except Exception as e:
-                        #print(e)
+                        print(e)
+                        failed_counter += 1
+                        failed_list.append(fields[0])
                         continue
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
@@ -269,17 +313,60 @@ def Home(request,classroom):
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
                 from django.core.validators import validate_email
-                for line in lines:
-                    fields = line
-                    #print(fields)
+                counter = 0
+                total = 0
+                failed_counter = -1
+                failed_list = []
+                for num, line in enumerate(lines):
+                    fields = line.replace(',', '\t').split('\t')
+                    # print(fields)
                     try:
-                        try:
-                            validate_email(fields)
-                            ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(email=fields.rstrip()))
-                        except:
-                            ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(userId=fields.rstrip()))
+                        if not bool(re.match('^[a-zA-Z0-9\w.@+_-]+$', str(fields[0]).rstrip())):
+                            try:
+                                raise ValueError(fields[0][:-1].rstrip())
+                            except Exception as e:
+                                print(e)
+                            failed_counter += 1
+                            failed_list.append(fields[0])
+                            continue
+                        elif len(fields)==1:
+                            try:
+                                validate_email(fields[0][:-1].rstrip())
+                                ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(email=fields[0][:-1].rstrip()))
+                                counter += 1
+                                #print("success")
+                            except ObjectDoesNotExist:
+                                failed_counter += 1
+                                failed_list.append(fields[0].rstrip())
+                            except Exception as E:
+                                #print(E)
+                                try:
+                                    ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(userId=fields[0][:-1].rstrip()))
+                                    counter += 1
+                                except ObjectDoesNotExist:
+                                    failed_counter += 1
+                                    failed_list.append(fields[0].rstrip())
+                        else:
+                            try:
+                                validate_email(fields[0].rstrip())
+                                ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(email=fields[0].rstrip()))
+                                counter += 1
+                                #print("success")
+                            except ObjectDoesNotExist:
+                                failed_counter += 1
+                                failed_list.append(fields[0].rstrip())
+                            except Exception as E:
+                                #print(E)
+                                try:
+                                    ClassRoom.objects.get(className=classroom).user.remove(User.objects.get(userId=fields[0].rstrip()))
+                                    counter += 1
+                                except ObjectDoesNotExist:
+                                    failed_counter += 1
+                                    failed_list.append(fields[0].rstrip())
                     except Exception as e:
-                        #print(e)
+                        print(e)
+                        failed_counter += 1
+                        failed_list.append(fields[0])
                         continue
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
                                              'classname': classroom,
@@ -397,7 +484,7 @@ def GenerateClassroom(request):
     elif request.method == "POST":
         import re
         classname = request.POST["classname"]
-        if classname is not '' and bool(re.match('^[a-zA-Z0-9_]+$',classname)):
+        if classname is not '' and bool(re.match('^[a-zA-Z0-9\w.@+_-]+$',classname)):
             classroom_instance = ClassRoom.objects.create(className=classname,creator=request.user)
             classroom_instance.user.add(request.user)
             classroom_instance.save()
@@ -419,7 +506,7 @@ def EditClassroom(request,classroom):
                       }
         classname = request.POST["classname"]
         creator = request.POST["creator"]
-        if classname is not '' and bool(re.match('^[a-zA-Z0-9_]+$',classname)):
+        if classname is not '' and bool(re.match('^[a-zA-Z0-9\w.@+_-]+$',classname)):
             from django.db import IntegrityError
             try:
                 group_teacher = Group.objects.get(name=classroom + "_Teacher")

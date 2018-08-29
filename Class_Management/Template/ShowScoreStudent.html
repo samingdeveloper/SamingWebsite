@@ -27,11 +27,11 @@
                     </td>
                     <td>{{ i.mode }}</td>
                     {% if i.mode == "Pass or Fail" %}
-                        <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
-                        <td>{% u_score u_id.user_name i.classroom i "Max" %}</td>
+                        <td>{% u_score u_id.user_name i.classroom i.id i.mode %}</td>
+                        <td>{% u_score u_id.user_name i.classroom i.id "Max" %}</td>
                     {% elif i.mode == "Scoring" %}
-                        <td>{% u_score u_id.user_name i.classroom i i.mode %}</td>
-                        <td>{% u_score u_id.user_name i.classroom i "Max" %}</td>
+                        <td>{% u_score u_id.user_name i.classroom i.id i.mode %}</td>
+                        <td>{% u_score u_id.user_name i.classroom i.id "Max" %}</td>
                 {% endif %}
                 </tr>
                 {% endfor %}
@@ -39,8 +39,8 @@
             <tr>
             <td>Total Score</td>
                 <td></td>
-                <td>{{ totalscore }}</td>
-                <td>{{ maxscore }}</td>
+                <td>{% u_score u_id.user_name  request.session.classroom None "total" %}</td>
+                <td>{% u_score u_id.user_name  request.session.classroom None "total_max" %}</td>
             </tr>
             {% endif %}
             </table>

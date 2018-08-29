@@ -629,7 +629,7 @@ def DeleteExamQuiz(request, classroom, exam_quiz_id):
 
 #################################################### AutoGrader Section ####################################################
 @login_required
-#@timeout_decorator.timeout(6, use_signals=False)
+@timeout_decorator.timeout(6, use_signals=False)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -673,7 +673,7 @@ def uploadgrading(request, classroom, quiz_id):
     try:
         code_temp = quiz.text_template_content
         libs = None
-        #my_globals.limit_grader()
+        my_globals.limit_grader()
         if request.method == "POST" and 'time_left' in request.POST:
             #print("this?")
             time_left = request.POST.get("time_left",'')
@@ -1167,7 +1167,7 @@ def exam_quiz(request, classroom, exam_data_id):
     return render(request, 'Home.html', context)
 
 @login_required
-#@timeout_decorator.timeout(6, use_signals=False)
+@timeout_decorator.timeout(6, use_signals=False)
 def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -1194,7 +1194,7 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
     try:
         code_temp = exam_quiz.text_template_content
         libs = None
-        #my_globals.limit_grader()
+        my_globals.limit_grader()
         if request.method == 'POST' and 'upload_submit' in request.POST:
             if request.FILES['upload']:
                 uploaded_to_file = request.FILES['upload']

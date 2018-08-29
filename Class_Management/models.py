@@ -146,7 +146,7 @@ def classroom_user_changed(sender,instance,action,pk_set,**kwargs):
 @receiver(pre_save,sender=ClassRoom)
 def classroom_create(sender,instance,**kwargs):
     import re
-    if not (bool(re.match('^[a-zA-Z0-9]+$', instance.className))):
+    if not (bool(re.match('^[a-zA-Z0-9\w.@+_-]+$', instance.className))):
         raise ValueError("Classname must contains only alphabet or numeric.")
 
 @receiver(post_save,sender=ClassRoom)
