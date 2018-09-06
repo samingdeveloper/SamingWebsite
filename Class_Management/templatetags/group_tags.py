@@ -8,7 +8,7 @@ register = template.Library()
 def can_manage(user, classname):
     try:
         if user.is_admin: return True
-        elif Group.objects.get(name=classname+"_Teacher") in user.groups.all(): return True
+        elif user.groups.filter(name__in=[classname + "_Teacher",classname + "_TA"]): return True
         elif user is ClassRoom.objects.get(classname=classname).creator: return True
         else: return False
     except:

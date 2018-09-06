@@ -49,7 +49,7 @@ def Home(request,classroom):
     user_group = {"teacher":User.objects.filter(groups__name=classroom + "_Teacher"),
                      "ta":User.objects.filter(groups__name=classroom + "_TA"),
                      }
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])):
         return HttpResponseRedirect('/LogOut')
 
     elif request.method == "POST" and action == 'add':
@@ -193,6 +193,21 @@ def Home(request,classroom):
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                              })
+            elif not (request.user.is_admin or request.user.groups.filter(name=classroom + "_Teacher")):
+                add_status = 4
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                                     'classname': classroom,
+                                                     'classroom_creator': ClassRoom.objects.get(
+                                                         className=classroom).creator.get_full_name,
+                                                     'user_obj': User.objects.all(),
+                                                     'user_group': user_group,
+                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
+                                                     })
             elif request.POST["country"] == "Admin" and request.user.is_admin:
                 add_status = 1
                 user_obj.is_admin = True
@@ -380,8 +395,22 @@ def Home(request,classroom):
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                              })
-
-            if request.POST["country"] == "Admin" and request.user.is_admin:
+            elif not(request.user.is_admin or request.user.groups.filter(name=classroom + "_Teacher")):
+                add_status = 4
+                return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
+                                                     'classname': classroom,
+                                                     'classroom_creator': ClassRoom.objects.get(
+                                                         className=classroom).creator.get_full_name,
+                                                     'user_obj': User.objects.all(),
+                                                     'user_group': user_group,
+                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
+                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
+                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
+                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                         name__in=[classroom + "_Teacher",
+                                                                   classroom + "_TA"]).exists() else (),
+                                                     })
+            elif request.POST["country"] == "Admin" and request.user.is_admin:
                 user_obj = User.objects.get(email=email)
                 user_obj.is_admin = False
                 user_obj.save()
