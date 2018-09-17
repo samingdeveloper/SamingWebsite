@@ -390,27 +390,57 @@ def GenerateExam(request,classroom):
             GenerateExam_instance.save()
 
 #################################################### Random examination for each user from pool. ####################################################
+            import time
+            import asyncio
             Cate = Category.objects.all()
             Target = ClassRoom.objects.get(className=classroom).user.all()
-            for user in ClassRoom.objects.get(className=classroom).user.all():
-                Exam_Tracker.objects.create(exam=GenerateExam_instance,user=user)
-            #planned for asynchronous.
-            for user in Target:
-                picked_list,picked_this = [picked for picked in Exam_Tracker.objects.filter(user=user) if isinstance(picked.picked,list) for picked in picked.picked],[]
-                #print(picked_list)
-                for category, amount in zip(Cate, request.POST.getlist("pick_amount")):
-                    exam_quiz = list(Exam_Quiz.objects.filter(classroom__className=classroom, category=category).exclude(title__in=picked_list))
-                    #print(exam_quiz)
-                    amount = int(amount) if amount != '' else 0
-                    for num in range(amount):
-                        picked_num = None if len(exam_quiz)==0 else random.randint(0,len(exam_quiz)-1)
-                        if picked_num == None: break
-                        picked_this.append(exam_quiz[picked_num].title)
-                        exam_quiz.pop(picked_num)
-                #print(picked_this)
-                Exam_tracker = Exam_Tracker.objects.get(exam=GenerateExam_instance, user=user)
-                Exam_tracker.picked = picked_this
-                Exam_tracker.save()
+            # planned for asynchronous.
+            async def generate_tracker():
+                #t0 = time.time()
+                for user in ClassRoom.objects.get(className=classroom).user.all():
+                    Exam_Tracker.objects.create(exam=GenerateExam_instance, user=user)
+                    await asyncio.sleep(0.1)
+                #t1 = time.time()
+                #print(1000 * (t1 - t0))
+            #for user in ClassRoom.objects.get(className=classroom).user.all():
+                #Exam_Tracker.objects.create(exam=GenerateExam_instance, user=user)
+            async def random_exam_quiz():
+                #t0 = time.time()
+                for user in Target:
+                    picked_list, picked_this = [picked for picked in Exam_Tracker.objects.filter(user=user) if
+                                                isinstance(picked.picked, list) for picked in picked.picked], []
+                    # print(picked_list)
+                    for category, amount in zip(Cate, request.POST.getlist("pick_amount")):
+                        exam_quiz = list(
+                            Exam_Quiz.objects.filter(classroom__className=classroom, category=category).exclude(
+                                title__in=picked_list))
+                        # print(exam_quiz)
+                        amount = int(amount) if amount != '' else 0
+                        for num in range(amount):
+                            picked_num = None if len(exam_quiz) == 0 else random.randint(0, len(exam_quiz) - 1)
+                            if picked_num == None: break
+                            picked_this.append(exam_quiz[picked_num].title)
+                            exam_quiz.pop(picked_num)
+                    # print(picked_this)
+                    Exam_tracker = Exam_Tracker.objects.get(exam=GenerateExam_instance, user=user)
+                    Exam_tracker.picked = picked_this
+                    Exam_tracker.save()
+                    await asyncio.sleep(0.1)
+                #t1 = time.time()
+                #print(1000 * (t1 - t0))
+            async def run_generate_tracker():
+                t0 = time.time()
+                await asyncio.wait([generate_tracker()])
+                t1 = time.time()
+                print("generate_tracker took %.3f" % (1000 * (t1 - t0)))
+            async def run_random():
+                t0 = time.time()
+                await asyncio.wait([random_exam_quiz()])
+                t1 = time.time()
+                print("run_random took %.3f" % (1000 * (t1 - t0)))
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(run_generate_tracker())
+            loop.run_until_complete(run_random())
 #####################################################################################################################################################
 
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])

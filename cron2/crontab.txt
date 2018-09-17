@@ -1,1 +1,3 @@
-0 0,6,12,18 * * * /script.sh >> /var/log/script.log
+0 0,6,12,18 * * * curl -fsS --retry 3 https://cronhub.io/start/b6aafaf0-a879-11e8-a5b6-4bac55c0374d; \
+                    /script.sh >> /var/log/script.log && \
+                    curl -fsS --retry 3 https://cronhub.io/finish/b6aafaf0-a879-11e8-a5b6-4bac55c0374d

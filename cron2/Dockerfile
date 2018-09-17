@@ -1,4 +1,4 @@
-FROM alpine:3.5
+FROM appropriate/curl:latest
 
 RUN apk update && apk add --no-cache docker
 RUN mkdir -p /backups/
