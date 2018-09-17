@@ -101,7 +101,6 @@
                                 <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">Open</button>
                             {% endif %}
                             <div class="detail">
-                                <p><strong>Examination Detail:</strong>   {{ i.detail }}</p>
                                 {%  if request.user|can_manage:request.session.classroom %}
                                 <p><strong>Available:</strong>   {{ i.available }}</p>
                                 {% endif %}

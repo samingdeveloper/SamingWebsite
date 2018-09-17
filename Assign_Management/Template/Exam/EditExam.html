@@ -19,18 +19,19 @@
             <form action="{% url 'Class_Management:Assign_Management:EditExam' request.session.classroom exam.id %}" method="post" enctype="multipart/form-data"
               > {% csrf_token %}
                 <label for="exam_name"><strong>Exam name:</strong></label>
-                <input type="text" id="exam_name" name="exam_name" value={{ exam.name }}>
+                <input type="text" id="exam_name" name="exam_name" value="{{ exam.name }}">
 
                 <label for="Exam_detail"><strong>Exam detail:</strong></label>
-                <textarea type="text" id="Exam_detail" name="Exam_detail" value={{ exam.detail }}></textarea>
+                <textarea type="text" id="Exam_detail" name="exam_detail">{{ exam.detail }}</textarea>
 
                 <label for="Exam_Max_Score"><strong>Max Score:</strong></label>
-                <input type="number" step="any" id="Exam_Max_Score" name="exam_max_score" min="0" max="100" style="width: 7%;
+                <input type="number" step="any" id="Exam_Max_Score" name="exam_max_score" min="0" max="100" value="{{ exam.max_score }}" style="width: 7%;
                     border: 1px solid red;
                     border-radius: 4px;
                     border-color: gray;
                     margin: 8px 0;"><br>
 
+                <div id="cate_wrapper" style="display: none;">
                 {% for category in categories %}
                 <strong>{{ category }}:   </strong>
                 <input type="number" id="{{ category }}" name="pick_amount" min="0" max="1000"
@@ -40,7 +41,7 @@
                     border-color: gray;
                     margin: 8px 0;"><br>
                 {% endfor %}
-
+                </div>
                 <label for="dateAvailable"><br><strong>Available:</strong></label>
                 <script type="text/javascript">
                     $(function(){
@@ -64,7 +65,7 @@
                 <input type="text" name="dateInput" id="dateInput" placeholder="{{ exam.deadline }}">
 
                 <label for="redo"><strong>Restart:</strong></label>
-                    <select id="redo" name="redo" >
+                    <select id="redo" name="redo" onchange="myFunc();">
                             <option value="No" selected> No </option>
                             <option value="Yes"> Yes </option>
                     </select>
@@ -87,6 +88,17 @@
 
     <script>
         jQuery("#jQueryUICalendar1").datepicker();
+    </script>
+
+    <script>
+        function myFunc(){
+            if (document.getElementById("redo").options[document.getElementById("redo").selectedIndex].value == "Yes"){
+                document.getElementById("cate_wrapper").style.display = "block";
+            }
+            else {
+                document.getElementById("cate_wrapper").style.display = "none";
+            }
+        }
     </script>
 
 {% endblock %}

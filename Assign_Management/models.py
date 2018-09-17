@@ -47,8 +47,8 @@ class Category(models.Model):
 
 class Exam_Data(models.Model):
     classroom = models.ForeignKey(ClassRoom,on_delete=models.CASCADE)
-    name = models.CharField(max_length=255,unique=True)
-    detail = models.TextField(blank=True,null=True)
+    name = models.CharField(max_length=255, unique=True)
+    detail = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     available = models.DateTimeField()
     deadline = models.DateTimeField()

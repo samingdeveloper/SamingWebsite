@@ -395,15 +395,15 @@ def GenerateExam(request,classroom):
             Cate = Category.objects.all()
             Target = ClassRoom.objects.get(className=classroom).user.all()
             # planned for asynchronous.
-            async def generate_tracker():
+            #async def generate_tracker():
                 #t0 = time.time()
-                for user in ClassRoom.objects.get(className=classroom).user.all():
-                    Exam_Tracker.objects.create(exam=GenerateExam_instance, user=user)
-                    await asyncio.sleep(0.1)
+                #for user in ClassRoom.objects.get(className=classroom).user.all():
+                #    Exam_Tracker.objects.create(exam=GenerateExam_instance, user=user)
+                #    #await asyncio.sleep(0.25)
                 #t1 = time.time()
                 #print(1000 * (t1 - t0))
-            #for user in ClassRoom.objects.get(className=classroom).user.all():
-                #Exam_Tracker.objects.create(exam=GenerateExam_instance, user=user)
+            for user in ClassRoom.objects.get(className=classroom).user.all():
+                Exam_Tracker.objects.create(exam=GenerateExam_instance, user=user)
             async def random_exam_quiz():
                 #t0 = time.time()
                 for user in Target:
@@ -428,18 +428,12 @@ def GenerateExam(request,classroom):
                     await asyncio.sleep(0.1)
                 #t1 = time.time()
                 #print(1000 * (t1 - t0))
-            async def run_generate_tracker():
-                t0 = time.time()
-                await asyncio.wait([generate_tracker()])
-                t1 = time.time()
-                print("generate_tracker took %.3f" % (1000 * (t1 - t0)))
             async def run_random():
                 t0 = time.time()
                 await asyncio.wait([random_exam_quiz()])
                 t1 = time.time()
-                print("run_random took %.3f" % (1000 * (t1 - t0)))
+                print("Took %.3f" % (1000 * (t1 - t0)))
             loop = asyncio.get_event_loop()
-            loop.run_until_complete(run_generate_tracker())
             loop.run_until_complete(run_random())
 #####################################################################################################################################################
 
@@ -502,8 +496,8 @@ def EditExam(request, classroom, exam_data_id):
                 #####################################################################################################################################################
             else:
                 exam_data = Exam_Data.objects.get(pk=exam_data_id)
-                exam_data.name = Assignment
-                exam_data.detail = Assignment_Detail
+                exam_data.name = Exam
+                exam_data.detail = Detail
                 exam_data.deadline = Deadline
                 exam_data.available = Available
                 exam_data.classroom = ClassRoom.objects.get(className=classroom)
