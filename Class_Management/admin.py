@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.shortcuts import redirect
 from Class_Management.models import *
+
 # Register your models here.
 def export_csv(modeladmin, request, queryset):
     import csv
@@ -50,16 +51,37 @@ def moss(modeladmin, request, queryset):
 moss.short_description = u"MOSS"
 
 class ClassRoomAdmin(admin.ModelAdmin):
+    list_display = ('className', 'creator')
+    search_fields = ('className', 'creator__userId')
     filter_horizontal = ('user',)
 
 class QuizScoreAdmin(admin.ModelAdmin):
     actions = [export_csv,moss]
+    list_display = ('quizId', 'userId', 'passOrFail', 'total_score', 'max_score', 'classroom')
+    search_fields = ('quizId__quizTitle', 'userId__userId', 'classroom__className')
 
+class QuizAdmin(admin.ModelAdmin):
+    list_display = ('quizTitle', 'category', 'mode', 'available', 'deadline', 'classroom')
+    search_fields = ('quizTitle', 'category__name', 'mode', 'classroom__className')
+
+class QuizStatusAdmin(admin.ModelAdmin):
+    list_display = ('quizId', 'userId', 'status', 'classroom')
+    list_filter = ('status', )
+    search_fields = ('quizId__quizTitle', 'userId__userId', 'classroom__className')
+
+class QuizTimerAdmin(admin.ModelAdmin):
+    list_display = ('quizId', 'userId', 'start', 'timer', 'timer_stop', 'classroom')
+    list_filter = ('start', )
+    search_fields = ('quizId__quizTitle', 'userId__userId', 'classroom__className')
+
+class QuizTrackerAdmin(admin.ModelAdmin):
+    list_display = ('userId', 'quizDoneCount', 'classroom')
+    search_fields = ('userId__userId', 'classroom__className')
 
 admin.site.register(ClassRoom,ClassRoomAdmin)
 #admin.site.register(Rank)
-admin.site.register(Quiz)
-admin.site.register(QuizStatus)
+admin.site.register(Quiz,QuizAdmin)
+admin.site.register(QuizStatus,QuizStatusAdmin)
 admin.site.register(QuizScore,QuizScoreAdmin)
-admin.site.register(QuizTimer)
-admin.site.register(QuizTracker)
+admin.site.register(QuizTimer,QuizTimerAdmin)
+admin.site.register(QuizTracker,QuizTrackerAdmin)

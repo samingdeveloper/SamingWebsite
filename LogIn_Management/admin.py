@@ -30,11 +30,11 @@ class UserAdmin(BaseUserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
     change_list_template = "./user_changelist.html"
-    #inlines = (classNameInline,)
+    # inlines = (classNameInline,)
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'is_admin','is_staff','is_active')
+    list_display = ('userId', 'email', 'is_admin','is_staff','is_active')
     list_filter = ('is_admin','is_staff','is_active')
     fieldsets = (
         ('User info', {'fields': ('email', 'userId', 'password')}),
@@ -56,7 +56,7 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
     search_fields = ('email','userId')
-    ordering = ('email',)
+    ordering = ('userId','email')
     #filter_horizontal = ()
     def get_urls(self):
         urls = super().get_urls()

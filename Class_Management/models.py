@@ -68,7 +68,7 @@ class Quiz(models.Model):
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
-        return self.quizTitle + " : " + self.classroom.className
+        return self.quizTitle
 
 class QuizStatus(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
@@ -76,19 +76,19 @@ class QuizStatus(models.Model):
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     def __str__(self):
-        return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
+        return str(self.status)
 
 class QuizScore(models.Model):
-    quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    quizId = models.ForeignKey(Quiz, related_name="quiz", on_delete=models.CASCADE)
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
-    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(ClassRoom, related_name="classroom", on_delete=models.CASCADE)
     passOrFail = models.FloatField(blank=True, null=True, default=0.0)
     total_score = models.FloatField(blank=True, null=True, default=0.0)
     max_score = models.FloatField(blank=True, null=True, default=0.0)
     #code = models.TextField(blank=True, null=True)
     code = models.ForeignKey("Assign_Management.Upload", on_delete=models.SET_NULL,null=True,related_name='code')
     def __str__(self):
-        return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
+        return str(self.passOrFail + self.total_score)
 
 class QuizTimer(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
@@ -98,14 +98,14 @@ class QuizTimer(models.Model):
     start = models.BooleanField(default=False)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
-        return str(self.userId.userId) + " : " + str(self.quizId) + " : " + self.classroom.className
+        return str(self.start)
 
 class QuizTracker(models.Model):
     quizDoneCount = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0),])
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     def __str__(self):
-        return str(self.userId.userId) + " : " + self.classroom.className
+        return str(self.quizDoneCount)
 
 # ClassRom receiver
 @receiver(m2m_changed,sender=ClassRoom.user.through)

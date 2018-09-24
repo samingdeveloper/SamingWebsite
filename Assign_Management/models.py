@@ -4,6 +4,7 @@ from Assign_Management.storage import OverwriteStorage
 from django.db import models
 from django.db.models.signals import *
 from django.dispatch import receiver
+from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -54,7 +55,7 @@ class Exam_Data(models.Model):
     deadline = models.DateTimeField()
     max_score = models.FloatField(default=0, validators=[MinValueValidator(0),])
     def __str__(self):
-        return self.classroom.className + ' : ' + self.name
+        return self.name
 
 class Exam_Quiz(models.Model):
     title = models.CharField(unique=True, max_length=55, blank=True)
@@ -93,14 +94,14 @@ class Exam_Score(models.Model):
     total_score = models.FloatField(blank=True, null=True, default=0.0)
     max_score = models.FloatField(blank=True, null=True, default=0.0)
     def __str__(self):
-        return str(self.user.userId) + " : " + str(self.quiz)
+        return str(self.passOrFail + self.total_score)
 
 class Exam_Tracker(models.Model):
     exam = models.ForeignKey(Exam_Data,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     picked = ArrayField(models.CharField(max_length=255,blank=True),blank=True,null=True)
     def __str__(self):
-        return self.user.userId + ' : ' + self.exam.name
+        return str(self.picked)
 
 @receiver(post_delete, sender=Upload, weak=False)
 def submission_delete(sender, instance, **kwargs):
