@@ -50,6 +50,8 @@ def moss(modeladmin, request, queryset):
     #mosspy.download_report(url, "media/report/", connections=8)
 moss.short_description = u"MOSS"
 
+# classes
+
 class ClassRoomAdmin(admin.ModelAdmin):
     list_display = ('className', 'creator')
     search_fields = ('className', 'creator__userId')
@@ -58,6 +60,7 @@ class ClassRoomAdmin(admin.ModelAdmin):
 class QuizScoreAdmin(admin.ModelAdmin):
     actions = [export_csv,moss]
     list_display = ('quizId', 'userId', 'passOrFail', 'total_score', 'max_score', 'classroom')
+    #list_filter = ('passOrFail', 'total_score', 'max_score')
     search_fields = ('quizId__quizTitle', 'userId__userId', 'classroom__className')
 
 class QuizAdmin(admin.ModelAdmin):

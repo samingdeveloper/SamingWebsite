@@ -878,7 +878,7 @@ def StudentExamQuizList(request,classroom,userId,exam_data_id):
 def StudentExamQuizFiles(request,classroom,userId,exam_data_id,exam_quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
-    elif (Exam_Data.objects.get(pk=exam_data_id).available > timezone.localtime(timezone.now()) or not(request.user.userId == userId) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
+    elif (((Exam_Data.objects.get(pk=exam_data_id).available > timezone.localtime(timezone.now())) or not(request.user.userId == userId)) and not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]))):
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
     else:
         if request.method == 'POST':

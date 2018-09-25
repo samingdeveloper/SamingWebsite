@@ -142,7 +142,7 @@
                             <div class="boxassign2">
                                 {%  if request.user|can_manage:request.session.classroom %}
                                      <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom exam_quiz.id 1%}')" value="MOSS">
-                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ i.title }}')" >Delete</button>
+                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ exam_quiz.title }}')" >Delete</button>
                                     <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
                                 {% endif %}
                                 <div class="detail">

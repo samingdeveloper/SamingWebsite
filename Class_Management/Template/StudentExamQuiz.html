@@ -18,18 +18,17 @@
           <th>{{ u_id.user_name }}</th>
         </tr>
       </table>
-      <p><strong>Assignment name:</strong> {{ quiz_to_show.quizTitle }}</p>
-      <p><strong>Assignment detail:</strong> {{ quiz_to_show.quizDetail }}</p>
+      <p><strong>ExamQuiz name:</strong> {{ quiz_to_show.title }}</p>
+      <p><strong>ExamQuiz detail:</strong> {{ quiz_to_show.detail }}</p>
       <p><strong>File name:</strong> {{ file_title }}</p>
       <p><strong>Uploadtime:</strong> {{ upload_time }}</p>
-      <p><strong>Deadline:</strong> {{ quiz_to_show.deadline }}</p>
 
-      <label for="showcode">Code:</label>
+      <label for="showcode"><p><strong>Code:</strong></p></label>
       <textarea type="text" id="showcode" name="showcodedetail" placeholder="">{{ code_to_show }}</textarea>
       {% if request.user|can_manage:request.session.classroom %}
-      <label for="showtestcode">Test code:</label>
+      <label for="showtestcode"><p><strong>Test Code:</strong></p></label>
       <textarea type="text" id="showtestcode" name="showtestcodeedetail" placeholder="">{{ quiz_to_show.text_testcode_content }}</textarea>
-      <label for="showcase">Test case:</label>
+      <label for="showcase"><p><strong>Test Case:</strong></p></label>
       <textarea type="text" id="showcase" name="showcasedetail" placeholder="">{{ quiz_to_show.text_testcase_content }}</textarea>
       {% endif %}
 
