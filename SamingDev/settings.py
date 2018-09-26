@@ -32,15 +32,15 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'web', '10.61.3.223',]
 # Application definition
 
 INSTALLED_APPS = [
-    'LogIn_Management.apps.LoginManagementConfig',
-    'Class_Management.apps.ClassManagementConfig',
-    'Assign_Management.apps.AssignManagementConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'LogIn_Management.apps.LoginManagementConfig',
+    'Class_Management.apps.ClassManagementConfig',
+    'Assign_Management.apps.AssignManagementConfig',
     #'advanced_filters',
     #'mathfilters'
 ]
