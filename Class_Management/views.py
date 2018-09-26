@@ -583,10 +583,16 @@ def DeleteClassroom(request,classroom):
 
 def export_score_csv(classroom):
     import csv
+    import datetime
     #from django.utils.encoding import smart_str
+    from django.utils import timezone
     from django.http import HttpResponse
-    obj_quiz = Quiz.objects.filter(classroom__className=classroom).order_by("quizTitle")
-    obj_exam = Exam_Data.objects.filter(classroom__className=classroom).order_by("name")
+
+    timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone())
+    t = timezone.localtime(timezone.now())  # offset-awared datetime
+    t.astimezone(timezone.utc).replace(tzinfo=None)
+    obj_quiz = Quiz.objects.filter(classroom__className=classroom, available__lte=t).order_by("quizTitle")
+    obj_exam = Exam_Data.objects.filter(classroom__className=classroom, available__lte=t).order_by("name")
     name_quiz = ["userId","Classroom"]
     max_all = 0
     for i in obj_quiz:
