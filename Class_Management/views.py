@@ -724,6 +724,9 @@ def Manual(request,classroom):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
+    elif not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"])):
+        return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+
     else:
         #return None
         return render(request, "./manual/index.html")

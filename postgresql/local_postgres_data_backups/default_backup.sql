@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 10.5 (Debian 10.5-1.pgdg90+1)
--- Dumped by pg_dump version 10.5 (Debian 10.5-1.pgdg90+1)
+-- Dumped from database version 10.5
+-- Dumped by pg_dump version 10.5
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,13 +20,16 @@ ALTER TABLE ONLY public.django_admin_log DROP CONSTRAINT django_admin_log_conten
 ALTER TABLE ONLY public.auth_permission DROP CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co;
 ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id;
 ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users DROP CONSTRAINT "advanced_filters_adv_user_id_493275a2_fk_LogIn_Man";
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups DROP CONSTRAINT advanced_filters_adv_group_id_44f2bdaa_fk_auth_grou;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter DROP CONSTRAINT "advanced_filters_adv_created_by_id_ef981115_fk_LogIn_Man";
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users DROP CONSTRAINT advanced_filters_adv_advancedfilter_id_8a6c9d2a_fk_advanced_;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups DROP CONSTRAINT advanced_filters_adv_advancedfilter_id_368ee280_fk_advanced_;
 ALTER TABLE ONLY public."LogIn_Management_user_groups" DROP CONSTRAINT "LogIn_Management_user_groups_group_id_84db3e0e_fk_auth_group_id";
 ALTER TABLE ONLY public."LogIn_Management_user_groups" DROP CONSTRAINT "LogIn_Management_use_user_id_a7e13076_fk_LogIn_Man";
 ALTER TABLE ONLY public."LogIn_Management_user_user_permissions" DROP CONSTRAINT "LogIn_Management_use_user_id_08db02bd_fk_LogIn_Man";
 ALTER TABLE ONLY public."LogIn_Management_user_user_permissions" DROP CONSTRAINT "LogIn_Management_use_permission_id_9b1826c8_fk_auth_perm";
 ALTER TABLE ONLY public."LogIn_Management_profile" DROP CONSTRAINT "LogIn_Management_pro_user_id_8450ccb2_fk_LogIn_Man";
-ALTER TABLE ONLY public."Class_Management_rank" DROP CONSTRAINT "Class_Management_ran_userId_id_432abf83_fk_LogIn_Man";
-ALTER TABLE ONLY public."Class_Management_rank" DROP CONSTRAINT "Class_Management_ran_classroom_id_a47238d9_fk_Class_Man";
 ALTER TABLE ONLY public."Class_Management_quizscore" DROP CONSTRAINT "Class_Management_qui_userId_id_9f1d0641_fk_LogIn_Man";
 ALTER TABLE ONLY public."Class_Management_quiztracker" DROP CONSTRAINT "Class_Management_qui_userId_id_95b7aa39_fk_LogIn_Man";
 ALTER TABLE ONLY public."Class_Management_quiztimer" DROP CONSTRAINT "Class_Management_qui_userId_id_3089c57e_fk_LogIn_Man";
@@ -68,6 +71,13 @@ DROP INDEX public.auth_permission_content_type_id_2f476e4b;
 DROP INDEX public.auth_group_permissions_permission_id_84c5c92e;
 DROP INDEX public.auth_group_permissions_group_id_b120cbf9;
 DROP INDEX public.auth_group_name_a6ea08ec_like;
+DROP INDEX public.advanced_filters_advancedfilter_users_user_id_493275a2_like;
+DROP INDEX public.advanced_filters_advancedfilter_users_user_id_493275a2;
+DROP INDEX public.advanced_filters_advancedfilter_groups_group_id_44f2bdaa;
+DROP INDEX public.advanced_filters_advancedfilter_created_by_id_ef981115_like;
+DROP INDEX public.advanced_filters_advancedfilter_created_by_id_ef981115;
+DROP INDEX public.advanced_filters_advancedf_advancedfilter_id_8a6c9d2a;
+DROP INDEX public.advanced_filters_advancedf_advancedfilter_id_368ee280;
 DROP INDEX public."LogIn_Management_user_user_permissions_user_id_08db02bd_like";
 DROP INDEX public."LogIn_Management_user_user_permissions_user_id_08db02bd";
 DROP INDEX public."LogIn_Management_user_user_permissions_permission_id_9b1826c8";
@@ -77,9 +87,6 @@ DROP INDEX public."LogIn_Management_user_groups_user_id_a7e13076";
 DROP INDEX public."LogIn_Management_user_groups_group_id_84db3e0e";
 DROP INDEX public."LogIn_Management_user_email_a9e4c25f_like";
 DROP INDEX public."LogIn_Management_profile_user_id_8450ccb2_like";
-DROP INDEX public."Class_Management_rank_userId_id_432abf83_like";
-DROP INDEX public."Class_Management_rank_userId_id_432abf83";
-DROP INDEX public."Class_Management_rank_classroom_id_a47238d9";
 DROP INDEX public."Class_Management_quiztracker_userId_id_95b7aa39_like";
 DROP INDEX public."Class_Management_quiztracker_userId_id_95b7aa39";
 DROP INDEX public."Class_Management_quiztracker_classroom_id_83db111b";
@@ -143,13 +150,17 @@ ALTER TABLE ONLY public.auth_group DROP CONSTRAINT auth_group_pkey;
 ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissions_pkey;
 ALTER TABLE ONLY public.auth_group_permissions DROP CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq;
 ALTER TABLE ONLY public.auth_group DROP CONSTRAINT auth_group_name_key;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users DROP CONSTRAINT advanced_filters_advancedfilter_users_pkey;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter DROP CONSTRAINT advanced_filters_advancedfilter_pkey;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups DROP CONSTRAINT advanced_filters_advancedfilter_groups_pkey;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users DROP CONSTRAINT advanced_filters_advance_advancedfilter_id_user_i_5c01bb94_uniq;
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups DROP CONSTRAINT advanced_filters_advance_advancedfilter_id_group__a53a59b9_uniq;
 ALTER TABLE ONLY public."LogIn_Management_user_user_permissions" DROP CONSTRAINT "LogIn_Management_user_user_permissions_pkey";
 ALTER TABLE ONLY public."LogIn_Management_user" DROP CONSTRAINT "LogIn_Management_user_pkey";
 ALTER TABLE ONLY public."LogIn_Management_user_groups" DROP CONSTRAINT "LogIn_Management_user_groups_pkey";
 ALTER TABLE ONLY public."LogIn_Management_user" DROP CONSTRAINT "LogIn_Management_user_email_key";
 ALTER TABLE ONLY public."LogIn_Management_profile" DROP CONSTRAINT "LogIn_Management_profile_user_id_key";
 ALTER TABLE ONLY public."LogIn_Management_profile" DROP CONSTRAINT "LogIn_Management_profile_pkey";
-ALTER TABLE ONLY public."Class_Management_rank" DROP CONSTRAINT "Class_Management_rank_pkey";
 ALTER TABLE ONLY public."Class_Management_quiztracker" DROP CONSTRAINT "Class_Management_quiztracker_pkey";
 ALTER TABLE ONLY public."Class_Management_quiztimer" DROP CONSTRAINT "Class_Management_quiztimer_pkey";
 ALTER TABLE ONLY public."Class_Management_quizstatus" DROP CONSTRAINT "Class_Management_quizstatus_pkey";
@@ -175,10 +186,12 @@ ALTER TABLE public.django_admin_log ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.auth_permission ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.auth_group_permissions ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.auth_group ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.advanced_filters_advancedfilter_users ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.advanced_filters_advancedfilter_groups ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.advanced_filters_advancedfilter ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public."LogIn_Management_user_user_permissions" ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public."LogIn_Management_user_groups" ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public."LogIn_Management_profile" ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public."Class_Management_rank" ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public."Class_Management_quiztracker" ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public."Class_Management_quiztimer" ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public."Class_Management_quizstatus" ALTER COLUMN id DROP DEFAULT;
@@ -206,6 +219,12 @@ DROP SEQUENCE public.auth_group_permissions_id_seq;
 DROP TABLE public.auth_group_permissions;
 DROP SEQUENCE public.auth_group_id_seq;
 DROP TABLE public.auth_group;
+DROP SEQUENCE public.advanced_filters_advancedfilter_users_id_seq;
+DROP TABLE public.advanced_filters_advancedfilter_users;
+DROP SEQUENCE public.advanced_filters_advancedfilter_id_seq;
+DROP SEQUENCE public.advanced_filters_advancedfilter_groups_id_seq;
+DROP TABLE public.advanced_filters_advancedfilter_groups;
+DROP TABLE public.advanced_filters_advancedfilter;
 DROP SEQUENCE public."LogIn_Management_user_user_permissions_id_seq";
 DROP TABLE public."LogIn_Management_user_user_permissions";
 DROP SEQUENCE public."LogIn_Management_user_groups_id_seq";
@@ -213,8 +232,6 @@ DROP TABLE public."LogIn_Management_user_groups";
 DROP TABLE public."LogIn_Management_user";
 DROP SEQUENCE public."LogIn_Management_profile_id_seq";
 DROP TABLE public."LogIn_Management_profile";
-DROP SEQUENCE public."Class_Management_rank_id_seq";
-DROP TABLE public."Class_Management_rank";
 DROP SEQUENCE public."Class_Management_quiztracker_id_seq";
 DROP TABLE public."Class_Management_quiztracker";
 DROP SEQUENCE public."Class_Management_quiztimer_id_seq";
@@ -332,6 +349,7 @@ CREATE TABLE public."Assign_Management_exam_data" (
     created timestamp with time zone NOT NULL,
     available timestamp with time zone NOT NULL,
     deadline timestamp with time zone NOT NULL,
+    max_score double precision NOT NULL,
     classroom_id integer NOT NULL
 );
 
@@ -640,8 +658,8 @@ CREATE TABLE public."Class_Management_quiz" (
     available timestamp with time zone NOT NULL,
     created timestamp with time zone NOT NULL,
     hint character varying(255),
-    rank smallint NOT NULL,
     mode character varying(100) NOT NULL,
+    max_score double precision NOT NULL,
     text_template_content text,
     text_testcode_content text NOT NULL,
     text_testcase_content text NOT NULL,
@@ -828,43 +846,6 @@ ALTER SEQUENCE public."Class_Management_quiztracker_id_seq" OWNED BY public."Cla
 
 
 --
--- Name: Class_Management_rank; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."Class_Management_rank" (
-    id integer NOT NULL,
-    rank smallint NOT NULL,
-    fixture boolean NOT NULL,
-    classroom_id integer NOT NULL,
-    "userId_id" character varying(255) NOT NULL
-);
-
-
-ALTER TABLE public."Class_Management_rank" OWNER TO postgres;
-
---
--- Name: Class_Management_rank_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public."Class_Management_rank_id_seq"
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public."Class_Management_rank_id_seq" OWNER TO postgres;
-
---
--- Name: Class_Management_rank_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public."Class_Management_rank_id_seq" OWNED BY public."Class_Management_rank".id;
-
-
---
 -- Name: LogIn_Management_profile; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -986,6 +967,115 @@ ALTER TABLE public."LogIn_Management_user_user_permissions_id_seq" OWNER TO post
 --
 
 ALTER SEQUENCE public."LogIn_Management_user_user_permissions_id_seq" OWNED BY public."LogIn_Management_user_user_permissions".id;
+
+
+--
+-- Name: advanced_filters_advancedfilter; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.advanced_filters_advancedfilter (
+    id integer NOT NULL,
+    title character varying(255) NOT NULL,
+    url character varying(255) NOT NULL,
+    b64_query character varying(2048) NOT NULL,
+    model character varying(64),
+    created_by_id character varying(255) NOT NULL,
+    created_at timestamp with time zone
+);
+
+
+ALTER TABLE public.advanced_filters_advancedfilter OWNER TO postgres;
+
+--
+-- Name: advanced_filters_advancedfilter_groups; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.advanced_filters_advancedfilter_groups (
+    id integer NOT NULL,
+    advancedfilter_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.advanced_filters_advancedfilter_groups OWNER TO postgres;
+
+--
+-- Name: advanced_filters_advancedfilter_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.advanced_filters_advancedfilter_groups_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.advanced_filters_advancedfilter_groups_id_seq OWNER TO postgres;
+
+--
+-- Name: advanced_filters_advancedfilter_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.advanced_filters_advancedfilter_groups_id_seq OWNED BY public.advanced_filters_advancedfilter_groups.id;
+
+
+--
+-- Name: advanced_filters_advancedfilter_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.advanced_filters_advancedfilter_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.advanced_filters_advancedfilter_id_seq OWNER TO postgres;
+
+--
+-- Name: advanced_filters_advancedfilter_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.advanced_filters_advancedfilter_id_seq OWNED BY public.advanced_filters_advancedfilter.id;
+
+
+--
+-- Name: advanced_filters_advancedfilter_users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.advanced_filters_advancedfilter_users (
+    id integer NOT NULL,
+    advancedfilter_id integer NOT NULL,
+    user_id character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.advanced_filters_advancedfilter_users OWNER TO postgres;
+
+--
+-- Name: advanced_filters_advancedfilter_users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.advanced_filters_advancedfilter_users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.advanced_filters_advancedfilter_users_id_seq OWNER TO postgres;
+
+--
+-- Name: advanced_filters_advancedfilter_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.advanced_filters_advancedfilter_users_id_seq OWNED BY public.advanced_filters_advancedfilter_users.id;
 
 
 --
@@ -1317,13 +1407,6 @@ ALTER TABLE ONLY public."Class_Management_quiztracker" ALTER COLUMN id SET DEFAU
 
 
 --
--- Name: Class_Management_rank id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Class_Management_rank" ALTER COLUMN id SET DEFAULT nextval('public."Class_Management_rank_id_seq"'::regclass);
-
-
---
 -- Name: LogIn_Management_profile id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1342,6 +1425,27 @@ ALTER TABLE ONLY public."LogIn_Management_user_groups" ALTER COLUMN id SET DEFAU
 --
 
 ALTER TABLE ONLY public."LogIn_Management_user_user_permissions" ALTER COLUMN id SET DEFAULT nextval('public."LogIn_Management_user_user_permissions_id_seq"'::regclass);
+
+
+--
+-- Name: advanced_filters_advancedfilter id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter ALTER COLUMN id SET DEFAULT nextval('public.advanced_filters_advancedfilter_id_seq'::regclass);
+
+
+--
+-- Name: advanced_filters_advancedfilter_groups id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups ALTER COLUMN id SET DEFAULT nextval('public.advanced_filters_advancedfilter_groups_id_seq'::regclass);
+
+
+--
+-- Name: advanced_filters_advancedfilter_users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users ALTER COLUMN id SET DEFAULT nextval('public.advanced_filters_advancedfilter_users_id_seq'::regclass);
 
 
 --
@@ -1391,6 +1495,8 @@ ALTER TABLE ONLY public.django_migrations ALTER COLUMN id SET DEFAULT nextval('p
 --
 
 COPY public."Assign_Management_category" (id, name, slug) FROM stdin;
+1	Integer	Integer
+2	String	String
 \.
 
 
@@ -1398,7 +1504,8 @@ COPY public."Assign_Management_category" (id, name, slug) FROM stdin;
 -- Data for Name: Assign_Management_exam_data; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Assign_Management_exam_data" (id, name, detail, created, available, deadline, classroom_id) FROM stdin;
+COPY public."Assign_Management_exam_data" (id, name, detail, created, available, deadline, max_score, classroom_id) FROM stdin;
+1	Examination One	Your first examination.	2018-09-25 11:40:16.676105+00	2018-09-29 17:00:00+00	2018-09-29 17:00:00+00	20	1
 \.
 
 
@@ -1407,6 +1514,8 @@ COPY public."Assign_Management_exam_data" (id, name, detail, created, available,
 --
 
 COPY public."Assign_Management_exam_quiz" (id, title, detail, created, mode, text_template_content, text_testcode_content, text_testcase_content, category_id, classroom_id) FROM stdin;
+1	String1	Test String 1	2018-09-25 11:37:32.499681+00	Scoring	def test_string(n):\r\n    return n	def test_string(n):\r\n    return n	assert_equal(test_string("cat"),"cat",5)\r\nassert_equal(test_string("dog"),"dog",5)	2	1
+2	Test Integer 1	Test Integer 1	2018-09-25 11:38:47.129365+00	Pass or Fail	def a(n):\r\n    return n**2	def a(n):\r\n    return n**2	assert_equal(a(2),4,5)	1	1
 \.
 
 
@@ -1415,6 +1524,8 @@ COPY public."Assign_Management_exam_quiz" (id, title, detail, created, mode, tex
 --
 
 COPY public."Assign_Management_exam_score" (id, "passOrFail", total_score, max_score, code_id, exam_id, quiz_id, user_id) FROM stdin;
+2	0	10	10	3	1	1	61130500032
+1	5	0	5	1	1	2	61130500032
 \.
 
 
@@ -1423,6 +1534,7 @@ COPY public."Assign_Management_exam_score" (id, "passOrFail", total_score, max_s
 --
 
 COPY public."Assign_Management_exam_tracker" (id, picked, exam_id, user_id) FROM stdin;
+1	{"Test Integer 1",String1}	1	61130500032
 \.
 
 
@@ -1431,6 +1543,9 @@ COPY public."Assign_Management_exam_tracker" (id, picked, exam_id, user_id) FROM
 --
 
 COPY public."Assign_Management_exam_upload" (id, title, "Uploadfile", score, "uploadTime", exam_id, quiz_id, user_id) FROM stdin;
+1	61130500032_coded_Test Integer 1_FRA141_nmsgzfx.py	61130500032_coded_Test Integer 1_FRA141_nmsgzfx.py	5	2018-09-25 11:40:46.52162+00	1	2	61130500032
+2	61130500032_uploaded_Test Integer 1_FRA141.py	61130500032_uploaded_Test Integer 1_FRA141.py	0	2018-09-25 11:40:53.630549+00	1	2	61130500032
+3	61130500032_coded_String1_FRA141_ZMidE0O.py	61130500032_coded_String1_FRA141_ZMidE0O.py	10	2018-09-25 11:41:30.786597+00	1	1	61130500032
 \.
 
 
@@ -1439,6 +1554,8 @@ COPY public."Assign_Management_exam_upload" (id, title, "Uploadfile", score, "up
 --
 
 COPY public."Assign_Management_upload" (id, title, "Uploadfile", score, "uploadTime", classroom_id, quiz_id, user_id) FROM stdin;
+2	61130500032_coded_Integer3_FRA141_t57YbGV.py	61130500032_coded_Integer3_FRA141_t57YbGV.py	15	2018-09-25 11:33:13.280293+00	1	5	61130500032
+3	61130500032_uploaded_Integer3_FRA141.py	61130500032_uploaded_Integer3_FRA141.py	15	2018-09-25 11:35:02.231227+00	1	5	61130500032
 \.
 
 
@@ -1447,6 +1564,7 @@ COPY public."Assign_Management_upload" (id, title, "Uploadfile", score, "uploadT
 --
 
 COPY public."Class_Management_classroom" (id, "className", creator_id) FROM stdin;
+1	FRA141	61130500032
 \.
 
 
@@ -1455,6 +1573,8 @@ COPY public."Class_Management_classroom" (id, "className", creator_id) FROM stdi
 --
 
 COPY public."Class_Management_classroom_user" (id, classroom_id, user_id) FROM stdin;
+1	1	61130500032
+2	1	59340500018
 \.
 
 
@@ -1462,7 +1582,10 @@ COPY public."Class_Management_classroom_user" (id, classroom_id, user_id) FROM s
 -- Data for Name: Class_Management_quiz; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public."Class_Management_quiz" (id, "quizTitle", "quizDetail", deadline, available, created, hint, rank, mode, text_template_content, text_testcode_content, text_testcase_content, category_id, classroom_id) FROM stdin;
+COPY public."Class_Management_quiz" (id, "quizTitle", "quizDetail", deadline, available, created, hint, mode, max_score, text_template_content, text_testcode_content, text_testcase_content, category_id, classroom_id) FROM stdin;
+3	Integer2	Integer2	2018-09-29 17:00:00+00	2018-09-25 11:15:25+00	2018-09-25 11:15:31.324552+00	return n**3	Pass or Fail	10	def a(n):\r\n    return n**3	def a(n):\r\n    return n**3	assert_equal(a(2),8)	1	1
+4	Integer1	test Integer 1	2018-09-29 17:00:00+00	2018-09-25 11:17:57+00	2018-09-25 11:18:00.513538+00	return n**2	Pass or Fail	50	def a(n):\r\n    return n**2	def a(n):\r\n    return n**2	assert_equal(a(2),4,5)\r\nassert_equal(a(3),8,5,1)\r\nassert_equal(a(4),8,5,2)	1	1
+5	Integer3	Test Integer 3	2018-09-29 17:00:00+00	2018-09-25 11:23:17+00	2018-09-25 11:24:29.539604+00	return n**4	Pass or Fail	20	def a(n):\r\n    return n**4	def a(n):\r\n    return n**4	#lib math,os,sys\r\nassert_equal(a(2),16,5,0)\r\nassert_equal(a(3),81,5,0)\r\nassert_equal(a(4),256,5,0)	1	1
 \.
 
 
@@ -1471,6 +1594,7 @@ COPY public."Class_Management_quiz" (id, "quizTitle", "quizDetail", deadline, av
 --
 
 COPY public."Class_Management_quizscore" (id, "passOrFail", total_score, max_score, classroom_id, code_id, "quizId_id", "userId_id") FROM stdin;
+2	15	0	15	1	3	5	61130500032
 \.
 
 
@@ -1479,6 +1603,12 @@ COPY public."Class_Management_quizscore" (id, "passOrFail", total_score, max_sco
 --
 
 COPY public."Class_Management_quizstatus" (id, status, classroom_id, "quizId_id", "userId_id") FROM stdin;
+3	f	1	3	61130500032
+4	f	1	4	61130500032
+5	t	1	5	61130500032
+6	f	1	5	59340500018
+7	f	1	4	59340500018
+8	f	1	3	59340500018
 \.
 
 
@@ -1487,6 +1617,9 @@ COPY public."Class_Management_quizstatus" (id, status, classroom_id, "quizId_id"
 --
 
 COPY public."Class_Management_quiztimer" (id, timer, timer_stop, start, classroom_id, "quizId_id", "userId_id") FROM stdin;
+3	4970	\N	f	1	3	61130500032
+5	4970	2018-09-25 12:55:53.136887+00	t	1	5	61130500032
+4	4970	2018-09-26 14:29:04.436424+00	t	1	4	61130500032
 \.
 
 
@@ -1495,14 +1628,8 @@ COPY public."Class_Management_quiztimer" (id, timer, timer_stop, start, classroo
 --
 
 COPY public."Class_Management_quiztracker" (id, "quizDoneCount", classroom_id, "userId_id") FROM stdin;
-\.
-
-
---
--- Data for Name: Class_Management_rank; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."Class_Management_rank" (id, rank, fixture, classroom_id, "userId_id") FROM stdin;
+1	1	1	61130500032
+2	0	1	59340500018
 \.
 
 
@@ -1519,6 +1646,8 @@ COPY public."LogIn_Management_profile" (id, user_id) FROM stdin;
 --
 
 COPY public."LogIn_Management_user" (password, last_login, is_superuser, email, "userId", first_name, last_name, is_active, is_staff, is_admin) FROM stdin;
+pbkdf2_sha256$100000$mnGWbDxDAvKP$9eJgzsTwx4i2l922I9RMQ3DTcbsYuwLwm5io9WK1Ukk=	\N	f	naajs@hotmail.com	59340500018	Natworpong	Loyswai\r	t	f	f
+pbkdf2_sha256$100000$0rZdiGsrECzT$WFKWjJAgR4PcbvpdP0WOdJdQ6Ykq8ITHdef5dvnOJPo=	2018-09-27 12:29:53.366508+00	f	rsxs981@gmail.com	61130500032	Natworpong	Loyswai	t	t	t
 \.
 
 
@@ -1527,6 +1656,7 @@ COPY public."LogIn_Management_user" (password, last_login, is_superuser, email, 
 --
 
 COPY public."LogIn_Management_user_groups" (id, user_id, group_id) FROM stdin;
+1	61130500032	1
 \.
 
 
@@ -1539,10 +1669,36 @@ COPY public."LogIn_Management_user_user_permissions" (id, user_id, permission_id
 
 
 --
+-- Data for Name: advanced_filters_advancedfilter; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.advanced_filters_advancedfilter (id, title, url, b64_query, model, created_by_id, created_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: advanced_filters_advancedfilter_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.advanced_filters_advancedfilter_groups (id, advancedfilter_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: advanced_filters_advancedfilter_users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.advanced_filters_advancedfilter_users (id, advancedfilter_id, user_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.auth_group (id, name) FROM stdin;
+1	FRA141_Teacher
+2	FRA141_TA
 \.
 
 
@@ -1598,30 +1754,30 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 37	Can add quiz tracker	13	add_quiztracker
 38	Can change quiz tracker	13	change_quiztracker
 39	Can delete quiz tracker	13	delete_quiztracker
-40	Can add rank	14	add_rank
-41	Can change rank	14	change_rank
-42	Can delete rank	14	delete_rank
-43	Can add category	15	add_category
-44	Can change category	15	change_category
-45	Can delete category	15	delete_category
-46	Can add exam_ data	16	add_exam_data
-47	Can change exam_ data	16	change_exam_data
-48	Can delete exam_ data	16	delete_exam_data
-49	Can add exam_ quiz	17	add_exam_quiz
-50	Can change exam_ quiz	17	change_exam_quiz
-51	Can delete exam_ quiz	17	delete_exam_quiz
-52	Can add exam_ score	18	add_exam_score
-53	Can change exam_ score	18	change_exam_score
-54	Can delete exam_ score	18	delete_exam_score
-55	Can add exam_ tracker	19	add_exam_tracker
-56	Can change exam_ tracker	19	change_exam_tracker
-57	Can delete exam_ tracker	19	delete_exam_tracker
-58	Can add exam_ upload	20	add_exam_upload
-59	Can change exam_ upload	20	change_exam_upload
-60	Can delete exam_ upload	20	delete_exam_upload
-61	Can add upload	21	add_upload
-62	Can change upload	21	change_upload
-63	Can delete upload	21	delete_upload
+40	Can add category	14	add_category
+41	Can change category	14	change_category
+42	Can delete category	14	delete_category
+43	Can add exam_ data	15	add_exam_data
+44	Can change exam_ data	15	change_exam_data
+45	Can delete exam_ data	15	delete_exam_data
+46	Can add exam_ quiz	16	add_exam_quiz
+47	Can change exam_ quiz	16	change_exam_quiz
+48	Can delete exam_ quiz	16	delete_exam_quiz
+49	Can add exam_ score	17	add_exam_score
+50	Can change exam_ score	17	change_exam_score
+51	Can delete exam_ score	17	delete_exam_score
+52	Can add exam_ tracker	18	add_exam_tracker
+53	Can change exam_ tracker	18	change_exam_tracker
+54	Can delete exam_ tracker	18	delete_exam_tracker
+55	Can add exam_ upload	19	add_exam_upload
+56	Can change exam_ upload	19	change_exam_upload
+57	Can delete exam_ upload	19	delete_exam_upload
+58	Can add upload	20	add_upload
+59	Can change upload	20	change_upload
+60	Can delete upload	20	delete_upload
+61	Can add Advanced Filter	21	add_advancedfilter
+62	Can change Advanced Filter	21	change_advancedfilter
+63	Can delete Advanced Filter	21	delete_advancedfilter
 \.
 
 
@@ -1630,6 +1786,8 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2018-09-25 14:27:08.416259+00	61130500032	61130500032	2	[{"changed": {"fields": ["last_name"]}}]	7	61130500032
+2	2018-09-25 14:29:12.261867+00	61130500032	61130500032	2	[{"changed": {"fields": ["last_name"]}}]	7	61130500032
 \.
 
 
@@ -1651,14 +1809,14 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 11	Class_Management	quizstatus
 12	Class_Management	quiztimer
 13	Class_Management	quiztracker
-14	Class_Management	rank
-15	Assign_Management	category
-16	Assign_Management	exam_data
-17	Assign_Management	exam_quiz
-18	Assign_Management	exam_score
-19	Assign_Management	exam_tracker
-20	Assign_Management	exam_upload
-21	Assign_Management	upload
+14	Assign_Management	category
+15	Assign_Management	exam_data
+16	Assign_Management	exam_quiz
+17	Assign_Management	exam_score
+18	Assign_Management	exam_tracker
+19	Assign_Management	exam_upload
+20	Assign_Management	upload
+21	advanced_filters	advancedfilter
 \.
 
 
@@ -1667,27 +1825,29 @@ COPY public.django_content_type (id, app_label, model) FROM stdin;
 --
 
 COPY public.django_migrations (id, app, name, applied) FROM stdin;
-1	contenttypes	0001_initial	2018-08-26 15:04:51.503048+00
-2	contenttypes	0002_remove_content_type_name	2018-08-26 15:04:51.588247+00
-3	auth	0001_initial	2018-08-26 15:04:52.499228+00
-4	auth	0002_alter_permission_name_max_length	2018-08-26 15:04:52.575976+00
-5	auth	0003_alter_user_email_max_length	2018-08-26 15:04:52.621972+00
-6	auth	0004_alter_user_username_opts	2018-08-26 15:04:52.669324+00
-7	auth	0005_alter_user_last_login_null	2018-08-26 15:04:52.719015+00
-8	auth	0006_require_contenttypes_0002	2018-08-26 15:04:52.754797+00
-9	auth	0007_alter_validators_add_error_messages	2018-08-26 15:04:52.806955+00
-10	auth	0008_alter_user_username_max_length	2018-08-26 15:04:52.86036+00
-11	auth	0009_alter_user_last_name_max_length	2018-08-26 15:04:52.910284+00
-12	LogIn_Management	0001_initial	2018-08-26 15:04:54.324438+00
-13	Class_Management	0001_initial	2018-08-26 15:04:55.73358+00
-14	Assign_Management	0001_initial	2018-08-26 15:04:58.208274+00
-15	Assign_Management	0002_auto_20180813_2324	2018-08-26 15:04:58.584515+00
-16	Assign_Management	0003_auto_20180813_2324	2018-08-26 15:05:01.224587+00
-17	Assign_Management	0004_auto_20180815_1557	2018-08-26 15:05:01.347141+00
-18	Class_Management	0002_auto_20180813_2324	2018-08-26 15:05:05.556754+00
-19	admin	0001_initial	2018-08-26 15:05:06.187954+00
-20	admin	0002_logentry_remove_auto_add	2018-08-26 15:05:06.279+00
-21	sessions	0001_initial	2018-08-26 15:05:06.738401+00
+1	contenttypes	0001_initial	2018-09-25 09:48:13.66914+00
+2	contenttypes	0002_remove_content_type_name	2018-09-25 09:48:13.678658+00
+3	auth	0001_initial	2018-09-25 09:48:13.771393+00
+4	auth	0002_alter_permission_name_max_length	2018-09-25 09:48:13.781403+00
+5	auth	0003_alter_user_email_max_length	2018-09-25 09:48:13.791966+00
+6	auth	0004_alter_user_username_opts	2018-09-25 09:48:13.806734+00
+7	auth	0005_alter_user_last_login_null	2018-09-25 09:48:13.823105+00
+8	auth	0006_require_contenttypes_0002	2018-09-25 09:48:13.82641+00
+9	auth	0007_alter_validators_add_error_messages	2018-09-25 09:48:13.834811+00
+10	auth	0008_alter_user_username_max_length	2018-09-25 09:48:13.845883+00
+11	auth	0009_alter_user_last_name_max_length	2018-09-25 09:48:13.854337+00
+12	LogIn_Management	0001_initial	2018-09-25 09:48:14.083651+00
+13	Class_Management	0001_initial	2018-09-25 09:48:14.146385+00
+14	Assign_Management	0001_initial	2018-09-25 09:48:14.270433+00
+15	Assign_Management	0002_auto_20180925_1648	2018-09-25 09:48:14.295029+00
+16	Assign_Management	0003_auto_20180925_1648	2018-09-25 09:48:14.55749+00
+17	Class_Management	0002_auto_20180925_1648	2018-09-25 09:48:14.997313+00
+18	admin	0001_initial	2018-09-25 09:48:15.041367+00
+19	admin	0002_logentry_remove_auto_add	2018-09-25 09:48:15.099358+00
+20	advanced_filters	0001_initial	2018-09-25 09:48:15.196397+00
+21	advanced_filters	0002_advancedfilter_created_at	2018-09-25 09:48:15.239706+00
+22	advanced_filters	0003_auto_20180610_0718	2018-09-25 09:48:15.389788+00
+23	sessions	0001_initial	2018-09-25 09:48:15.411534+00
 \.
 
 
@@ -1696,6 +1856,12 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+rvm4yszzuxtvqalr3kdwfzj2j28i523v	YWVkZmM1ZTJmOTM5ZThjZDIxOTU5Yjg5ZGU4MTE0YTQyYjkyNGY1ZDp7Il9hdXRoX3VzZXJfaWQiOiI2MTEzMDUwMDAzMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYTQ1MWNiNDMyMDU3MWJjZDAwY2I1ZWM1OWNlZWQ1MTM2ODExYWFlMSIsImNsYXNzcm9vbSI6IkZSQTE0MSIsInF1aXoiOlt7Im1vZGVsIjoiQ2xhc3NfTWFuYWdlbWVudC5xdWl6IiwicGsiOjUsImZpZWxkcyI6eyJxdWl6VGl0bGUiOiJJbnRlZ2VyMyIsInF1aXpEZXRhaWwiOiJUZXN0IEludGVnZXIgMyIsImRlYWRsaW5lIjoiMjAxOC0wOS0yOVQxNzowMDowMFoiLCJhdmFpbGFibGUiOiIyMDE4LTA5LTI1VDExOjIzOjE3WiIsImNyZWF0ZWQiOiIyMDE4LTA5LTI1VDExOjI0OjI5LjUzOVoiLCJoaW50IjoicmV0dXJuIG4qKjQiLCJjYXRlZ29yeSI6MSwibW9kZSI6IlBhc3Mgb3IgRmFpbCIsIm1heF9zY29yZSI6MjAuMCwidGV4dF90ZW1wbGF0ZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqNCIsInRleHRfdGVzdGNvZGVfY29udGVudCI6ImRlZiBhKG4pOlxyXG4gICAgcmV0dXJuIG4qKjQiLCJ0ZXh0X3Rlc3RjYXNlX2NvbnRlbnQiOiIjbGliIG1hdGgsb3Msc3lzXHJcbmFzc2VydF9lcXVhbChhKDIpLDE2LDUsMClcclxuYXNzZXJ0X2VxdWFsKGEoMyksODEsNSwwKVxyXG5hc3NlcnRfZXF1YWwoYSg0KSwyNTYsNSwwKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6NCwiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIxIiwicXVpekRldGFpbCI6InRlc3QgSW50ZWdlciAxIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTc6NTdaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTg6MDAuNTEzWiIsImhpbnQiOiJyZXR1cm4gbioqMiIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjo1MC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKioyIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMiIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDQsNSlcclxuYXNzZXJ0X2VxdWFsKGEoMyksOCw1LDEpXHJcbmFzc2VydF9lcXVhbChhKDQpLDgsNSwyKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6MywiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIyIiwicXVpekRldGFpbCI6IkludGVnZXIyIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTU6MjVaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTU6MzEuMzI0WiIsImhpbnQiOiJyZXR1cm4gbioqMyIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjoxMC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKiozIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMyIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDgpIiwiY2xhc3Nyb29tIjoxfX1dfQ==	2018-09-25 19:09:17.401707+00
+aoh9pkab2eunxesry0n7mfzaqufatdi3	YWVkZmM1ZTJmOTM5ZThjZDIxOTU5Yjg5ZGU4MTE0YTQyYjkyNGY1ZDp7Il9hdXRoX3VzZXJfaWQiOiI2MTEzMDUwMDAzMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYTQ1MWNiNDMyMDU3MWJjZDAwY2I1ZWM1OWNlZWQ1MTM2ODExYWFlMSIsImNsYXNzcm9vbSI6IkZSQTE0MSIsInF1aXoiOlt7Im1vZGVsIjoiQ2xhc3NfTWFuYWdlbWVudC5xdWl6IiwicGsiOjUsImZpZWxkcyI6eyJxdWl6VGl0bGUiOiJJbnRlZ2VyMyIsInF1aXpEZXRhaWwiOiJUZXN0IEludGVnZXIgMyIsImRlYWRsaW5lIjoiMjAxOC0wOS0yOVQxNzowMDowMFoiLCJhdmFpbGFibGUiOiIyMDE4LTA5LTI1VDExOjIzOjE3WiIsImNyZWF0ZWQiOiIyMDE4LTA5LTI1VDExOjI0OjI5LjUzOVoiLCJoaW50IjoicmV0dXJuIG4qKjQiLCJjYXRlZ29yeSI6MSwibW9kZSI6IlBhc3Mgb3IgRmFpbCIsIm1heF9zY29yZSI6MjAuMCwidGV4dF90ZW1wbGF0ZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqNCIsInRleHRfdGVzdGNvZGVfY29udGVudCI6ImRlZiBhKG4pOlxyXG4gICAgcmV0dXJuIG4qKjQiLCJ0ZXh0X3Rlc3RjYXNlX2NvbnRlbnQiOiIjbGliIG1hdGgsb3Msc3lzXHJcbmFzc2VydF9lcXVhbChhKDIpLDE2LDUsMClcclxuYXNzZXJ0X2VxdWFsKGEoMyksODEsNSwwKVxyXG5hc3NlcnRfZXF1YWwoYSg0KSwyNTYsNSwwKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6NCwiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIxIiwicXVpekRldGFpbCI6InRlc3QgSW50ZWdlciAxIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTc6NTdaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTg6MDAuNTEzWiIsImhpbnQiOiJyZXR1cm4gbioqMiIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjo1MC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKioyIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMiIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDQsNSlcclxuYXNzZXJ0X2VxdWFsKGEoMyksOCw1LDEpXHJcbmFzc2VydF9lcXVhbChhKDQpLDgsNSwyKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6MywiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIyIiwicXVpekRldGFpbCI6IkludGVnZXIyIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTU6MjVaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTU6MzEuMzI0WiIsImhpbnQiOiJyZXR1cm4gbioqMyIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjoxMC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKiozIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMyIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDgpIiwiY2xhc3Nyb29tIjoxfX1dfQ==	2018-09-26 15:57:44.506233+00
+m6fjh762jo2mgubjv8rbwvsmz6k99lcp	YWVkZmM1ZTJmOTM5ZThjZDIxOTU5Yjg5ZGU4MTE0YTQyYjkyNGY1ZDp7Il9hdXRoX3VzZXJfaWQiOiI2MTEzMDUwMDAzMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYTQ1MWNiNDMyMDU3MWJjZDAwY2I1ZWM1OWNlZWQ1MTM2ODExYWFlMSIsImNsYXNzcm9vbSI6IkZSQTE0MSIsInF1aXoiOlt7Im1vZGVsIjoiQ2xhc3NfTWFuYWdlbWVudC5xdWl6IiwicGsiOjUsImZpZWxkcyI6eyJxdWl6VGl0bGUiOiJJbnRlZ2VyMyIsInF1aXpEZXRhaWwiOiJUZXN0IEludGVnZXIgMyIsImRlYWRsaW5lIjoiMjAxOC0wOS0yOVQxNzowMDowMFoiLCJhdmFpbGFibGUiOiIyMDE4LTA5LTI1VDExOjIzOjE3WiIsImNyZWF0ZWQiOiIyMDE4LTA5LTI1VDExOjI0OjI5LjUzOVoiLCJoaW50IjoicmV0dXJuIG4qKjQiLCJjYXRlZ29yeSI6MSwibW9kZSI6IlBhc3Mgb3IgRmFpbCIsIm1heF9zY29yZSI6MjAuMCwidGV4dF90ZW1wbGF0ZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqNCIsInRleHRfdGVzdGNvZGVfY29udGVudCI6ImRlZiBhKG4pOlxyXG4gICAgcmV0dXJuIG4qKjQiLCJ0ZXh0X3Rlc3RjYXNlX2NvbnRlbnQiOiIjbGliIG1hdGgsb3Msc3lzXHJcbmFzc2VydF9lcXVhbChhKDIpLDE2LDUsMClcclxuYXNzZXJ0X2VxdWFsKGEoMyksODEsNSwwKVxyXG5hc3NlcnRfZXF1YWwoYSg0KSwyNTYsNSwwKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6NCwiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIxIiwicXVpekRldGFpbCI6InRlc3QgSW50ZWdlciAxIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTc6NTdaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTg6MDAuNTEzWiIsImhpbnQiOiJyZXR1cm4gbioqMiIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjo1MC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKioyIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMiIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDQsNSlcclxuYXNzZXJ0X2VxdWFsKGEoMyksOCw1LDEpXHJcbmFzc2VydF9lcXVhbChhKDQpLDgsNSwyKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6MywiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIyIiwicXVpekRldGFpbCI6IkludGVnZXIyIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTU6MjVaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTU6MzEuMzI0WiIsImhpbnQiOiJyZXR1cm4gbioqMyIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjoxMC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKiozIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMyIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDgpIiwiY2xhc3Nyb29tIjoxfX1dfQ==	2018-09-25 15:40:04.407705+00
+e9h71wmbima1dzpkl8lqqbxetnuq163r	NWI5ZTNiMWViNzRkZjAyY2RhYjkyMDg0NTNkOWU1NzMyMjdmYjg1ZTp7Il9hdXRoX3VzZXJfaWQiOiI2MTEzMDUwMDAzMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYTQ1MWNiNDMyMDU3MWJjZDAwY2I1ZWM1OWNlZWQ1MTM2ODExYWFlMSIsImNsYXNzcm9vbSI6IkZSQTE0MSIsInF1aXoiOlt7Im1vZGVsIjoiQ2xhc3NfTWFuYWdlbWVudC5xdWl6IiwicGsiOjUsImZpZWxkcyI6eyJxdWl6VGl0bGUiOiJJbnRlZ2VyMyIsInF1aXpEZXRhaWwiOiJUZXN0IEludGVnZXIgMyIsImRlYWRsaW5lIjoiMjAxOC0wOS0yOVQxNzowMDowMFoiLCJhdmFpbGFibGUiOiIyMDE4LTA5LTI1VDExOjIzOjE3WiIsImNyZWF0ZWQiOiIyMDE4LTA5LTI1VDExOjI0OjI5LjUzOVoiLCJoaW50IjoicmV0dXJuIG4qKjQiLCJjYXRlZ29yeSI6MSwibW9kZSI6IlBhc3Mgb3IgRmFpbCIsIm1heF9zY29yZSI6MjAuMCwidGV4dF90ZW1wbGF0ZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqNCIsInRleHRfdGVzdGNvZGVfY29udGVudCI6ImRlZiBhKG4pOlxyXG4gICAgcmV0dXJuIG4qKjQiLCJ0ZXh0X3Rlc3RjYXNlX2NvbnRlbnQiOiIjbGliIG1hdGgsb3Msc3lzXHJcbmFzc2VydF9lcXVhbChhKDIpLDE2LDUsMClcclxuYXNzZXJ0X2VxdWFsKGEoMyksODEsNSwwKVxyXG5hc3NlcnRfZXF1YWwoYSg0KSwyNTYsNSwwKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6NCwiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIxIiwicXVpekRldGFpbCI6InRlc3QgSW50ZWdlciAxIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTc6NTdaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTg6MDAuNTEzWiIsImhpbnQiOiJyZXR1cm4gbioqMiIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjo1MC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKioyIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMiIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDQsNSlcclxuYXNzZXJ0X2VxdWFsKGEoMyksOCw1LDEpXHJcbmFzc2VydF9lcXVhbChhKDQpLDgsNSwyKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6MywiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIyIiwicXVpekRldGFpbCI6IkludGVnZXIyIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTU6MjVaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTU6MzEuMzI0WiIsImhpbnQiOiJyZXR1cm4gbioqMyIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjoxMC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKiozIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMyIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDgpIiwiY2xhc3Nyb29tIjoxfX1dLCJ1X2lkIjpbIjYxMTMwNTAwMDMyIl19	2018-09-25 20:27:46.716487+00
+3nd48gc5xky9zyd2uff6s9aafeoreevk	YWVkZmM1ZTJmOTM5ZThjZDIxOTU5Yjg5ZGU4MTE0YTQyYjkyNGY1ZDp7Il9hdXRoX3VzZXJfaWQiOiI2MTEzMDUwMDAzMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYTQ1MWNiNDMyMDU3MWJjZDAwY2I1ZWM1OWNlZWQ1MTM2ODExYWFlMSIsImNsYXNzcm9vbSI6IkZSQTE0MSIsInF1aXoiOlt7Im1vZGVsIjoiQ2xhc3NfTWFuYWdlbWVudC5xdWl6IiwicGsiOjUsImZpZWxkcyI6eyJxdWl6VGl0bGUiOiJJbnRlZ2VyMyIsInF1aXpEZXRhaWwiOiJUZXN0IEludGVnZXIgMyIsImRlYWRsaW5lIjoiMjAxOC0wOS0yOVQxNzowMDowMFoiLCJhdmFpbGFibGUiOiIyMDE4LTA5LTI1VDExOjIzOjE3WiIsImNyZWF0ZWQiOiIyMDE4LTA5LTI1VDExOjI0OjI5LjUzOVoiLCJoaW50IjoicmV0dXJuIG4qKjQiLCJjYXRlZ29yeSI6MSwibW9kZSI6IlBhc3Mgb3IgRmFpbCIsIm1heF9zY29yZSI6MjAuMCwidGV4dF90ZW1wbGF0ZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqNCIsInRleHRfdGVzdGNvZGVfY29udGVudCI6ImRlZiBhKG4pOlxyXG4gICAgcmV0dXJuIG4qKjQiLCJ0ZXh0X3Rlc3RjYXNlX2NvbnRlbnQiOiIjbGliIG1hdGgsb3Msc3lzXHJcbmFzc2VydF9lcXVhbChhKDIpLDE2LDUsMClcclxuYXNzZXJ0X2VxdWFsKGEoMyksODEsNSwwKVxyXG5hc3NlcnRfZXF1YWwoYSg0KSwyNTYsNSwwKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6NCwiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIxIiwicXVpekRldGFpbCI6InRlc3QgSW50ZWdlciAxIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTc6NTdaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTg6MDAuNTEzWiIsImhpbnQiOiJyZXR1cm4gbioqMiIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjo1MC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKioyIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMiIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDQsNSlcclxuYXNzZXJ0X2VxdWFsKGEoMyksOCw1LDEpXHJcbmFzc2VydF9lcXVhbChhKDQpLDgsNSwyKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6MywiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIyIiwicXVpekRldGFpbCI6IkludGVnZXIyIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTU6MjVaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTU6MzEuMzI0WiIsImhpbnQiOiJyZXR1cm4gbioqMyIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjoxMC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKiozIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMyIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDgpIiwiY2xhc3Nyb29tIjoxfX1dfQ==	2018-09-26 13:53:36.53663+00
+55gd5ts0q72jmmh9ntw5wvhpy1xwp6qb	ZWRjMGY3OGMwYTIxNWNmNTliYTdlNDE4NjgyZDIxZTRjYTUwMGU1ODp7Il9hdXRoX3VzZXJfaWQiOiI2MTEzMDUwMDAzMiIsIl9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9oYXNoIjoiYTQ1MWNiNDMyMDU3MWJjZDAwY2I1ZWM1OWNlZWQ1MTM2ODExYWFlMSIsImNsYXNzcm9vbSI6IkZSQTE0MSIsInF1aXoiOlt7Im1vZGVsIjoiQ2xhc3NfTWFuYWdlbWVudC5xdWl6IiwicGsiOjUsImZpZWxkcyI6eyJxdWl6VGl0bGUiOiJJbnRlZ2VyMyIsInF1aXpEZXRhaWwiOiJUZXN0IEludGVnZXIgMyIsImRlYWRsaW5lIjoiMjAxOC0wOS0yOVQxNzowMDowMFoiLCJhdmFpbGFibGUiOiIyMDE4LTA5LTI1VDExOjIzOjE3WiIsImNyZWF0ZWQiOiIyMDE4LTA5LTI1VDExOjI0OjI5LjUzOVoiLCJoaW50IjoicmV0dXJuIG4qKjQiLCJjYXRlZ29yeSI6MSwibW9kZSI6IlBhc3Mgb3IgRmFpbCIsIm1heF9zY29yZSI6MjAuMCwidGV4dF90ZW1wbGF0ZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqNCIsInRleHRfdGVzdGNvZGVfY29udGVudCI6ImRlZiBhKG4pOlxyXG4gICAgcmV0dXJuIG4qKjQiLCJ0ZXh0X3Rlc3RjYXNlX2NvbnRlbnQiOiIjbGliIG1hdGgsb3Msc3lzXHJcbmFzc2VydF9lcXVhbChhKDIpLDE2LDUsMClcclxuYXNzZXJ0X2VxdWFsKGEoMyksODEsNSwwKVxyXG5hc3NlcnRfZXF1YWwoYSg0KSwyNTYsNSwwKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6NCwiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIxIiwicXVpekRldGFpbCI6InRlc3QgSW50ZWdlciAxIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTc6NTdaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTg6MDAuNTEzWiIsImhpbnQiOiJyZXR1cm4gbioqMiIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjo1MC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKioyIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMiIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDQsNSlcclxuYXNzZXJ0X2VxdWFsKGEoMyksOCw1LDEpXHJcbmFzc2VydF9lcXVhbChhKDQpLDgsNSwyKSIsImNsYXNzcm9vbSI6MX19LHsibW9kZWwiOiJDbGFzc19NYW5hZ2VtZW50LnF1aXoiLCJwayI6MywiZmllbGRzIjp7InF1aXpUaXRsZSI6IkludGVnZXIyIiwicXVpekRldGFpbCI6IkludGVnZXIyIiwiZGVhZGxpbmUiOiIyMDE4LTA5LTI5VDE3OjAwOjAwWiIsImF2YWlsYWJsZSI6IjIwMTgtMDktMjVUMTE6MTU6MjVaIiwiY3JlYXRlZCI6IjIwMTgtMDktMjVUMTE6MTU6MzEuMzI0WiIsImhpbnQiOiJyZXR1cm4gbioqMyIsImNhdGVnb3J5IjoxLCJtb2RlIjoiUGFzcyBvciBGYWlsIiwibWF4X3Njb3JlIjoxMC4wLCJ0ZXh0X3RlbXBsYXRlX2NvbnRlbnQiOiJkZWYgYShuKTpcclxuICAgIHJldHVybiBuKiozIiwidGV4dF90ZXN0Y29kZV9jb250ZW50IjoiZGVmIGEobik6XHJcbiAgICByZXR1cm4gbioqMyIsInRleHRfdGVzdGNhc2VfY29udGVudCI6ImFzc2VydF9lcXVhbChhKDIpLDgpIiwiY2xhc3Nyb29tIjoxfX1dLCJ1X2lkIjpbIjU5MzQwNTAwMDE4Il19	2018-09-26 17:45:17.367998+00
 \.
 
 
@@ -1703,105 +1869,98 @@ COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
 -- Name: Assign_Management_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Assign_Management_category_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Assign_Management_category_id_seq"', 2, true);
 
 
 --
 -- Name: Assign_Management_exam_data_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Assign_Management_exam_data_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Assign_Management_exam_data_id_seq"', 1, true);
 
 
 --
 -- Name: Assign_Management_exam_quiz_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Assign_Management_exam_quiz_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Assign_Management_exam_quiz_id_seq"', 2, true);
 
 
 --
 -- Name: Assign_Management_exam_score_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Assign_Management_exam_score_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Assign_Management_exam_score_id_seq"', 2, true);
 
 
 --
 -- Name: Assign_Management_exam_tracker_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Assign_Management_exam_tracker_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Assign_Management_exam_tracker_id_seq"', 1, true);
 
 
 --
 -- Name: Assign_Management_exam_upload_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Assign_Management_exam_upload_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Assign_Management_exam_upload_id_seq"', 3, true);
 
 
 --
 -- Name: Assign_Management_upload_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Assign_Management_upload_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Assign_Management_upload_id_seq"', 3, true);
 
 
 --
 -- Name: Class_Management_classroom_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Class_Management_classroom_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Class_Management_classroom_id_seq"', 1, true);
 
 
 --
 -- Name: Class_Management_classroom_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Class_Management_classroom_user_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Class_Management_classroom_user_id_seq"', 2, true);
 
 
 --
 -- Name: Class_Management_quiz_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Class_Management_quiz_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Class_Management_quiz_id_seq"', 5, true);
 
 
 --
 -- Name: Class_Management_quizscore_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Class_Management_quizscore_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Class_Management_quizscore_id_seq"', 2, true);
 
 
 --
 -- Name: Class_Management_quizstatus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Class_Management_quizstatus_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Class_Management_quizstatus_id_seq"', 8, true);
 
 
 --
 -- Name: Class_Management_quiztimer_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Class_Management_quiztimer_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Class_Management_quiztimer_id_seq"', 5, true);
 
 
 --
 -- Name: Class_Management_quiztracker_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Class_Management_quiztracker_id_seq"', 1, false);
-
-
---
--- Name: Class_Management_rank_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."Class_Management_rank_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."Class_Management_quiztracker_id_seq"', 2, true);
 
 
 --
@@ -1815,7 +1974,7 @@ SELECT pg_catalog.setval('public."LogIn_Management_profile_id_seq"', 1, false);
 -- Name: LogIn_Management_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."LogIn_Management_user_groups_id_seq"', 1, false);
+SELECT pg_catalog.setval('public."LogIn_Management_user_groups_id_seq"', 2, true);
 
 
 --
@@ -1826,10 +1985,31 @@ SELECT pg_catalog.setval('public."LogIn_Management_user_user_permissions_id_seq"
 
 
 --
+-- Name: advanced_filters_advancedfilter_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.advanced_filters_advancedfilter_groups_id_seq', 1, false);
+
+
+--
+-- Name: advanced_filters_advancedfilter_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.advanced_filters_advancedfilter_id_seq', 1, false);
+
+
+--
+-- Name: advanced_filters_advancedfilter_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.advanced_filters_advancedfilter_users_id_seq', 1, false);
+
+
+--
 -- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.auth_group_id_seq', 1, false);
+SELECT pg_catalog.setval('public.auth_group_id_seq', 2, true);
 
 
 --
@@ -1850,7 +2030,7 @@ SELECT pg_catalog.setval('public.auth_permission_id_seq', 63, true);
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_admin_log_id_seq', 1, false);
+SELECT pg_catalog.setval('public.django_admin_log_id_seq', 2, true);
 
 
 --
@@ -1864,7 +2044,7 @@ SELECT pg_catalog.setval('public.django_content_type_id_seq', 21, true);
 -- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.django_migrations_id_seq', 21, true);
+SELECT pg_catalog.setval('public.django_migrations_id_seq', 23, true);
 
 
 --
@@ -2020,14 +2200,6 @@ ALTER TABLE ONLY public."Class_Management_quiztracker"
 
 
 --
--- Name: Class_Management_rank Class_Management_rank_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Class_Management_rank"
-    ADD CONSTRAINT "Class_Management_rank_pkey" PRIMARY KEY (id);
-
-
---
 -- Name: LogIn_Management_profile LogIn_Management_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2073,6 +2245,46 @@ ALTER TABLE ONLY public."LogIn_Management_user"
 
 ALTER TABLE ONLY public."LogIn_Management_user_user_permissions"
     ADD CONSTRAINT "LogIn_Management_user_user_permissions_pkey" PRIMARY KEY (id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_groups advanced_filters_advance_advancedfilter_id_group__a53a59b9_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups
+    ADD CONSTRAINT advanced_filters_advance_advancedfilter_id_group__a53a59b9_uniq UNIQUE (advancedfilter_id, group_id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_users advanced_filters_advance_advancedfilter_id_user_i_5c01bb94_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users
+    ADD CONSTRAINT advanced_filters_advance_advancedfilter_id_user_i_5c01bb94_uniq UNIQUE (advancedfilter_id, user_id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_groups advanced_filters_advancedfilter_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups
+    ADD CONSTRAINT advanced_filters_advancedfilter_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: advanced_filters_advancedfilter advanced_filters_advancedfilter_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter
+    ADD CONSTRAINT advanced_filters_advancedfilter_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_users advanced_filters_advancedfilter_users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users
+    ADD CONSTRAINT advanced_filters_advancedfilter_users_pkey PRIMARY KEY (id);
 
 
 --
@@ -2531,27 +2743,6 @@ CREATE INDEX "Class_Management_quiztracker_userId_id_95b7aa39_like" ON public."C
 
 
 --
--- Name: Class_Management_rank_classroom_id_a47238d9; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX "Class_Management_rank_classroom_id_a47238d9" ON public."Class_Management_rank" USING btree (classroom_id);
-
-
---
--- Name: Class_Management_rank_userId_id_432abf83; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX "Class_Management_rank_userId_id_432abf83" ON public."Class_Management_rank" USING btree ("userId_id");
-
-
---
--- Name: Class_Management_rank_userId_id_432abf83_like; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX "Class_Management_rank_userId_id_432abf83_like" ON public."Class_Management_rank" USING btree ("userId_id" varchar_pattern_ops);
-
-
---
 -- Name: LogIn_Management_profile_user_id_8450ccb2_like; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2612,6 +2803,55 @@ CREATE INDEX "LogIn_Management_user_user_permissions_user_id_08db02bd" ON public
 --
 
 CREATE INDEX "LogIn_Management_user_user_permissions_user_id_08db02bd_like" ON public."LogIn_Management_user_user_permissions" USING btree (user_id varchar_pattern_ops);
+
+
+--
+-- Name: advanced_filters_advancedf_advancedfilter_id_368ee280; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX advanced_filters_advancedf_advancedfilter_id_368ee280 ON public.advanced_filters_advancedfilter_groups USING btree (advancedfilter_id);
+
+
+--
+-- Name: advanced_filters_advancedf_advancedfilter_id_8a6c9d2a; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX advanced_filters_advancedf_advancedfilter_id_8a6c9d2a ON public.advanced_filters_advancedfilter_users USING btree (advancedfilter_id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_created_by_id_ef981115; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX advanced_filters_advancedfilter_created_by_id_ef981115 ON public.advanced_filters_advancedfilter USING btree (created_by_id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_created_by_id_ef981115_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX advanced_filters_advancedfilter_created_by_id_ef981115_like ON public.advanced_filters_advancedfilter USING btree (created_by_id varchar_pattern_ops);
+
+
+--
+-- Name: advanced_filters_advancedfilter_groups_group_id_44f2bdaa; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX advanced_filters_advancedfilter_groups_group_id_44f2bdaa ON public.advanced_filters_advancedfilter_groups USING btree (group_id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_users_user_id_493275a2; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX advanced_filters_advancedfilter_users_user_id_493275a2 ON public.advanced_filters_advancedfilter_users USING btree (user_id);
+
+
+--
+-- Name: advanced_filters_advancedfilter_users_user_id_493275a2_like; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX advanced_filters_advancedfilter_users_user_id_493275a2_like ON public.advanced_filters_advancedfilter_users USING btree (user_id varchar_pattern_ops);
 
 
 --
@@ -2934,22 +3174,6 @@ ALTER TABLE ONLY public."Class_Management_quizscore"
 
 
 --
--- Name: Class_Management_rank Class_Management_ran_classroom_id_a47238d9_fk_Class_Man; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Class_Management_rank"
-    ADD CONSTRAINT "Class_Management_ran_classroom_id_a47238d9_fk_Class_Man" FOREIGN KEY (classroom_id) REFERENCES public."Class_Management_classroom"(id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: Class_Management_rank Class_Management_ran_userId_id_432abf83_fk_LogIn_Man; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."Class_Management_rank"
-    ADD CONSTRAINT "Class_Management_ran_userId_id_432abf83_fk_LogIn_Man" FOREIGN KEY ("userId_id") REFERENCES public."LogIn_Management_user"("userId") DEFERRABLE INITIALLY DEFERRED;
-
-
---
 -- Name: LogIn_Management_profile LogIn_Management_pro_user_id_8450ccb2_fk_LogIn_Man; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2987,6 +3211,46 @@ ALTER TABLE ONLY public."LogIn_Management_user_groups"
 
 ALTER TABLE ONLY public."LogIn_Management_user_groups"
     ADD CONSTRAINT "LogIn_Management_user_groups_group_id_84db3e0e_fk_auth_group_id" FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: advanced_filters_advancedfilter_groups advanced_filters_adv_advancedfilter_id_368ee280_fk_advanced_; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups
+    ADD CONSTRAINT advanced_filters_adv_advancedfilter_id_368ee280_fk_advanced_ FOREIGN KEY (advancedfilter_id) REFERENCES public.advanced_filters_advancedfilter(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: advanced_filters_advancedfilter_users advanced_filters_adv_advancedfilter_id_8a6c9d2a_fk_advanced_; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users
+    ADD CONSTRAINT advanced_filters_adv_advancedfilter_id_8a6c9d2a_fk_advanced_ FOREIGN KEY (advancedfilter_id) REFERENCES public.advanced_filters_advancedfilter(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: advanced_filters_advancedfilter advanced_filters_adv_created_by_id_ef981115_fk_LogIn_Man; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter
+    ADD CONSTRAINT "advanced_filters_adv_created_by_id_ef981115_fk_LogIn_Man" FOREIGN KEY (created_by_id) REFERENCES public."LogIn_Management_user"("userId") DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: advanced_filters_advancedfilter_groups advanced_filters_adv_group_id_44f2bdaa_fk_auth_grou; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_groups
+    ADD CONSTRAINT advanced_filters_adv_group_id_44f2bdaa_fk_auth_grou FOREIGN KEY (group_id) REFERENCES public.auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: advanced_filters_advancedfilter_users advanced_filters_adv_user_id_493275a2_fk_LogIn_Man; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.advanced_filters_advancedfilter_users
+    ADD CONSTRAINT "advanced_filters_adv_user_id_493275a2_fk_LogIn_Man" FOREIGN KEY (user_id) REFERENCES public."LogIn_Management_user"("userId") DEFERRABLE INITIALLY DEFERRED;
 
 
 --

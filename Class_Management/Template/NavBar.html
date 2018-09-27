@@ -37,9 +37,11 @@
                     <button class="tablinks" onclick="location.href='{% url 'Class_Management:StudentInfo' request.session.classroom %}';">
                         Student
                     </button>
-                    <button class="tablinks" onclick="location.href='{% url 'Class_Management:Manual' request.session.classroom %}';">
-                        Manual
-                    </button>
+                    {%  if request.user|can_manage:request.session.classroom %}
+                        <button class="tablinks" onclick="location.href='{% url 'Class_Management:Manual' request.session.classroom %}';">
+                            Manual
+                        </button>
+                    {% endif %}
                 </div>
                 <div id="steam" class="tabcontent"></div>
                 <div id="student" class="tabcontent"></div>
