@@ -13,8 +13,8 @@ FILE=$NAME
 PG_BAK_NOW () {
   # pg_dump -U $PG_USER $DATABASE | gzip > default_backup.sql
   # pg_dump -U $PG_USER $DATABASE | gzip > $FILE.sql
-  docker exec -t $CONTAINER pg_dump -c -U $PG_USER $DATABASE > /backup/default_backup.sql
-  docker exec -t $CONTAINER pg_dump -c -U $PG_USER $DATABASE | gzip > /backup/$FILE.sql.gz
+  docker exec -t $CONTAINER pg_dump -c -U $PG_USER $DATABASE > /backups/default_backup.sql
+  docker exec -t $CONTAINER pg_dump -c -U $PG_USER $DATABASE | gzip > /backups/$FILE.sql.gz
 }
 
 PG_BAK_NOW
