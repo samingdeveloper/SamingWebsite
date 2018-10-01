@@ -77,9 +77,7 @@
                                 <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
                                 {% endif %}
                                 {% comment %} <p><strong>Rank:</strong>   {{ i.get_rank_display }} </p> {% endcomment %}
-                                {%  if request.user|can_manage:request.session.classroom %}
                                 <p><strong>Available:</strong>   {{ i.available }}</p>
-                                {% endif %}
                                 <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
                             </div>
                         </div>
@@ -101,9 +99,7 @@
                                 <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">Open</button>
                             {% endif %}
                             <div class="detail">
-                                {%  if request.user|can_manage:request.session.classroom %}
                                 <p><strong>Available:</strong>   {{ i.available }}</p>
-                                {% endif %}
                                 <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
                             </div>
                         </div>

@@ -49,7 +49,7 @@ def Home(request,classroom):
     user_group = {"teacher":User.objects.filter(groups__name=classroom + "_Teacher"),
                      "ta":User.objects.filter(groups__name=classroom + "_TA"),
                      }
-    if not request.user.is_authenticated or not(request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])):
+    if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
     elif request.method == "POST" and action == 'add':
@@ -483,7 +483,7 @@ def Home(request,classroom):
         else:
             quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now()))
             exam_set = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now())).order_by('name')
-            exam_quiz_pool = ()
+            exam_quiz_pool = Exam_Quiz.objects.filter(classroom__className=classroom)
         data = serializers.serialize('json',quiz_set)
         request.session["quiz"]=json.loads(data)
         context = {

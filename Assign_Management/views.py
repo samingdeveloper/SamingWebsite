@@ -571,7 +571,7 @@ def GenerateExamQuiz(request,classroom):
             print(E)
             from django.contrib import messages
             messages.error(request, E)
-            return render(request,"CreateAssignment.html", {"categories": Category.objects.all()})
+            return render(request,"Exam/CreateExamQuiz.html", {"categories": Category.objects.all()})
     else:
         return render(request, 'Exam/CreateExamQuiz.html', {"categories": Category.objects.all()})
 
