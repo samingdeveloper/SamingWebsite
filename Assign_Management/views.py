@@ -624,7 +624,7 @@ def EditExamQuiz(request, classroom, exam_quiz_id):
             else:
                 exam_quiz.title = exam_name
                 exam_quiz.detail = exam_detail
-                exam_quiz.category = Category.objects.get(name=Cate)
+                #exam_quiz.category = Category.objects.get(name=Cate)
                 exam_quiz.text_testcode_content = test_code
                 exam_quiz.text_testcase_content = test_case
                 exam_quiz.text_template_content = code_template

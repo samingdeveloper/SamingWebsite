@@ -262,8 +262,12 @@
 
         function toggle2(arr){
             if (arr[0]=="exam_quizes"){
+                try {
+                    document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none";
+                } catch(err){
+                    console.log(err);
+                }
                 document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "none";
-                document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none";
                 document.getElementById(arr[1]).style.display = "block";
             }
         }
