@@ -1,23 +1,29 @@
-from django.shortcuts import render, HttpResponseRedirect, redirect
-from django.contrib.auth.decorators import login_required
-#from django.http import HttpResponse
-#from django.template import loader
-#from django.middleware.csrf import CsrfViewMiddleware
+import os
+import sys
+import datetime
+import importlib
+import unittest
+import timeout_decorator
+import mosspy
+import contextlib
+
+from .Lib import my_globals
 from Class_Management.models import *
 from Assign_Management.models import *
 from Assign_Management.storage import OverwriteStorage
-from django.contrib.auth import get_user_model
-import sys,os,datetime,importlib,unittest,timeout_decorator,mosspy,contextlib
-from io import StringIO
-#from RestrictedPython import compile_restricted,utility_builtins,limited_builtins
-#from RestrictedPython.Guards import safe_builtins
-from unittest import TextTestRunner
+
+from django.db import IntegrityError
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-#from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import ObjectDoesNotExist
-from .Lib import my_globals
+from django.shortcuts import render, HttpResponseRedirect, redirect
+
+from io import StringIO
+from unittest import TextTestRunner
 
 User = get_user_model()
 # Create your views here.
@@ -123,12 +129,14 @@ def GenerateAssign(request,classroom):
                                              )
 
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
-        except Exception as E:
-            from django.contrib import messages
-            messages.error(request, E)
-            return render(request,"CreateAssignment.html", {"categories": Category.objects.all()})
+        except IntegrityError as error:
+            return render(request, "CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom), "IntegrityError": "This name has already been taken."})
+        except Exception as error:
+            print(error)
+            messages.error(request, error)
+            return render(request,"CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom)})
     else:
-        return render(request, 'CreateAssignment.html', {"categories": Category.objects.all()})
+        return render(request, 'CreateAssignment.html', {"categories": Category.objects.filter(classroom__className=classroom)})
 
 @login_required
 def DeleteAssign(request, classroom, quiz_id):
@@ -347,10 +355,12 @@ def EditAssign(request, classroom, quiz_id):
                             #print(e)
                             continue
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+        except IntegrityError as error:
+            return render(request, "CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom), "IntegrityError": "This name has already been taken."})
         except Exception as E:
             from django.contrib import messages
             messages.error(request, E)
-            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/EditAssign/' + quiz_id, {"categories": Category.objects.all()})
+            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/EditAssign/' + quiz_id, {"categories": Category.objects.filter(classroom__className=classroom)})
 
 
     else:
@@ -363,7 +373,7 @@ def EditAssign(request, classroom, quiz_id):
                    'quiztedit': quizTimer,
                    'quizdedit': quiz.deadline,
                    'quizaedit': quiz.available,
-                   'categories': Category.objects.all(),
+                   'categories': Category.objects.filter(classroom__className=classroom),
                   }
         return render(request, 'EditAssignment.html', context)
 
@@ -392,7 +402,7 @@ def GenerateExam(request,classroom):
 #################################################### Random examination for each user from pool. ####################################################
             import time
             import asyncio
-            Cate = Category.objects.all()
+            Cate = Category.objects.filter(classroom__className=classroom)
             Target = ClassRoom.objects.get(className=classroom).user.all()
             # planned for asynchronous.
             #async def generate_tracker():
@@ -438,13 +448,15 @@ def GenerateExam(request,classroom):
 #####################################################################################################################################################
 
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+        except IntegrityError as error:
+            return render(request, "CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom), "IntegrityError": "This name has already been taken."})
         except Exception as E:
             print(E)
             from django.contrib import messages
             messages.error(request, E)
-            return render(request,"Exam/CreateExam.html", {"categories": Category.objects.all()})
+            return render(request,"Exam/CreateExam.html", {"categories": Category.objects.filter(classroom__className=classroom)})
     else:
-        return render(request, 'Exam/CreateExam.html', {"categories": Category.objects.all()})
+        return render(request, 'Exam/CreateExam.html', {"categories": Category.objects.filter(classroom__className=classroom)})
 
 @login_required
 def EditExam(request, classroom, exam_data_id):
@@ -473,7 +485,7 @@ def EditExam(request, classroom, exam_data_id):
                 #################################################### Random examination for each user from pool. ####################################################
                 import time
                 import asyncio
-                Cate = Category.objects.all()
+                Cate = Category.objects.filter(classroom__className=classroom)
                 Target = ClassRoom.objects.get(className=classroom).user.all()
                 for user in ClassRoom.objects.get(className=classroom).user.all():
                     Exam_Tracker.objects.create(exam=GenerateExam_instance, user=user)
@@ -515,14 +527,16 @@ def EditExam(request, classroom, exam_data_id):
                 exam_data.max_score = MaxScore
                 exam_data.save()
             return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
+        except IntegrityError as error:
+            return render(request, "CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom), "IntegrityError": "This name has already been taken."})
         except Exception as E:
             from django.contrib import messages
             messages.error(request, E)
-            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/EditExam/' + exam_data_id, {"exam": exam, "categories": Category.objects.all()})
+            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/EditExam/' + exam_data_id, {"exam": exam, "categories": Category.objects.filter(classroom__className=classroom)})
     else:
         exam = Exam_Data.objects.get(pk=exam_data_id, classroom__className=classroom)
         context = {'exam': exam,
-                   'categories': Category.objects.all(),
+                   'categories': Category.objects.filter(classroom__className=classroom),
                    }
         return render(request, 'Exam/EditExam.html', context)
 
@@ -567,13 +581,15 @@ def GenerateExamQuiz(request,classroom):
             mode = request.POST.get('mode','')
             Exam_Quiz.objects.create(title=Examination, detail=Examination_Detail, category=Cate, text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+        except IntegrityError as error:
+            return render(request, "CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom), "IntegrityError": "This name has already been taken."})
         except Exception as E:
             print(E)
             from django.contrib import messages
             messages.error(request, E)
-            return render(request,"Exam/CreateExamQuiz.html", {"categories": Category.objects.all()})
+            return render(request,"Exam/CreateExamQuiz.html", {"categories": Category.objects.filter(classroom__className=classroom)})
     else:
-        return render(request, 'Exam/CreateExamQuiz.html', {"categories": Category.objects.all()})
+        return render(request, 'Exam/CreateExamQuiz.html', {"categories": Category.objects.filter(classroom__className=classroom)})
 
 @login_required
 def EditExamQuiz(request, classroom, exam_quiz_id):
@@ -631,16 +647,18 @@ def EditExamQuiz(request, classroom, exam_quiz_id):
                 exam_quiz.mode = mode
                 exam_quiz.save()
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
+        except IntegrityError as error:
+            return render(request, "CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom), "IntegrityError": "This name has already been taken."})
         except Exception as E:
             from django.contrib import messages
             messages.error(request, E)
-            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/edit_exam_quiz/' + exam_quiz_id, {"categories": Category.objects.all()})
+            return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"] + '/Assignment/edit_exam_quiz/' + exam_quiz_id, {"categories": Category.objects.filter(classroom__className=classroom)})
 
 
     else:
         exam_quiz = Exam_Quiz.objects.get(pk=exam_quiz_id)
         context = {'exam_quiz': exam_quiz,
-                   'categories': Category.objects.all(),
+                   'categories': Category.objects.filter(classroom__className=classroom),
                   }
         return render(request, 'Exam/EditExamQuiz.html', context)
 

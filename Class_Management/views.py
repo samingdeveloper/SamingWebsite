@@ -75,7 +75,7 @@ def Home(request,classroom):
                 add_status = 2
                 if request.POST["category"] != '':
                     try:
-                        Category.objects.get_or_create(name=request.POST["category"], slug=request.POST["category"])
+                        Category.objects.get_or_create(name=request.POST["category"], slug=request.POST["category"], classroom=ClassRoom.objects.get(className=classroom))
                         add_status = 1
                     except ObjectDoesNotExist:
                         pass
@@ -278,7 +278,7 @@ def Home(request,classroom):
                 add_status = 2
                 if request.POST["category"] != '':
                     try:
-                        Category.objects.get(name=request.POST["category"], slug=request.POST["category"]).delete()
+                        Category.objects.get(name=request.POST["category"], slug=request.POST["category"], classroom__className=classroom).delete()
                         add_status = 3
                     except ObjectDoesNotExist:
                         pass

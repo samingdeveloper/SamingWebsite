@@ -28,9 +28,9 @@ class Upload(models.Model):
         return self.title
 
 class Category(models.Model):
-    name = models.CharField(max_length=255,unique=True)
+    name = models.CharField(max_length=255)
     slug = models.SlugField(blank=True,null=True)
-    #classroom = models.ForeignKey('Class_Management.ClassRoom',on_delete=models.CASCADE,related_name="cate_classroom")
+    classroom = models.ForeignKey('Class_Management.ClassRoom',on_delete=models.CASCADE)#,related_name="cate_classroom")
     #parent = models.ForeignKey('self',blank=True,null=True,related_name='children',on_delete=models.CASCADE)
     class Meta:
         #unique_together = ('slug','parent',)
@@ -48,20 +48,22 @@ class Category(models.Model):
 
 class Exam_Data(models.Model):
     classroom = models.ForeignKey(ClassRoom,on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=255)
     detail = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     available = models.DateTimeField()
     deadline = models.DateTimeField()
     max_score = models.FloatField(default=0, validators=[MinValueValidator(0),])
+    class Meta:
+        unique_together = ('name', 'classroom')
     def __str__(self):
         return self.name
 
 class Exam_Quiz(models.Model):
-    title = models.CharField(unique=True, max_length=55, blank=True)
+    title = models.CharField(max_length=55, blank=True)
     detail = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
-    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
     mode_choices = (
         ("Pass or Fail", "Pass or Fail"),
         ("Scoring", "Scoring")
@@ -71,6 +73,9 @@ class Exam_Quiz(models.Model):
     text_testcode_content = models.TextField()
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    class Meta:
+        verbose_name_plural = 'Exam_Quizes'
+        unique_together = ('title', 'classroom')
     def __str__(self):
         return self.title
 

@@ -39,14 +39,14 @@ class ClassRoom(models.Model):
 #        return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
 
 class Quiz(models.Model):
-    quizTitle = models.CharField(unique=True, max_length=55, blank=True)
+    quizTitle = models.CharField(max_length=55, blank=True)
     quizDetail = models.TextField(blank=True,null=True)
     deadline = models.DateTimeField()
     available = models.DateTimeField()
     created = models.DateTimeField(auto_now_add=True)
     hint = models.CharField(max_length=255, blank=True, null=True)
     #exam = models.BooleanField(default=False)
-    category = models.ForeignKey('Assign_Management.Category', blank=True, null=True, on_delete=models.CASCADE ,related_name='category')
+    category = models.ForeignKey('Assign_Management.Category', blank=True, null=True, on_delete=models.SET_NULL ,related_name='category')
     #rank_choices = (
     #    (0, "Bronze"),
     #    (1, "Silver"),
@@ -67,6 +67,9 @@ class Quiz(models.Model):
     text_testcode_content = models.TextField()
     text_testcase_content = models.TextField()
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    class Meta:
+        verbose_name_plural = 'Quizes'
+        unique_together = ('quizTitle', 'classroom')
     def __str__(self):
         return self.quizTitle
 
