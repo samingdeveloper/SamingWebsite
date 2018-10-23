@@ -121,7 +121,7 @@
                                     {%  else %}
                                         <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">Open</button>
                                     {% endif %}
-                                    <p><strong>Detail:</strong> {{ exam_quiz.detail }}</p>
+                                    {#<p><strong>Detail:</strong>  exam_quiz.detail </p>#}
                                 </div>
                             </div>
                                 {% endfor %}

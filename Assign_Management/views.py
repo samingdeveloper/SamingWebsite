@@ -1,13 +1,14 @@
 import os
 import sys
 import datetime
+import traceback
 import importlib
 import unittest
 import timeout_decorator
 import mosspy
 import contextlib
 
-from .Lib import my_globals
+from .Lib import my_globals,my_exception
 from Class_Management.models import *
 from Assign_Management.models import *
 from Assign_Management.storage import OverwriteStorage
@@ -65,8 +66,8 @@ def GenerateAssign(request,classroom):
         try:
             if request.POST['asname'] == '':
                 raise ValueError("Assignment must have a name!")
-            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
-                raise ValueError("Test code and Test case must not blank!")
+            elif request.POST['upload_testcase'] == '':
+                raise ValueError("Test case must not be blank!")
             elif request.POST['dateAvailable'] == '':
                 raise ValueError("Please specific available date.")
             elif request.POST['dateInput'] == '':
@@ -76,17 +77,18 @@ def GenerateAssign(request,classroom):
 #################################################### Check Testcase ####################################################
             test_code = request.POST.get('test_code', '')
             test_case = request.POST.get('upload_testcase', '')
-            class case: num = 0
-            def assert_equal(actual, expected, points=0, level=0):
-                case.num += 1
-                eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
-            # Exec
-            libs=None
-            for case_line in test_case.splitlines():
-                if case_line.startswith('#lib') and len(case_line[5:]) != 0:
-                    libs = case_line[5:].split(',')
-            restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
-            eval(compile(test_code+'\n'+test_case, 'gradingstr', 'exec'), restricted_globals, locals())
+            if test_code != '':
+                class case: num = 0
+                def assert_equal(actual, expected, points=0, level=0):
+                    case.num += 1
+                    eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
+                # Exec
+                libs=None
+                for case_line in test_case.splitlines():
+                    if case_line.startswith('#lib') and len(case_line[5:]) != 0:
+                        libs = case_line[5:].split(',')
+                restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
+                eval(compile(test_code+'\n'+test_case, 'gradingstr', 'exec'), restricted_globals, locals())
 ########################################################################################################################
 
             OSS = OverwriteStorage()
@@ -240,8 +242,8 @@ def EditAssign(request, classroom, quiz_id):
         try:
             if request.POST['asname'] == '':
                 raise ValueError("Assignment must have a name!")
-            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
-                raise ValueError("Test code and Test case must not blank!")
+            elif request.POST['upload_testcase'] == '':
+                raise ValueError("Test case must not be blank!")
             elif request.POST['dateAvailable'] == '':
                 raise ValueError("Please specific available date.")
             elif request.POST['dateInput'] == '':
@@ -251,16 +253,17 @@ def EditAssign(request, classroom, quiz_id):
 #################################################### Check Testcase ####################################################
             test_code = request.POST.get('test_code', '')
             test_case = request.POST.get('upload_testcase', '')
-            class case:num = 0
-            def assert_equal(actual, expected, points=0, level=0):
-                case.num += 1
-                eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
-            libs = None
-            for case_line in test_case.splitlines():
-                if case_line.startswith('#lib') and len(case_line[5:]) != 0:
-                    libs = case_line[5:].split(',')
-            restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
-            eval(compile(test_code + '\n' + test_case, 'gradingstr', 'exec'), restricted_globals, locals())
+            if test_code != '':
+                class case:num = 0
+                def assert_equal(actual, expected, points=0, level=0):
+                    case.num += 1
+                    eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
+                libs = None
+                for case_line in test_case.splitlines():
+                    if case_line.startswith('#lib') and len(case_line[5:]) != 0:
+                        libs = case_line[5:].split(',')
+                restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
+                eval(compile(test_code + '\n' + test_case, 'gradingstr', 'exec'), restricted_globals, locals())
 ########################################################################################################################
 
             quiz = Quiz.objects.get(pk=quiz_id)
@@ -555,24 +558,25 @@ def GenerateExamQuiz(request,classroom):
         try:
             if request.POST['exam_name'] == '':
                 raise ValueError("Exam must have a name!")
-            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
-                raise ValueError("Test code and Test case must not blank!")
+            elif request.POST['upload_testcase'] == '':
+                raise ValueError("Test case must not be blank!")
             code_template = request.POST.get('upload_template', '')
 
 #################################################### Check Testcase ####################################################
             test_code = request.POST.get('test_code', '')
             test_case = request.POST.get('upload_testcase', '')
-            class case: num = 0
-            def assert_equal(actual, expected, points=0, level=0):
-                case.num += 1
-                eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
-            # Exec
-            libs=None
-            for case_line in test_case.splitlines():
-                if case_line.startswith('#lib') and len(case_line[5:]) != 0:
-                    libs = case_line[5:].split(',')
-            restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
-            eval(compile(test_code+'\n'+test_case, 'gradingstr', 'exec'), restricted_globals, locals())
+            if test_code != '':
+                class case: num = 0
+                def assert_equal(actual, expected, points=0, level=0):
+                    case.num += 1
+                    eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
+                # Exec
+                libs=None
+                for case_line in test_case.splitlines():
+                    if case_line.startswith('#lib') and len(case_line[5:]) != 0:
+                        libs = case_line[5:].split(',')
+                restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
+                eval(compile(test_code+'\n'+test_case, 'gradingstr', 'exec'), restricted_globals, locals())
 ########################################################################################################################
 
             Examination = request.POST.get('exam_name', '')
@@ -599,23 +603,24 @@ def EditExamQuiz(request, classroom, exam_quiz_id):
         try:
             if request.POST['exam_name'] == '':
                 raise ValueError("Exam must have a name!")
-            elif request.POST['test_code'] == '' or request.POST['upload_testcase'] == '':
-                raise ValueError("Test code and Test case must not blank!")
+            elif request.POST['upload_testcase'] == '':
+                raise ValueError("Test case must not be blank!")
             code_template = request.POST.get('upload_template', '')
 
 #################################################### Check Testcase ####################################################
             test_code = request.POST.get('test_code', '')
             test_case = request.POST.get('upload_testcase', '')
-            class case:num = 0
-            def assert_equal(actual, expected, points=0, level=0):
-                case.num += 1
-                eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
-            libs = None
-            for case_line in test_case.splitlines():
-                if case_line.startswith('#lib') and len(case_line[5:]) != 0:
-                    libs = case_line[5:].split(',')
-            restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
-            eval(compile(test_code + '\n' + test_case, 'gradingstr', 'exec'), restricted_globals, locals())
+            if test_code != '':
+                class case:num = 0
+                def assert_equal(actual, expected, points=0, level=0):
+                    case.num += 1
+                    eval(compile(my_globals.string(case.num, actual, expected, points, level), 'defstr', 'exec'))
+                libs = None
+                for case_line in test_case.splitlines():
+                    if case_line.startswith('#lib') and len(case_line[5:]) != 0:
+                        libs = case_line[5:].split(',')
+                restricted_globals = dict(__builtins__=my_globals.mgb(globals(), libs))
+                eval(compile(test_code + '\n' + test_case, 'gradingstr', 'exec'), restricted_globals, locals())
 ########################################################################################################################
 
             exam_quiz = Exam_Quiz.objects.get(pk=exam_quiz_id)
@@ -682,7 +687,7 @@ def DeleteExamQuiz(request, classroom, exam_quiz_id):
 
 #################################################### AutoGrader Section ####################################################
 @login_required
-@timeout_decorator.timeout(6, use_signals=False)
+@timeout_decorator.timeout(6, use_signals=False)#, timeout_exception=StopIteration)
 def uploadgrading(request, classroom, quiz_id):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
@@ -1183,13 +1188,12 @@ def uploadgrading(request, classroom, quiz_id):
                                                     'Deadtimestamp':deadline.timestamp()*1000,
                 })
     except Exception as e:
-        #print(e)
         return render(request, 'Upload.html',{'quizTitle':quiz.quizTitle,
                                                 'quizDetail':quiz.quizDetail,
                                                 'Deadline':quiz.deadline,
                                                 'Hint':quiz.hint,
                                                 'Timer':False,
-                                                'exception':e,
+                                                'exception': traceback.format_exc(limit=my_exception.my_traceback.get_limit(sys.exc_info())),#my_exception.error_msg(sys.exc_info()),#e,
                                                 'code':code_temp,
                                                 'Deadtimestamp':deadline.timestamp()*1000,
                                             })
@@ -1517,7 +1521,7 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
         return render(request, 'Exam/ExamGrader.html',{'title': exam_quiz.title,
                                                 'detail': exam_quiz.detail,
                                                 'Deadline':exam_data.deadline,
-                                                'exception':e,
+                                                'exception':traceback.format_exc(limit=my_exception.my_traceback.get_limit(sys.exc_info())),
                                                 'code':code_temp,
                                                 'Deadtimestamp':deadline.timestamp()*1000,
                                             })

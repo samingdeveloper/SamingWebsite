@@ -69,12 +69,11 @@
             <div class="column side">
                 <div class="scroll">
                     <h1> {{ quizTitle }} </h1>
-                    <div class="p">
-                        <p>{{ quizDetail }}
-                        </p>
-                        <p>{{ Hint }}</p>
-                        <p id="Time_Up"></p>
-                        <p id="Deadline"></p>
+                    <div >
+                        <pre><p>{{ quizDetail }}</p></pre>
+                        <pre><p>{{ Hint }}</p></pre>
+                        <pre><p id="Time_Up"></p></pre>
+                        <pre><p id="Deadline"></p></pre>
                     </div>
                 </div>
             </div>
@@ -92,19 +91,19 @@
             </div>
             <div class="column side">
                 <div class="result">
-                    {{ exception }}
-                    <pre><span style="white-space: pre-line">{{ prints }}</span></pre>
+                    <pre><span style="color:#ff0000;">{{ exception }}</span></pre>
+                    <pre><span style="white-space: pre-line;">{{ prints }}</span></pre>
                     {% for case_result in display.case.values %}
                         {% if case_result == 'PASS' or '==' in case_result %}
-                            <span style="color:#00ff00"> CASE {{ forloop.counter }}: {{ case_result }} </span><br><br>
+                            <pre><span style="color:#00ff00;"> CASE {{ forloop.counter }}: {{ case_result }} </span></pre>
                         {% else %}
-                            <span style="color:#ff0000"> CASE {{ forloop.counter }}: {{ case_result }} </span><br><br>
+                            <pre><span style="color:#ff0000;"> CASE {{ forloop.counter }}: {{ case_result }} </span></pre>
                         {% endif %}
                     {% endfor %}
                         {% if display.status == 'PASS' %}
-                            <span style="color:#00ff00"> RESULT: {{ display.status }} </span><br><br>
+                    <pre><span style="color:#00ff00;"> RESULT: {{ display.status }} </span></pre>
                         {% elif display.status == 'FAIL' %}
-                            <span style="color:#ff0000"> RESULT: {{ display.status }} </span><br><br>
+                    <pre><span style="color:#ff0000;"> RESULT: {{ display.status }} </span></pre>
                         {% endif %}
                 </div>
                 <!-- I don't know solotion in modified Browse file. You try it. -->

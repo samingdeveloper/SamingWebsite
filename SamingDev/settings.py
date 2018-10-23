@@ -65,7 +65,7 @@ MIDDLEWARE = [
 
 #SESSION_EXPIRE_SECONDS = 3600
 #SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-SESSION_COOKIE_AGE = 3600 #session will expire after last activity. (if cookie expire so does the session.)
+SESSION_COOKIE_AGE = 1800 #session will expire after last activity. (if cookie expire so does the session.)
 
 ROOT_URLCONF = 'SamingDev.urls'
 
