@@ -1,3 +1,5 @@
+import os
+
 from Class_Management.models import *
 from Assign_Management.storage import OverwriteStorage
 
@@ -7,13 +9,13 @@ from django.dispatch import receiver
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.core.files.storage import FileSystemStorage
 
 User = get_user_model()
 
 def callable_path(instance, filename):
-    return os.path.join('media/random', filename)
+    return os.path.join('random', filename)
 # Create your models here.
 
 class Upload(models.Model):
@@ -24,13 +26,15 @@ class Upload(models.Model):
     score = models.FloatField(blank=True, null=True, default=0.0)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     uploadTime = models.DateTimeField(auto_now_add=True)
+    testResult = ArrayField(models.CharField(max_length=1024,blank=True),blank=True,null=True)
+    uploadIPv4 = models.GenericIPAddressField(null=True, blank=True)
     def __str__(self):
         return self.title
 
 class Category(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(blank=True,null=True)
-    classroom = models.ForeignKey('Class_Management.ClassRoom',on_delete=models.CASCADE)#,related_name="cate_classroom")
+    name = models.CharField(max_length=255, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
+    slug = models.SlugField(blank=True, null=True, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
+    #classroom = models.ForeignKey('Class_Management.ClassRoom',on_delete=models.CASCADE)#,related_name="cate_classroom")
     #parent = models.ForeignKey('self',blank=True,null=True,related_name='children',on_delete=models.CASCADE)
     class Meta:
         #unique_together = ('slug','parent',)

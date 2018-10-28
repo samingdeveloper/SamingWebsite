@@ -55,7 +55,7 @@ moss.short_description = u"MOSS"
 class ClassRoomAdmin(admin.ModelAdmin):
     list_display = ('className', 'creator')
     search_fields = ('className', 'creator__userId')
-    filter_horizontal = ('user',)
+    filter_horizontal = ('user','quizes')
 
 class QuizScoreAdmin(admin.ModelAdmin):
     actions = [export_csv,moss]
@@ -64,8 +64,8 @@ class QuizScoreAdmin(admin.ModelAdmin):
     search_fields = ('quizId__quizTitle', 'userId__userId', 'classroom__className')
 
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ('quizTitle', 'category', 'mode', 'available', 'deadline', 'classroom')
-    search_fields = ('quizTitle', 'category__name', 'mode', 'classroom__className')
+    list_display = ('quizTitle', 'category', 'mode', 'available', 'deadline',)#, 'classroom')
+    search_fields = ('quizTitle', 'category__name', 'mode',)#, 'classroom__className')
 
 class QuizStatusAdmin(admin.ModelAdmin):
     list_display = ('quizId', 'userId', 'status', 'classroom')

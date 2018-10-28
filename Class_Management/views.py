@@ -75,8 +75,11 @@ def Home(request,classroom):
                 add_status = 2
                 if request.POST["category"] != '':
                     try:
-                        Category.objects.get_or_create(name=request.POST["category"], slug=request.POST["category"], classroom=ClassRoom.objects.get(className=classroom))
-                        add_status = 1
+                        if re.match('^[^,]*$',request.POST["category"]):
+                            Category.objects.get_or_create(name=request.POST["category"], slug=request.POST["category"])
+                            add_status = 1
+                        else:
+                            add_status = 2
                     except ObjectDoesNotExist:
                         pass
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -278,8 +281,11 @@ def Home(request,classroom):
                 add_status = 2
                 if request.POST["category"] != '':
                     try:
-                        Category.objects.get(name=request.POST["category"], slug=request.POST["category"], classroom__className=classroom).delete()
-                        add_status = 3
+                        if re.match('^[^,]*$',request.POST["category"]):
+                            Category.objects.get(name=request.POST["category"], slug=request.POST["category"]).delete()
+                            add_status = 3
+                        else:
+                            add_status = 2
                     except ObjectDoesNotExist:
                         pass
                 return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,

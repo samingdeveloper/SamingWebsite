@@ -1,0 +1,112 @@
+{% extends "NavBar.html" %}
+{% block content %}
+{% load static %}
+{% load prgress_tags %}
+{% load group_tags %}
+<link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}"
+      xmlns:Class_Management="http://www.w3.org/1999/xhtml">
+  <link rel="stylesheet" href="https://cdnjs.com/libraries/bulma">
+  <!-- input assignment -->
+  <div id="main">
+    <div class="center">
+      <h2>{{ title }}</h2>
+    </div>
+
+    <div class="back">
+      <table id="customers">
+        <tr>
+          <th><center>ID</center></th>
+          <th><center>File</center></th>
+          <th><center>Score</center></th>
+          <th><center>Max</center></th>
+          <th><center>Submitted</center></th>
+          <th><center>Submitted Address</center></th>
+          <th><center><input type="checkbox" name="chkall" id="chkall" onclick="chkall(this)" style="display:none"></center></th>
+        </tr>
+        {% for i in records %}
+                <tr>
+                  <td>
+                      <a href="{% url 'Class_Management:StudentQuizListInfo' request.session.classroom i.userId.userId i.quizId.id %}">
+                        <center>{{ i.userId }}</center>
+                      </a>
+                  </td>
+                  <td>
+                      {% if i.code.id %}
+                        <a href="{% url 'Class_Management:StudentQuizInfo' request.session.classroom i.userId.userId i.quizId.id i.code.id %}">
+                          <center>submitted file{{ i.code.title }}</center>
+                        </a>
+                      {% endif %}
+                  </td>
+                  <td><center>score{{ i.score }}</center></td>
+                  <td><center>{{ i.quizId.max_score }}</center></td>
+                  <td>
+                    {% if i.code.uploadTime %}
+                    <center>date time {{ i.code.uploadTime }}</center>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if i.code.uploadIPv4 %}
+                    <center>Address{{ i.code.uploadIPv4 }}</center>
+                    {% endif %}
+                  </td>
+                    <form method="post">
+                        {% csrf_token %}
+                    <td>
+                      <center><input type="checkbox" id="myCheck{{submitted_file}}" name="cb" value="{{ submitted_file }}" onclick="checkFile('{{ submitted_file}}')"></center>
+                    </td>
+                </tr>
+          {% endfor %}
+      </table>
+        <button type="submit" id="bbox" style="display:none;" name="moss"
+                onclick="location.href='{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom 0 %}">
+            MOSS
+        </button>
+        </form>
+    </div>
+  </div>
+    <script>
+                var x = 0;
+                var y = document.getElementById("bbox")
+                var checkBoxes = document.getElementsByName("cb");
+                var temp = document.getElementById("chkall");
+                for(var c=0, n=checkBoxes.length;c<n;c++);
+                if (c>0){temp.style.display="block";}
+                function checkFile(submitted_file){
+                    var checkBox = document.getElementById("myCheck"+submitted_file);
+                    if (checkBox.checked == true){
+                        x += 1;
+                        if (x >= 1){
+                            if(x === c){ temp.checked = true;}
+                            y.style.display = "block"; //console.log("WHAT");
+                        }
+                        //console.log("x:"+x+" c:"+c)
+                    }
+                    else{
+                        x -= 1
+                        temp.checked = false;
+                        if ( x==0 ){
+                            y.style.display = "none";
+                        }
+                        //console.log("x:"+x+" c:"+c)
+                    }
+                }
+                function chkall(source){
+                        checkBoxes = document.getElementsByName("cb");
+                        x = 0
+                        for(var i=0, n=checkBoxes.length;i<n;i++) {
+                            x += 1
+                            checkBoxes[i].checked = source.checked;
+                        }
+                        c = x;
+                        if ( x==0 ){
+                            y.style.display = "none";
+                        }
+                        else if (source.checked == false){
+                            x = 0
+                            y.style.display = "none";
+                        }
+                        else {y.style.display = "block";}
+                        //console.log("x:"+x+" c:"+c)
+                }
+          </script>
+    {% endblock %}}

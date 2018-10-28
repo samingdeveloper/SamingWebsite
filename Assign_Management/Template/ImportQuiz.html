@@ -1,0 +1,60 @@
+{% extends "NavBar.html" %}
+{% block content %}
+{% load static %}
+{% load group_tags %}
+{% load exam_tags %}
+{% load utility_tags %}
+
+<link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/ImportQuiz.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/createassignment.css' %}">
+<script src="{% static '/grading_code/js/ImportQuiz.js' %}"></script>
+
+<div class="center">
+    <br><center><h3>Import Assignment</h3></center>
+
+    <div>
+        <div class="row">
+            <div class="column left">
+                <input type="text" id="availableCategorySearch" onkeyup="filter('left')" placeholder="Search for category.." title="Type in a name">
+                <input type="text" id="availableSearch" onkeyup="filter('left')" placeholder="Search for names.." title="Type in a name">
+                <ul id="availableList">
+                    {% for assignment_ in assignments %}
+                        <li>
+                            <grader-assignment data-category="{{ assignment_.category }}" value="{{ assignment_ }}" >
+                                <input style="display:none;" name="myselected" data-category="{{ assignment_.category }}" value="{{ assignment_.category }},{{ assignment_ }}"/>
+                                {{ assignment_ }}
+                            </grader-assignment>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="column right">
+                <input type="text" id="selectedCategorySearch" onkeyup="filter('right')" placeholder="Search for category.." title="Type in a name">
+                <input type="text" id="selectedSearch" onkeyup="filter('right')" placeholder="Search for names.." title="Type in a name">
+                <form name="selected"
+                      action="{% url 'Class_Management:Assign_Management:ImportAssign' request.session.classroom %}"
+                      method="POST"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <ul id="selectedList">
+                        {% for assignment_ in selected_assignmnets %}
+                            <li>
+                                <grader-assignment data-category="{{ assignment_.category }}" value="{{ assignment_ }}" >
+                                    <input style="display:none;" name="myselected" data-category="{{ assignment_.category }}" value="{{ assignment_.category }},{{ assignment_ }}"/>
+                                    {{ assignment_ }}
+                                </grader-assignment>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </form>
+            </div>
+        </div>
+
+        <div class="import">
+            <button class="import button"onclick="sendPost()">Import</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

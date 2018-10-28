@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^Upload/(?P<quiz_id>[0-9]+)/', views.uploadgrading, name='Uploadfile'),
     url(r'^UploadExam/(?P<exam_data_id>[0-9]+)/$', views.exam_quiz, name='ExamQuiz'),
     url(r'^UploadExam/(?P<exam_data_id>[0-9]+)/(?P<exam_quiz_id>[0-9]+)/', views.exam_grader, name='UploadfileExam'),
+    url(r'^ImportAssign/', views.ImportAssign, name='ImportAssign'),
     url(r'^EditAssign/(?P<quiz_id>[0-9]+)/', views.EditAssign, name='EditAssign'),
     url(r'^AssignmentDetail/', views.AssignmentDetail, name='AssignmentDetail'),
     url(r'^generate_assign/', views.GenerateAssign, name='GenerateAssign'),
@@ -20,7 +21,9 @@ urlpatterns = [
     url(r'^generate_exam_quiz/', views.GenerateExamQuiz, name='GenerateExamQuiz'),
     url(r'^edit_exam/(?P<exam_data_id>[0-9]+)/', views.EditExam, name='EditExam'),
     url(r'^edit_exam_quiz/(?P<exam_quiz_id>[0-9]+)/', views.EditExamQuiz, name='EditExamQuiz'),
-    url(r'^MOSS/(?P<quiz_id>[0-9]+)/(?P<mode>[0-9]+)/$', views.moss, name='MOSS'),
+    url(r'^Record/(?P<target>[a-zA-Z0-9]+)/(?P<quiz_id>[0-9]+)/', views.record, name='Record'),
+    url(r'^Record/(?P<target>[a-zA-Z0-9]+)/(?P<quiz_id>[0-9]+)/(?P<user_id>[a-zA-Z0-9]+)/', views.record, name='RecordMoreInfo'),
+    url(r'^MOSS/(?P<mode>[0-9]+)/$', views.moss, name='MOSS'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

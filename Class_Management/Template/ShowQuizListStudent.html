@@ -1,5 +1,6 @@
 {% extends "NavBar.html" %}
 {% block content %}
+{% load group_tags %}
 {% load static %}
 
   <link rel="stylesheet" type="text/css" href="{% static 'grading_code/css/informmation.css' %}">
@@ -14,7 +15,7 @@
                 <tr>
                     <th>File Name</th>
                     <th>Score</th>
-                    {% if request.user.userId == userId %}
+                    {% if request.user.userId == userId or request.user|can_manage:request.session.classroom %}
                     <th><input type="checkbox" name="chkall" id="chkall" onclick="chkall(this)" style="display:none"></th>
                     {% endif %}
                 </tr>
@@ -27,11 +28,10 @@
                         {{ i.score }}
                     </td>
                     <form method="post"> {% csrf_token %}
-                        {% if request.user.userId == userId %}
-                    <td>
-                        <input type="checkbox" id="myCheck{{i.title}}" name="cb" value="{{ i.title }}" onclick="checkFile('{{i.title}}')">
-
-                    </td>
+                        {% if request.user.userId == userId or request.user|can_manage:request.session.classroom %}
+                            <td>
+                                <input type="checkbox" id="myCheck{{i.title}}" name="cb" value="{{ i.title }}" onclick="checkFile('{{i.title}}')">
+                            </td>
                         {% endif %}
                         {% if i.title == score_pointer %}
                         <td>&#9989</td>

@@ -57,6 +57,26 @@ def AssignmentDetail(request):
         return HttpResponseRedirect('/LogOut')
     return render(request, 'Home.html')
 
+@login_required
+def ImportAssign(request, classroom):
+    if request.method == "POST":
+        #raise ValueError(request.POST.getlist('myselected','POST failed.'))
+        selectedList = request.POST.getlist("myselected","")
+        import_target = {}
+        for element in selectedList:
+            splited = element.split(',')
+            if splited[0] not in import_target.keys():
+                import_target[splited[0]] = [splited[1]]
+            else: import_target[splited[0]].append(splited[1])
+        raise ValueError(import_target)
+    else:
+        unselected_quiz = Quiz.objects.all().difference(ClassRoom.objects.get(className=classroom).quizes.all())
+        selected_quiz = Quiz.objects.all().difference(unselected_quiz)
+        context = {
+            "assignments": unselected_quiz,
+            "selected_assignments": selected_quiz
+        }
+        return render(request, 'ImportQuiz.html', context)
 
 @login_required
 def GenerateAssign(request,classroom):
@@ -103,15 +123,15 @@ def GenerateAssign(request,classroom):
             MaxScore = float(request.POST.get('quiz_max_score', ''))
             #dsa = 'upload_testcase' in request.POST and request.POST['upload_testcase']
             mode = request.POST.get('mode','')
-            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline, available=Available, max_score=MaxScore, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
-            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline ,available=Available, max_score=MaxScore, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode, classroom=ClassRoom.objects.get(className=classroom))
-            get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
-            for k in get_tracker:
-                QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
-                                                    userId=k.userId,
-                                                    classroom=GenerateAssign_instance_temp.classroom,
-                                                    status=False,
-                                                    )
+            GenerateAssign_instance = Quiz.objects.create(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline, available=Available, max_score=MaxScore, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode)#, classroom=ClassRoom.objects.get(className=classroom))
+            GenerateAssign_instance_temp = Quiz.objects.get(quizTitle=Assignment, quizDetail=Assignment_Detail, deadline=Deadline ,available=Available, max_score=MaxScore, category=Category.objects.get(name=Cate), text_template_content=code_template, text_testcode_content=test_code, text_testcase_content=test_case  ,hint=Hint, mode=mode)#, classroom=ClassRoom.objects.get(className=classroom))
+            #get_tracker = QuizTracker.objects.filter(classroom=GenerateAssign_instance_temp.classroom) #reference at QuizTracker
+            #for k in get_tracker:
+            #    QuizStatus.objects.update_or_create(quizId=GenerateAssign_instance_temp,
+            #                                        userId=k.userId,
+            #                                        classroom=GenerateAssign_instance_temp.classroom,
+            #                                        status=False,
+            #                                        )
             if Timer != '':
                 #print("timeryes")
                 Timer_temp = ''
@@ -132,13 +152,13 @@ def GenerateAssign(request,classroom):
 
             return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
         except IntegrityError as error:
-            return render(request, "CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom), "IntegrityError": "This name has already been taken."})
+            return render(request, "CreateAssignment.html", {"categories": Category.objects.all(), "IntegrityError": "This name has already been taken."})
         except Exception as error:
             print(error)
             messages.error(request, error)
-            return render(request,"CreateAssignment.html", {"categories": Category.objects.filter(classroom__className=classroom)})
+            return render(request,"CreateAssignment.html", {"categories": Category.objects.all()})
     else:
-        return render(request, 'CreateAssignment.html', {"categories": Category.objects.filter(classroom__className=classroom)})
+        return render(request, 'CreateAssignment.html', {"categories": Category.objects.all()})
 
 @login_required
 def DeleteAssign(request, classroom, quiz_id):
@@ -1529,7 +1549,9 @@ def exam_grader(request, classroom, exam_data_id, exam_quiz_id):
 
 #################################################### Measurement Of Software Similarity ####################################################
 @login_required
-def moss(request, classroom, quiz_id, mode):
+def moss(request, classroom, mode):
+    print(request.POST.get('cb',''))
+    return HttpResponseRedirect("/ClassRoom/" + classroom)
     if (request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher", classroom + "_TA"])) and mode is '0':
         userid = 367349587
         m = mosspy.Moss(userid, "python")
@@ -1556,3 +1578,14 @@ def moss(request, classroom, quiz_id, mode):
         return redirect(url)
     else:
         return HttpResponseRedirect("/ClassRoom/"+classroom)
+
+@login_required
+def record(request, classroom, quiz_id, target):
+    context = {'target': target}
+    if target == "Assignment":
+        context.update({
+            'title': Quiz.objects.get(pk=quiz_id).quizTitle,
+            'records':QuizScore.objects.filter(classroom__className=classroom, quizId=quiz_id)
+        })
+
+    return render(request, 'Record.html',context)

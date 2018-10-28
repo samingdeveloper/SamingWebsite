@@ -1,5 +1,6 @@
 ############# framework ############# 
 Django==2.0.8
+django-ipware
 #django-advanced-filters
 #django-session-timeout
 #django-mathfilters

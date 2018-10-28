@@ -11,35 +11,9 @@ import math
 User = get_user_model()
 
 # Create your models here.
-class ClassRoom(models.Model):
-    #teacher = models.ManyToManyField("LogIn_Management.User",related_name="teacher",blank=True)
-    #ta = models.ManyToManyField("LogIn_Management.User",related_name="ta",blank=True)
-    user = models.ManyToManyField("LogIn_Management.User", related_name="user", blank=True)
-    className = models.CharField(max_length=255,unique=True)
-    creator = models.ForeignKey("LogIn_Management.User", related_name="creator", on_delete=models.DO_NOTHING, null=True, blank=True)
-    def __str__(self):
-        return self.className
-
-#class Rank(models.Model):
-#    userId = models.ForeignKey(User, on_delete=models.CASCADE)
-#    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
-#    #elo = models.FloatField(default=0, validators=[MinValueValidator(0)])
-#    rank_choices = (
-#        (0, "Bronze"),
-#        (1, "Silver"),
-#        (2, "Gold"),
-#        (3, "Platinum"),
-#        (4, "Diamond"),
-#        (5, "Master"),
-#        (6, "Challenger"),
-#    )
-#    rank = models.SmallIntegerField(choices=rank_choices, default=0)
-#    fixture = models.BooleanField(default=False)
-#    def __str__(self):
-#        return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
 
 class Quiz(models.Model):
-    quizTitle = models.CharField(max_length=55, blank=True)
+    quizTitle = models.CharField(max_length=55, blank=True, unique=True)
     quizDetail = models.TextField(blank=True,null=True)
     deadline = models.DateTimeField()
     available = models.DateTimeField()
@@ -66,12 +40,41 @@ class Quiz(models.Model):
     text_template_content = models.TextField(blank=True,null=True)
     text_testcode_content = models.TextField()
     text_testcase_content = models.TextField()
-    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    #classroom = models.ManyToManyField
+    #classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = 'Quizes'
-        unique_together = ('quizTitle', 'classroom')
+        #unique_together = ('quizTitle', 'classroom')
     def __str__(self):
         return self.quizTitle
+
+class ClassRoom(models.Model):
+    #teacher = models.ManyToManyField("LogIn_Management.User",related_name="teacher",blank=True)
+    #ta = models.ManyToManyField("LogIn_Management.User",related_name="ta",blank=True)
+    user = models.ManyToManyField("LogIn_Management.User", related_name="user", blank=True)
+    className = models.CharField(max_length=255,unique=True)
+    quizes =  models.ManyToManyField(Quiz, related_name="classroom", blank=True)
+    creator = models.ForeignKey("LogIn_Management.User", related_name="creator", on_delete=models.DO_NOTHING, null=True, blank=True)
+    def __str__(self):
+        return self.className
+
+#class Rank(models.Model):
+#    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+#    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+#    #elo = models.FloatField(default=0, validators=[MinValueValidator(0)])
+#    rank_choices = (
+#        (0, "Bronze"),
+#        (1, "Silver"),
+#        (2, "Gold"),
+#        (3, "Platinum"),
+#        (4, "Diamond"),
+#        (5, "Master"),
+#        (6, "Challenger"),
+#    )
+#    rank = models.SmallIntegerField(choices=rank_choices, default=0)
+#    fixture = models.BooleanField(default=False)
+#    def __str__(self):
+#        return self.classroom.className + ' : ' + self.userId.userId #+ ' : ' + self.elo
 
 class QuizStatus(models.Model):
     quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE)
