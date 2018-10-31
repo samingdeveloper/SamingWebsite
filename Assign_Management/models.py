@@ -28,17 +28,20 @@ class Upload(models.Model):
     uploadTime = models.DateTimeField(auto_now_add=True)
     testResult = ArrayField(models.CharField(max_length=1024,blank=True),blank=True,null=True)
     uploadIPv4 = models.GenericIPAddressField(null=True, blank=True)
+    class Meta:
+        ordering = ('user', 'quiz', 'score', 'title')
     def __str__(self):
         return self.title
 
 class Category(models.Model):
-    name = models.CharField(max_length=255, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
-    slug = models.SlugField(blank=True, null=True, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
+    name = models.CharField(primary_key=True, max_length=255, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
+    slug = models.SlugField(unique=True, blank=True, null=True, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
     #classroom = models.ForeignKey('Class_Management.ClassRoom',on_delete=models.CASCADE)#,related_name="cate_classroom")
     #parent = models.ForeignKey('self',blank=True,null=True,related_name='children',on_delete=models.CASCADE)
     class Meta:
         #unique_together = ('slug','parent',)
         verbose_name_plural = "categories"
+        ordering = ('name', )
     def __str__(self):
         return self.name
     #def __str__(self):
@@ -80,6 +83,7 @@ class Exam_Quiz(models.Model):
     class Meta:
         verbose_name_plural = 'Exam_Quizes'
         unique_together = ('title', 'classroom')
+        ordering = ('title', )
     def __str__(self):
         return self.title
 
@@ -91,6 +95,8 @@ class Exam_Upload(models.Model):
     quiz = models.ForeignKey(Exam_Quiz, on_delete=models.CASCADE)
     score = models.FloatField(blank=True, null=True, default=0.0)
     uploadTime = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ('title', )
     def __str__(self):
         return self.title
 
@@ -102,6 +108,8 @@ class Exam_Score(models.Model):
     passOrFail = models.FloatField(blank=True, null=True, default=0.0)
     total_score = models.FloatField(blank=True, null=True, default=0.0)
     max_score = models.FloatField(blank=True, null=True, default=0.0)
+    class Meta:
+        ordering = ('user', )
     def __str__(self):
         return str(self.passOrFail + self.total_score)
 
@@ -109,6 +117,8 @@ class Exam_Tracker(models.Model):
     exam = models.ForeignKey(Exam_Data,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     picked = ArrayField(models.CharField(max_length=255,blank=True),blank=True,null=True)
+    class Meta:
+        ordering = ('user', )
     def __str__(self):
         return str(self.picked)
 

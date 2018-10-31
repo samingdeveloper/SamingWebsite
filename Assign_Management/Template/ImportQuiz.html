@@ -20,8 +20,8 @@
                 <ul id="availableList">
                     {% for assignment_ in assignments %}
                         <li>
-                            <grader-assignment data-category="{{ assignment_.category }}" value="{{ assignment_ }}" >
-                                <input style="display:none;" name="myselected" data-category="{{ assignment_.category }}" value="{{ assignment_.category }},{{ assignment_ }}"/>
+                            <grader-assignment data-category="{{ assignment_.category|default:'None' }}" value="{{ assignment_ }}" >
+                                <input style="display:none;" name="myselected" data-category="{{ assignment_.category|default:'None' }}" value="{{ assignment_ }}"/>
                                 {{ assignment_ }}
                             </grader-assignment>
                         </li>
@@ -34,13 +34,12 @@
                 <form name="selected"
                       action="{% url 'Class_Management:Assign_Management:ImportAssign' request.session.classroom %}"
                       method="POST"
-                      enctype="multipart/form-data">
-                    {% csrf_token %}
+                      enctype="multipart/form-data">{% csrf_token %}
                     <ul id="selectedList">
-                        {% for assignment_ in selected_assignmnets %}
+                        {% for assignment_ in selected_assignments %}
                             <li>
-                                <grader-assignment data-category="{{ assignment_.category }}" value="{{ assignment_ }}" >
-                                    <input style="display:none;" name="myselected" data-category="{{ assignment_.category }}" value="{{ assignment_.category }},{{ assignment_ }}"/>
+                                <grader-assignment data-category="{{ assignment_.category|default:'None' }}" value="{{ assignment_ }}" >
+                                    <input style="display:none;" name="myselected" data-category="{{ assignment_.category|default:'None' }}" value="{{ assignment_ }}"/>
                                     {{ assignment_ }}
                                 </grader-assignment>
                             </li>
@@ -51,7 +50,7 @@
         </div>
 
         <div class="import">
-            <button class="import button"onclick="sendPost()">Import</button>
+            <button class="import button"onclick="sendPost()">Proceed</button>
         </div>
     </div>
 </div>

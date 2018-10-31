@@ -6,6 +6,7 @@
 {% load utility_tags %}
     <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
     <script src="{% static '/grading_code/js/popup.js' %}"></script>
+    <script src="{% static '/grading_code/js/tooltip.js' %}"></script>
 
     <!-- Trigger/Open The Modal -->
 
@@ -73,6 +74,15 @@
                             {%  else %}
                             <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
                             {% endif %}
+                            {# {% if request.user|can_manage:request.session.classroom %} #}
+                                {% if i.available <= current_time %}
+                                    <button name="button_status"  class="status active" onclick="">Active</button>
+                                {% else %}
+                                    {% if request.user|can_manage:request.session.classroom %}
+                                        <button class="status inactive" onclick="">InActive</button>
+                                    {% endif %}
+                                {% endif %}
+                            {# {% endif %} #}
                             <div class="detail">
                                 {% if i.quiztimer_set.all.0.timer %}
                                 <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
@@ -86,7 +96,7 @@
                         {% endfor %}
                 </div>
 
-                <div id="exam_div" name="exam_div" style="display:None">
+                <div id="exam_div" style="display:None">
                     {%  for i in exam %}
                         <div class="boxassign">
                             <div class="nameassign">{{ i.name }}</div>
@@ -149,34 +159,52 @@
                                 {% endfor %}
                 </div>
 
-                <div class="tooltip">
-                    <div id="quiz_tooltiptext" name="quiz_tooltiptext" style="display:block">
-                        <button1>
-                            <span class="tooltiptext">Quiz</span>
-                            <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
-                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                            </a>
-                        </button1>
-                    </div>
 
-                    <div id="exam_tooltiptext" name="exam_tooltiptext" style="display:none">
-                        <button1>
-                            <span class="tooltiptext">Exam</span>
-                            <a href="{% url 'Class_Management:Assign_Management:GenerateExam' request.session.classroom %}">
-                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                            </a>
-                        </button1>
+                    <div class="tooltip quiz" id="qt">
+                        <div id="quiz_tooltiptext">
+                            <button1 class="quiz">
+                                <span class="tooltiptext">Quiz</span>
+                                <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
+                                    <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                                </a>
+                            </button1>
+                        </div>
                     </div>
+                    <section id="hiddentooltip">
+                        <div class="tooltip exam">
+                            <div id="exam_tooltip" >
+                                <button1 class="exam">
+                                    <span class="tooltiptext">Exam</span>
+                                    <a href="{% url 'Class_Management:Assign_Management:GenerateExam' request.session.classroom %}">
+                                        <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                                    </a>
+                                </button1>
+                            </div>
+                        </div>
 
-                    <div id="pool_tooltiptext" name="pool_tooltiptext" style="display:none">
-                        <button1>
-                            <span class="tooltiptext">Pool</span>
-                            <a href="{% url 'Class_Management:Assign_Management:GenerateExamQuiz' request.session.classroom %}">
-                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                            </a>
-                        </button1>
-                    </div>
-                </div>
+                        <div class="tooltip pool">
+                            <div id="pool_tooltip">
+                                <button1 class="pool">
+                                    <span class="tooltiptext">Pool</span>
+                                    <a href="{% url 'Class_Management:Assign_Management:GenerateExamQuiz' request.session.classroom %}">
+                                        <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                                    </a>
+                                </button1>
+                            </div>
+                        </div>
+
+                        <div class="tooltip import">
+                            <div id="import_tooltip">
+                                <button1 class="import">
+                                    <span class="tooltiptext">Import</span>
+                                    <a href="{% url 'Class_Management:Assign_Management:ImportAssign' request.session.classroom %}">
+                                        <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                                    </a>
+                                </button1>
+                            </div>
+                        </div>
+                    </section>
+
                 {% endif %}
             </div>
         </div>

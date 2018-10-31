@@ -13,6 +13,8 @@ from django.contrib.auth.decorators import login_required
 from Assign_Management import views
 import json
 import re
+import pytz
+import datetime
 
 User = get_user_model()
 @login_required
@@ -75,7 +77,7 @@ def Home(request,classroom):
                 add_status = 2
                 if request.POST["category"] != '':
                     try:
-                        if re.match('^[^,]*$',request.POST["category"]):
+                        if re.match('^[^,]*$',request.POST["category"]) and request.POST["category"].replace(' ','') != '':
                             Category.objects.get_or_create(name=request.POST["category"], slug=request.POST["category"])
                             add_status = 1
                         else:
@@ -483,9 +485,9 @@ def Home(request,classroom):
                 print(E)
 
         if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
-            quiz_set = Quiz.objects.filter(classroom__className=classroom)
+            quiz_set = ClassRoom.objects.get(className=classroom).quizes.all()#Quiz.objects.filter(classroom__className=classroom).order_by('quizTitle')
             exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')
-            exam_quiz_pool = Exam_Quiz.objects.filter(classroom__className=classroom)
+            exam_quiz_pool = Exam_Quiz.objects.filter(classroom__className=classroom).order_by('title')
         else:
             quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now()))
             exam_set = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now())).order_by('name')
@@ -501,7 +503,8 @@ def Home(request,classroom):
             'quiz':quiz_set,
             'exam':exam_set,
             'exam_quiz_pool':exam_quiz_pool,
-            'exam_picked':Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name')
+            'exam_picked':Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name'),
+            'current_time':datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
         }
         return render(request,'Home.html',context)
 

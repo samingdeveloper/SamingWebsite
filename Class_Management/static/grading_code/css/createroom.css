@@ -1,4 +1,4 @@
-.column {
+﻿.column {
     float: left;
     padding: 5px;
 }
@@ -122,6 +122,41 @@
     color: #FFFFFF;
 }
 
+.status{
+    height: 40px;
+	width: 80px;
+	float: left;
+	margin-top: 90px;
+    margin-left: 10px;
+	border: none;
+	color: white;
+	z-index: 3;
+	position: absolute;
+	text-align: center;
+	text-decoration: none;
+	/*display: inline;*/
+	cursor: pointer;
+    border-radius: 5%;
+}
+
+.status.active{
+    background-color: #00ff00;
+}
+
+.status.inactive{
+    background-color: #ff0000;
+}
+
+.status.inactive:hover{
+    background: #cc0000;
+	/*color: #fff;*/
+}
+
+.status.active:hover{
+    background: #00e600;
+	/*color: #fff;*/
+}
+
 .delete {
 	height: 40px;
 	width: 80px;
@@ -148,7 +183,7 @@
     display: inline-block;
     border-bottom: 1px dotted black;
 }
-    
+
 .tooltip .tooltiptext {
     visibility: hidden;
     width: auto;
@@ -161,11 +196,11 @@
     z-index: 1;
     bottom: 125%;
     left: 50%;
-    margin-left: -60px;
+    margin-left: -35px;
     opacity: 0;
     transition: opacity 1s;
 }
-    
+
 .tooltip .tooltiptext::after {
     content: "";
     position: absolute;
@@ -182,7 +217,7 @@
     opacity: 1;
 }
 
-button1{
+button1 {
     font-size:14px;  
     padding: 2px 1px 0px 1px;
     -moz-border-radius: ุ 10px;
@@ -200,11 +235,43 @@ button1{
 	right: 20px;
 }
 
-button1:hover{ 
+section#hiddentooltip{
+    transition: opacity 1s;
+    opacity: 0;
+    visibility: hidden;
+}
+
+section#hiddentooltip::after{
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 60%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+    opacity: 0;
+}
+
+button1.exam{
+    /*visibility: hidden;*/
+    margin-right: 55px;
+}
+
+button1.pool{
+    /*visibility: hidden;*/
+    margin-right: 110px;
+}
+
+button1.import{
+   /* visibility: hidden;*/
+    margin-right: 165px;
+}
+
+button1:hover{
     background: rgba(255, 255, 255, 0.137); 
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 5px 15px 30px 5px rgba(255, 255, 255, 0.137);
 }
-
 
 .modal {
     display: none; /* Hidden by default */

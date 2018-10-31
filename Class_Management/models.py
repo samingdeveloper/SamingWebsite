@@ -38,13 +38,14 @@ class Quiz(models.Model):
     mode = models.CharField(max_length=100, choices=mode_choices, default="Scoring")
     max_score = models.FloatField(default=0, validators=[MinValueValidator(0), ])
     text_template_content = models.TextField(blank=True,null=True)
-    text_testcode_content = models.TextField()
+    text_testcode_content = models.TextField(blank=True,null=True)
     text_testcase_content = models.TextField()
     #classroom = models.ManyToManyField
     #classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = 'Quizes'
         #unique_together = ('quizTitle', 'classroom')
+        ordering = ('available', 'quizTitle', 'category')
     def __str__(self):
         return self.quizTitle
 
@@ -55,6 +56,8 @@ class ClassRoom(models.Model):
     className = models.CharField(max_length=255,unique=True)
     quizes =  models.ManyToManyField(Quiz, related_name="classroom", blank=True)
     creator = models.ForeignKey("LogIn_Management.User", related_name="creator", on_delete=models.DO_NOTHING, null=True, blank=True)
+    class Meta:
+        ordering = ('className', )
     def __str__(self):
         return self.className
 
@@ -81,6 +84,8 @@ class QuizStatus(models.Model):
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
+    class Meta:
+        ordering = ('userId', 'quizId')
     def __str__(self):
         return str(self.status)
 
@@ -93,6 +98,8 @@ class QuizScore(models.Model):
     max_score = models.FloatField(blank=True, null=True, default=0.0)
     #code = models.TextField(blank=True, null=True)
     code = models.ForeignKey("Assign_Management.Upload", on_delete=models.SET_NULL,null=True,related_name='code')
+    class Meta:
+        ordering = ('userId', 'quizId')
     def __str__(self):
         return str(self.passOrFail + self.total_score)
 
@@ -103,6 +110,8 @@ class QuizTimer(models.Model):
     timer_stop = models.DateTimeField(blank=True,null=True)
     start = models.BooleanField(default=False)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    class Meta:
+        ordering = ('userId', 'quizId')
     def __str__(self):
         return str(self.start)
 
@@ -110,6 +119,8 @@ class QuizTracker(models.Model):
     quizDoneCount = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0),])
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
     classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    class Meta:
+        ordering = ('userId', 'classroom')
     def __str__(self):
         return str(self.quizDoneCount)
 

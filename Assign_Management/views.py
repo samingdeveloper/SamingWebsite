@@ -4,6 +4,8 @@ import datetime
 import traceback
 import importlib
 import unittest
+
+import select
 import timeout_decorator
 import mosspy
 import contextlib
@@ -60,18 +62,20 @@ def AssignmentDetail(request):
 @login_required
 def ImportAssign(request, classroom):
     if request.method == "POST":
-        #raise ValueError(request.POST.getlist('myselected','POST failed.'))
         selectedList = request.POST.getlist("myselected","")
-        import_target = {}
-        for element in selectedList:
-            splited = element.split(',')
-            if splited[0] not in import_target.keys():
-                import_target[splited[0]] = [splited[1]]
-            else: import_target[splited[0]].append(splited[1])
-        raise ValueError(import_target)
+        target_classroom = ClassRoom.objects.get(className=classroom)
+        target_classroom_quizes = target_classroom.quizes.all()
+        received_quizes = Quiz.objects.filter(quizTitle__in=selectedList)
+        quizes_to_remove = target_classroom_quizes.difference(received_quizes)
+        #for quiz in quizes_to_remove:
+        target_classroom.quizes.remove(*quizes_to_remove)
+        target_classroom_quizes.exclude(quizTitle=quizes_to_remove)
+        quizes_to_add = received_quizes.difference(target_classroom_quizes)
+        target_classroom.quizes.add(*quizes_to_add)
+        return HttpResponseRedirect('/ClassRoom/'+request.session["classroom"])
     else:
-        unselected_quiz = Quiz.objects.all().difference(ClassRoom.objects.get(className=classroom).quizes.all())
-        selected_quiz = Quiz.objects.all().difference(unselected_quiz)
+        selected_quiz = ClassRoom.objects.get(className=classroom).quizes.all()
+        unselected_quiz = Quiz.objects.all().difference(selected_quiz)
         context = {
             "assignments": unselected_quiz,
             "selected_assignments": selected_quiz

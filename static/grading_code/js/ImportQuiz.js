@@ -13,7 +13,7 @@ class AssignTags extends HTMLElement{
 class FuncCollector{
 
     static select(){
-        this.setAttribute('name', 'myselected');
+        //this.setAttribute('name', 'myselected');
         document.getElementById("selectedList").appendChild(this.cloneNode(true)).addEventListener("dblclick", FuncCollector.deSelect);
         this.remove();
         //let node = document.createElement("li"); // Create a <li> node
@@ -28,7 +28,7 @@ class FuncCollector{
     }
 
     static deSelect(){
-        this.setAttribute('name', 'available');
+        //this.setAttribute('name', 'available');
         document.getElementById("availableList").appendChild(this.cloneNode(true)).addEventListener("dblclick", FuncCollector.select);
         this.remove();
         //let node = document.createElement("li"); // Create a <li> node
@@ -152,10 +152,21 @@ function sendPost(){
 
 document.addEventListener("DOMContentLoaded", function(event) {
     window.customElements.define('grader-assignment', AssignTags);
-    var lis = document.getElementsByTagName("li");
+    var lis = document.getElementById("availableList").childNodes;
+    var mx = document.getElementById("selectedList").childNodes;
+
     for (let li = 0; li < lis.length; li++){
-        lis[li].addEventListener("dblclick", FuncCollector.select);
+        if (lis[li].nodeName === "LI"){
+            lis[li].addEventListener("dblclick", FuncCollector.select);
+            console.log(lis[li]);
+        }
     };
+    for (let i = 0; i < mx.length; i++){
+        if (mx[i].nodeName === "LI"){
+            mx[i].addEventListener("dblclick", FuncCollector.deSelect);
+            console.log(mx[i]);
+        }
+    }
 });
 
 
