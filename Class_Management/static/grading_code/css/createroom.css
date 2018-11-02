@@ -123,39 +123,31 @@
 }
 
 .status{
-    height: 40px;
-	width: 80px;
-	float: left;
-	margin-top: 90px;
-    margin-left: 10px;
-	border: none;
-	color: white;
-	z-index: 3;
-	position: absolute;
+    border: none;
 	text-align: center;
 	text-decoration: none;
-	/*display: inline;*/
+	display: inline;
 	cursor: pointer;
     border-radius: 5%;
 }
 
 .status.active{
-    background-color: #00ff00;
+    color: #00ff00;
 }
 
 .status.inactive{
-    background-color: #ff0000;
+    color: #ff0000;
 }
 
-.status.inactive:hover{
+/*.status.inactive:hover{
     background: #cc0000;
-	/*color: #fff;*/
+	color: #fff;
 }
 
 .status.active:hover{
     background: #00e600;
-	/*color: #fff;*/
-}
+	color: #fff;
+}*/
 
 .delete {
 	height: 40px;
@@ -194,23 +186,22 @@
     padding: 4px 6px;
     position: absolute;
     z-index: 1;
-    bottom: 125%;
-    left: 50%;
+    right: 115%;
     margin-left: -35px;
     opacity: 0;
     transition: opacity 1s;
 }
 
-.tooltip .tooltiptext::after {
+/*.tooltip .tooltiptext::after {
     content: "";
     position: absolute;
-    top: 100%;
-    left: 60%;
+    top: 35%;
+    right: -25%;
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
+    border-color: transparent transparent transparent #555;
+}*/
     
 .tooltip:hover .tooltiptext {
     visibility: visible;
@@ -231,11 +222,11 @@ button1 {
     position: fixed;
     width: 50px;
 	height: 50px;
-	bottom: 20px;
+	bottom: 39.5%;
 	right: 20px;
 }
 
-section#hiddentooltip{
+/*section#hiddentooltip{
     transition: opacity 1s;
     opacity: 0;
     visibility: hidden;
@@ -251,26 +242,178 @@ section#hiddentooltip::after{
     border-style: solid;
     border-color: #555 transparent transparent transparent;
     opacity: 0;
-}
+}*/
 
 button1.exam{
     /*visibility: hidden;*/
-    margin-right: 55px;
+    /*margin-right: 55px;*/
+    bottom: 32%;
 }
 
 button1.pool{
     /*visibility: hidden;*/
-    margin-right: 110px;
+    /*margin-right: 110px;*/
+    bottom: 24.5%;
 }
 
 button1.import{
    /* visibility: hidden;*/
-    margin-right: 165px;
+    /*margin-right: 165px;*/
+    bottom: 17%;
 }
 
 button1:hover{
-    background: rgba(255, 255, 255, 0.137); 
+    background: rgba(255, 255, 255, 0.137);
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 5px 15px 30px 5px rgba(255, 255, 255, 0.137);
+}
+
+.r-sidebar{
+    position: fixed;
+    z-index: 1;
+}
+
+.r-sidebar:hover{
+    cursor: pointer;
+}
+/*.r-sidebar.rec-bar{
+    bottom: 20px;
+	right: 8px;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}*/
+
+.r-sidebar.glass{
+    width: 80px;
+	height: 80px;
+	bottom: 45%;
+	right: 8px;
+}
+
+.r-sidebar.quiz{
+    width: 63px;
+	height: 50px;
+	bottom: 10%;
+	right: 17px;
+}
+
+.r-sidebar.exam{
+    width: 63px;
+	height: 50px;
+	bottom: 17.8%;
+	right: 17px;
+}
+
+.r-sidebar.pool-exam-quiz{
+    width: 63px;
+	height: 50px;
+	bottom: 25.0%;
+	right: 17px;
+}
+
+.r-sidebar.pool-quiz{
+    width: 63px;
+	height: 50px;
+	bottom: 32.4%;
+	right: 17px;
+}
+
+#l-sidebar-wrapper {
+    display: none;
+}
+
+.l-sidebar-container {
+    /*display: none;*/ /* Hidden by default */
+    position: fixed;
+    /*position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;  */ /* Stay in place */
+    /*position: fixed;*/
+    z-index: 1; /* Sit on top */
+    /*top: 0px;
+    left: 0px;*/
+    /*margin: -16px -16px;*/
+    left: 0px;
+    bottom: 42.1%;
+    width: 29.1%; /* Full width */
+    height: 21%; /* Full height */
+    -webkit-animation-name: animateleft;
+    -webkit-animation-duration: 1s;
+    animation-name: animateleft;
+    animation-duration: 1s;
+    /*opacity: 1;*/
+    /* overflow-y: auto; */ /* Enable scroll if needed */
+    /*background-color: rgb(0,0,0);*/ /* Fallback color */
+    /*background-color: rgba(0,0,0,0.4);*/ /* Black w/ opacity */
+}
+
+.l-sidebar-background {
+    position: fixed;
+    z-index: 0;
+    float: left;
+    width: 29.1%;
+    height: 100%;
+    left: 0px;
+    bottom: 0px;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    -webkit-animation-name: animateleft;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animateleft;
+    animation-duration: 0.4s;
+}
+
+.l-sidebar-images {
+    width: 10%;
+    height: 10%;
+    cursor: pointer;
+    padding-top: 15px;
+}
+
+
+.show-group:hover .l-sidebar-text{
+    visibility: visible;
+    opacity: 1;
+}
+
+.l-sidebar-text {
+    visibility: hidden;
+    width: auto;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 4px;
+    padding: 4px 6px;
+    position: absolute;
+    margin: 20px 0px 0px 15px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+#l-sidebar-header {
+    padding: 2px 16px;
+    /*background-color: rgb(85, 81, 81);*/
+    background: #3C3C3C;
+    color: rgb(255, 255, 255);
+    /*border: 1px solid rgb(207, 207, 207);*/
+    /*border-radius: 4px;*/
+}
+
+#l-sidebar-body {
+    padding: 2px 16px;
+    position: relative;
+    /*background-color: #f2f2f2;*/
+    margin: auto;
+    /*padding: 0;*/
+    /*border: 1px solid #888;*/
+    /*border-radius: 4px;*/
+    width: 427px;
+    /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);*/
 }
 
 .modal {
@@ -325,6 +468,30 @@ button1:hover{
         opacity: 1;
     }
 }
+
+@-webkit-keyframes animateleft {
+    from {
+        left: -300px;
+        opacity: 0;
+    }
+    to {
+        left: 0;
+        opacity: 1
+    }
+}
+
+
+@keyframes animateleft {
+    from {
+        left: -300px;
+        opacity: 0;
+    }
+    to {
+        left: 0;
+        opacity: 1;
+    }
+}
+
 
 /* The Close Button */
 .close {

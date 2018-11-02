@@ -7,7 +7,8 @@
     <link rel="stylesheet" type="text/css" href="{% static '/grading_code/css/createroom.css' %}">
     <script src="{% static '/grading_code/js/popup.js' %}"></script>
     <script src="{% static '/grading_code/js/tooltip.js' %}"></script>
-
+    <script src="{% static '/grading_code/js/thenBy.js' %}"></script>
+    <script src="{% static '/grading_code/js/sideBar.js' %}"></script>
     <!-- Trigger/Open The Modal -->
 
     <!-- input assignment -->
@@ -34,6 +35,35 @@
             alert("User can't be found in class.");
         </script>
     {% endif %}
+        <div id="l-sidebar-wrapper">
+            <div id="l-sidebar-background" class="l-sidebar-background"></div>
+            <div id="l-sidebar-container" class="l-sidebar-container">
+                <div id="l-sidebar-header">
+                    {# <span id="l-sidebar-close" class="close">&times;</span> #}
+                    <h4>Filter</h4>
+                </div>
+                <div id="l-sidebar-body">
+                    <input type="text" id="category-filter" onkeyup="filter('category')" placeholder="Category..." title="Type in a name">
+                    <input type="text" id="name-filter" onkeyup="filter('name')" placeholder="Name..." title="Type in a name"><br>
+                    <div class="show-group">
+                        <img class="l-sidebar-images show-quiz-icon" src="{% static '/grading_code/images/checklist.png' %}">
+                        <span class="l-sidebar-text show-quiz-text">Assignment</span>
+                    </div>
+                    <div class="show-group">
+                        <img class="l-sidebar-images show-exam" src="{% static '/grading_code/images/checklist.png' %}">
+                        <span class="l-sidebar-text show-exam-text">Examination</span>
+                    </div>
+                    <div class="show-group">
+                        <img class="l-sidebar-images show-exam-quiz-pool" src="{% static '/grading_code/images/checklist.png' %}">
+                        <span class="l-sidebar-text show-exam-quiz-text">Examination Pool</span>
+                    </div>
+                    <div class="show-group">
+                        <img class="l-sidebar-images show-quiz-pool" src="{% static '/grading_code/images/checklist.png' %}">
+                        <span class="l-sidebar-text show-quiz-pool-text">Assignment Pool</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="column side">
                 <div class="boxadmin">
@@ -53,16 +83,22 @@
                 {% endif %}
             </div>
 
-            <div class="column middle">
+            <div id="column-middle" class="column middle">
                 <button id="toggle" onclick="toggle();">Examination</button>
-                <div id="quiz_div" name="quiz_div" style="display:Block">
+                <div id="main-quiz-div" style="display:Block">
                     {%  for i in quiz %}
                         {% comment %}
                              check_rank request.user request.session.classroom i.id as chkr_rank
                              if chkr_rank
                         {% endcomment %}
+                    <div data-active="{% if i.available <= current_time %}1{% else %}0{% endif %}" data-category="{{ i.category }}" data-quiz="{{ i.quizTitle }}" id="{{ i.quizTitle }}">
                         <div class="boxassign">
-                            <div class="nameassign">{{ i.quizTitle }}</div>
+                            <div class="nameassign">
+                                {% if i.available <= current_time %}<span class="status active">Active</span>
+                                {% else %}<span class="status inactive">InActive</span> {# {% if request.user|can_manage:request.session.classroom %}<span class="status inactive">InActive</span>{% endif %} #}
+                                {% endif %}
+                                {{ i.quizTitle }}
+                            </div>
                         </div>
                         <div class="boxassign2">
                             {%  if request.user|can_manage:request.session.classroom %}
@@ -74,15 +110,6 @@
                             {%  else %}
                             <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
                             {% endif %}
-                            {# {% if request.user|can_manage:request.session.classroom %} #}
-                                {% if i.available <= current_time %}
-                                    <button name="button_status"  class="status active" onclick="">Active</button>
-                                {% else %}
-                                    {% if request.user|can_manage:request.session.classroom %}
-                                        <button class="status inactive" onclick="">InActive</button>
-                                    {% endif %}
-                                {% endif %}
-                            {# {% endif %} #}
                             <div class="detail">
                                 {% if i.quiztimer_set.all.0.timer %}
                                 <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
@@ -90,13 +117,15 @@
                                 {% comment %} <p><strong>Rank:</strong>   {{ i.get_rank_display }} </p> {% endcomment %}
                                 <p><strong>Available:</strong>   {{ i.available }}</p>
                                 <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
+                                <p><strong>Category:</strong>   {{ i.category }}</p>
                             </div>
                         </div>
                         {% comment %} {% endif %} {% endcomment %}
+                        </div>
                         {% endfor %}
                 </div>
 
-                <div id="exam_div" style="display:None">
+                <div id="main-exam-div" style="display:None">
                     {%  for i in exam %}
                         <div class="boxassign">
                             <div class="nameassign">{{ i.name }}</div>
@@ -117,7 +146,7 @@
                     {% endfor %}
                 </div>
 
-                <div id="exam_quiz">
+                <div id="main-exam-quiz">
                     {% for i,j in exam|zip:exam_picked %}
                     <div id="{{ i.name }}" name="ex@m_quiz" style="display:none">
                         {% your_exam request.user request.session.classroom j.picked as this_exam_quizes %}
@@ -141,7 +170,7 @@
                 </div>
 
                 {% if request.user|can_manage:request.session.classroom %}
-                <div id="exam_quiz_pool" style="display:none">
+                <div id="main-exam-quiz-pool" style="display:none">
                     {% for exam_quiz in exam_quiz_pool %}
                             <div class="boxassign">
                                 <div class="nameassign">{{ exam_quiz.title }}</div>
@@ -159,52 +188,23 @@
                                 {% endfor %}
                 </div>
 
-
-                    <div class="tooltip quiz" id="qt">
-                        <div id="quiz_tooltiptext">
-                            <button1 class="quiz">
-                                <span class="tooltiptext">Quiz</span>
-                                <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
-                                    <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                                </a>
-                            </button1>
-                        </div>
-                    </div>
-                    <section id="hiddentooltip">
-                        <div class="tooltip exam">
-                            <div id="exam_tooltip" >
-                                <button1 class="exam">
-                                    <span class="tooltiptext">Exam</span>
-                                    <a href="{% url 'Class_Management:Assign_Management:GenerateExam' request.session.classroom %}">
-                                        <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                                    </a>
-                                </button1>
+                <div id="main-quiz-pool" style="display:none">
+                    {% for exam_quiz in exam_quiz_pool %}
+                            <div class="boxassign">
+                                <div class="nameassign">{{ exam_quiz.title }}</div>
                             </div>
-                        </div>
-
-                        <div class="tooltip pool">
-                            <div id="pool_tooltip">
-                                <button1 class="pool">
-                                    <span class="tooltiptext">Pool</span>
-                                    <a href="{% url 'Class_Management:Assign_Management:GenerateExamQuiz' request.session.classroom %}">
-                                        <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                                    </a>
-                                </button1>
+                            <div class="boxassign2">
+                                {%  if request.user|can_manage:request.session.classroom %}
+                                    {# <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom exam_quiz.id 1%}')" value="MOSS"> #}
+                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ exam_quiz.title }}')" >Delete</button>
+                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
+                                {% endif %}
+                                <div class="detail">
+                                    <p><strong>Category:</strong> {{ exam_quiz.category }}</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="tooltip import">
-                            <div id="import_tooltip">
-                                <button1 class="import">
-                                    <span class="tooltiptext">Import</span>
-                                    <a href="{% url 'Class_Management:Assign_Management:ImportAssign' request.session.classroom %}">
-                                        <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
-                                    </a>
-                                </button1>
-                            </div>
-                        </div>
-                    </section>
-
+                                {% endfor %}
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -254,6 +254,56 @@
             </div>
         </div>
     {% endif %}
+
+    <div id="r-sidebar" class="tooltip r-sidebar">
+        <img id="r-sidebar-glass" class="r-sidebar glass" src="{% static '/grading_code/images/searchicon.png' %}">
+    </div>
+        <div class="tooltip quiz" id="qt">
+            <div id="quiz_tooltiptext">
+                <button1 class="quiz">
+                    <span class="tooltiptext">Quiz</span>
+                    <a href="{% url 'Class_Management:Assign_Management:GenerateAssign' request.session.classroom %}">
+                        <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                    </a>
+                </button1>
+            </div>
+                </div>
+            <section id="hiddentooltip">
+                <div class="tooltip exam">
+                    <div id="exam_tooltip" >
+                        <button1 class="exam">
+                            <span class="tooltiptext">Exam</span>
+                            <a href="{% url 'Class_Management:Assign_Management:GenerateExam' request.session.classroom %}">
+                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                            </a>
+                        </button1>
+                    </div>
+                </div>
+
+                <div class="tooltip pool">
+                    <div id="pool_tooltip">
+                        <button1 class="pool">
+                            <span class="tooltiptext">Pool</span>
+                            <a href="{% url 'Class_Management:Assign_Management:GenerateExamQuiz' request.session.classroom %}">
+                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                            </a>
+                        </button1>
+                    </div>
+                </div>
+
+                <div class="tooltip import">
+                    <div id="import_tooltip">
+                        <button1 class="import">
+                            <span class="tooltiptext">Import</span>
+                            <a href="{% url 'Class_Management:Assign_Management:ImportAssign' request.session.classroom %}">
+                                <img src="{% static '/grading_code/images/Pluss.png' %}" width="50" height="51" alt="">
+                            </a>
+                        </button1>
+                    </div>
+                </div>
+            </section>
+    </div>
+
 
     <script>
         function toggle(){

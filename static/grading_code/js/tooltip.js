@@ -12,8 +12,8 @@ document.addEventListener("DOMContentLoaded", function(event){
         tooltip.style.visibility = "hidden";
         tooltip.style.opacity = 0;
     });
-    document.getElementById("qt").addEventListener("mouseover",FADE_IN);
+    /*document.getElementById("qt").addEventListener("mouseover",FADE_IN);
     document.getElementById("qt").addEventListener("mouseout",FADE_OUT);
     document.getElementById("hiddentooltip").addEventListener("mouseover",FADE_IN,true);
-    document.getElementById("hiddentooltip").addEventListener("mouseout",FADE_OUT);
+    document.getElementById("hiddentooltip").addEventListener("mouseout",FADE_OUT);*/
 });
