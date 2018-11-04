@@ -1,4 +1,18 @@
-﻿.column {
+﻿html {
+  overflow: scroll;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
+::scrollbar{
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
+
+.column {
     float: left;
     padding: 5px;
 }
@@ -355,7 +369,7 @@ button1:hover{
     position: fixed;
     z-index: 0;
     float: left;
-    width: 29.1%;
+    width: 29.05%;
     height: 100%;
     left: 0px;
     bottom: 0px;
@@ -416,6 +430,16 @@ button1:hover{
     /*box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);*/
 }
 
+#main-quiz-div, #main-exam-div, #main-exam-quiz-pool, #main-quiz-pool {
+    /*transition: opacity 1s;*/
+    position:relative;
+    -webkit-animation-name: animatebottom;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatebottom;
+    animation-duration: 0.4s;
+    transition: opacity 1s;
+}
+
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
@@ -453,7 +477,7 @@ button1:hover{
         opacity: 0;
     }
     to {
-        top: 0;
+        top: 0px;
         opacity: 1
     }
 }
@@ -464,7 +488,7 @@ button1:hover{
         opacity: 0;
     }
     to {
-        top: 0;
+        top: 0px;
         opacity: 1;
     }
 }
@@ -475,7 +499,7 @@ button1:hover{
         opacity: 0;
     }
     to {
-        left: 0;
+        left: 0px;
         opacity: 1
     }
 }
@@ -487,10 +511,34 @@ button1:hover{
         opacity: 0;
     }
     to {
-        left: 0;
+        left: 0px;
         opacity: 1;
     }
 }
+
+@-webkit-keyframes animatebottom {
+    from {
+        bottom: -300px;
+        opacity: 0;
+    }
+    to {
+        bottom: 0px;
+        opacity: 1;
+    }
+}
+
+
+@keyframes animatebottom {
+    from {
+        bottom: -300px;
+        opacity: 0;
+    }
+    to {
+        bottom: 0px;
+        opacity: 1;
+    }
+}
+
 
 
 /* The Close Button */

@@ -12,12 +12,19 @@ class FuncCollector{
         for(let i=0; i < columnMiddle.length; i++){
             if (columnMiddle[i].nodeName === "DIV" &&
                     FuncCollector.idStartsWith(columnMiddle[i].id,"main")){
-                if (columnMiddle[i].id === target) { target = columnMiddle[i]; }
+                if (columnMiddle[i].id === target) { target = columnMiddle[i]; console.log(`${target.id}`); }
                 for(let j=0; j < columnMiddle[i].childNodes.length; j++){
+                    //console.log(j);
                     if (columnMiddle[i].childNodes[j].nodeName === "DIV"){
-                        console.log(columnMiddle[i].childNodes[j]);
-                        console.log(columnMiddle[i].childNodes[j].dataset.active);
-                        sortedArray.push(columnMiddle[i].childNodes[j])
+
+                        //console.log(columnMiddle[i].childNodes[j]);
+                        //console.log(columnMiddle[i].childNodes[j].dataset.active);
+                        try {
+                            //console.log(target.childNodes[j]);
+                            sortedArray.push(target.childNodes[j])
+                        } catch(error){
+                            //console.log(error);
+                        }
                     }
                 }
             }
@@ -27,10 +34,16 @@ class FuncCollector{
         ).thenBy(function(node1,node2){
             { return node1.dataset.category.localeCompare(node2.dataset.category); }
         }).thenBy(function(node1,node2){
-            { return node1.dataset.quiz.localeCompare(node2.dataset.quiz); }
+            { return node1.dataset.name.localeCompare(node2.dataset.name); }
         }));
-        console.log(sortedArray);
-        target.replaceWith(...sortedArray);
+        //console.log(sortedArray);
+        //target.innerHTML = '';
+        //console.log('empty: ' +target.id+ ` ${typeof target}`);
+        for(let i in sortedArray){
+            target.appendChild(sortedArray[i]);
+            //console.log('appended: '+sortedArray[i].id);
+        }
+        //target.replaceWith(...sortedArray);
     }
 }
 
@@ -39,6 +52,6 @@ document.addEventListener("DOMContentLoaded",function(event){
     let targetDiv = ["quiz-div","exam-div","exam-quiz","exam-quiz-pool"];
     let prefixes = {"main":"main"}
     for (var target in targetDiv){
-        FuncCollector.sortDiv(columnMiddle,prefixes.main+'-'+targetDiv[target]);
+        FuncCollector.sortDiv(columnMiddle, prefixes.main+'-'+targetDiv[target]);
     }
 });
