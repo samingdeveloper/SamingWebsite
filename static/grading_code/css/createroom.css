@@ -7,7 +7,7 @@
     background: transparent; /* make scrollbar transparent */
 }
 
-::scrollbar{
+scrollbar {
     width: 0px;
     background: transparent; /* make scrollbar transparent */
 }

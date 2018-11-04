@@ -12,34 +12,75 @@ class FuncCollector{
         for(let i=0; i < columnMiddle.length; i++){
             if (columnMiddle[i].nodeName === "DIV" &&
                     FuncCollector.idStartsWith(columnMiddle[i].id,"main")){
-                if (columnMiddle[i].id === target) { target = columnMiddle[i]; console.log(`${target.id}`); }
-                for(let j=0; j < columnMiddle[i].childNodes.length; j++){
-                    //console.log(j);
-                    if (columnMiddle[i].childNodes[j].nodeName === "DIV"){
+                    //console.log(...columnMiddle);
+                    //console.log(columnMiddle[i].id+'\n'+target);
+                if (columnMiddle[i].id === target) {
+                    //console.log("here1");
+                    target = columnMiddle[i]; console.log(`${target.id}`);
+                    try{
+                        for(let j=0; j < target.childNodes.length; j++){
+                            console.log(j);
+                            console.log(target.childNodes.length);
+                            if (target.childNodes[j].nodeName === "DIV"){
 
-                        //console.log(columnMiddle[i].childNodes[j]);
-                        //console.log(columnMiddle[i].childNodes[j].dataset.active);
-                        try {
-                            //console.log(target.childNodes[j]);
-                            sortedArray.push(target.childNodes[j])
-                        } catch(error){
-                            //console.log(error);
+                                console.log(columnMiddle[i].childNodes[j]);
+                                //console.log(columnMiddle[i].childNodes[j].dataset.active);
+                                try {
+                                    console.log(target.childNodes[j]);
+                                    sortedArray.push(target.childNodes[j])
+                                } catch(error){
+                                    console.log(error);
+                                }
+                            }
                         }
+                    } catch(error){
+                        console.log(error);
                     }
                 }
             }
         }
-        sortedArray.sort(firstBy(function(node1,node2)
-            { return node2.dataset.active - node1.dataset.active; }
-        ).thenBy(function(node1,node2){
-            { return node1.dataset.category.localeCompare(node2.dataset.category); }
-        }).thenBy(function(node1,node2){
-            { return node1.dataset.name.localeCompare(node2.dataset.name); }
-        }));
+        //console.log(target+target.id+`${typeof target}`);
+        console.log(sortedArray);
+        if (target.id=="main-quiz-div"){
+            try{
+                sortedArray.sort(firstBy(function(node1,node2)
+                    { return node2.dataset.active - node1.dataset.active; }
+                ).thenBy(function(node1,node2){
+                    { return node1.dataset.category.localeCompare(node2.dataset.category); }
+                }).thenBy(function(node1,node2){
+                    { return node1.dataset.name.localeCompare(node2.dataset.name); }
+                }));
+            } catch(error){
+                console.log(error);
+            }
+        } else if (target.id=="main-exam-div"){
+            try{
+                sortedArray.sort(firstBy(function(node1,node2)
+                    { return node2.dataset.active - node1.dataset.active; }
+                ).thenBy(function(node1,node2){
+                    { return node1.dataset.name.localeCompare(node2.dataset.name); }
+                }));
+            } catch(error){
+                console.log(error);
+            }
+        } else {
+            try{
+                //console.log("here");
+                sortedArray.sort(firstBy(function(node1,node2){
+                    { return node1.dataset.category.localeCompare(node2.dataset.category); }
+                }).thenBy(function(node1,node2){
+                    { return node1.dataset.name.localeCompare(node2.dataset.name); }
+                }));
+            } catch(error){
+                console.log(error);
+            }
+        }
         //console.log(sortedArray);
         //target.innerHTML = '';
         //console.log('empty: ' +target.id+ ` ${typeof target}`);
+        console.log(sortedArray);
         for(let i in sortedArray){
+            console.log(sortedArray+'\n'+`${typeof sortedArray}`+'\n'+sortedArray[i]);
             target.appendChild(sortedArray[i]);
             //console.log('appended: '+sortedArray[i].id);
         }
@@ -49,9 +90,10 @@ class FuncCollector{
 
 document.addEventListener("DOMContentLoaded",function(event){
     let columnMiddle = document.getElementById("column-middle").childNodes;
-    let targetDiv = ["quiz-div","exam-div","exam-quiz","exam-quiz-pool"];
+    let targetDiv = ["quiz-div","exam-div","exam-quiz","exam-quiz-pool","quiz-pool"];
     let prefixes = {"main":"main"}
     for (var target in targetDiv){
         FuncCollector.sortDiv(columnMiddle, prefixes.main+'-'+targetDiv[target]);
     }
+    //FuncCollector.sortDiv(columnMiddle, prefixes.main+'-'+"quiz-pool");
 });

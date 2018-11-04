@@ -471,6 +471,9 @@ def Home(request,classroom):
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
                                              'exam_quiz_pool': Exam_Quiz.objects.filter(classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
+                                             'quiz_pool': Quiz.objects.all(),
+                                             'exam_picked': Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name'),
+                                             'current_time': datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
                                              })
 
 
@@ -503,6 +506,7 @@ def Home(request,classroom):
             'quiz':quiz_set,
             'exam':exam_set,
             'exam_quiz_pool':exam_quiz_pool,
+            'quiz_pool':Quiz.objects.all(),
             'exam_picked':Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name'),
             'current_time':datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
         }

@@ -90,56 +90,58 @@
                              check_rank request.user request.session.classroom i.id as chkr_rank
                              if chkr_rank
                         {% endcomment %}
-                    <div data-active="{% if i.available <= current_time %}1{% else %}0{% endif %}" data-category="{{ i.category }}" data-name="{{ i.quizTitle }}" id="{{ i.quizTitle }}">
-                        <div class="boxassign">
-                            <div class="nameassign">
-                                {% if i.available <= current_time %}<span class="status active">Active</span>
-                                {% else %}<span class="status inactive">InActive</span> {# {% if request.user|can_manage:request.session.classroom %}<span class="status inactive">InActive</span>{% endif %} #}
-                                {% endif %}
-                                {{ i.quizTitle }}
+                        <div data-active="{% if i.available <= current_time %}1{% else %}0{% endif %}" data-category="{{ i.category }}" data-name="{{ i.quizTitle }}" id="{{ i.quizTitle }}">
+                            <div class="boxassign">
+                                <div class="nameassign">
+                                    {% if i.available <= current_time %}<span class="status active">Active</span>
+                                    {% else %}<span class="status inactive">InActive</span> {# {% if request.user|can_manage:request.session.classroom %}<span class="status inactive">InActive</span>{% endif %} #}
+                                    {% endif %}
+                                    {{ i.quizTitle }}
+                                </div>
                             </div>
-                        </div>
-                        <div class="boxassign2">
-                            {%  if request.user|can_manage:request.session.classroom %}
-                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Record' request.session.classroom 'Assignment' i.id %}'">Record</button>
-                            {# <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id 0 %}')" value="MOSS"> #}
-                            <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
-                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
-                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
-                            {%  else %}
-                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
-                            {% endif %}
-                            <div class="detail">
-                                {% if i.quiztimer_set.all.0.timer %}
-                                <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
+                            <div class="boxassign2">
+                                {%  if request.user|can_manage:request.session.classroom %}
+                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Record' request.session.classroom 'Assignment' i.id %}'">Record</button>
+                                    {# <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom i.id 0 %}')" value="MOSS"> #}
+                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom i.id %}', '{{ i.quizTitle }}')" >Delete</button>
+                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom i.id %}'">Edit</button>
+                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">View</button>
+                                {%  else %}
+                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:Uploadfile' request.session.classroom i.id %}'">Open</button>
                                 {% endif %}
-                                {% comment %} <p><strong>Rank:</strong>   {{ i.get_rank_display }} </p> {% endcomment %}
-                                <p><strong>Available:</strong>   {{ i.available }}</p>
-                                <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
-                                <p><strong>Category:</strong>   {{ i.category }}</p>
+                                <div class="detail">
+                                    {% if i.quiztimer_set.all.0.timer %}
+                                        <p><strong>Time:</strong>   {{ i.quiztimer_set.all.0.timer_stop }} </p>
+                                    {% endif %}
+                                    {% comment %} <p><strong>Rank:</strong>   {{ i.get_rank_display }} </p> {% endcomment %}
+                                    <p><strong>Available:</strong>   {{ i.available }}</p>
+                                    <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
+                                    <p><strong>Category:</strong>   {{ i.category }}</p>
+                                </div>
                             </div>
+                            {% comment %} {% endif %} {% endcomment %}
                         </div>
-                        {% comment %} {% endif %} {% endcomment %}
-                        </div>
-                        {% endfor %}
+                    {% endfor %}
                 </div>
 
                 <div id="main-exam-div" style="display:none;">
                     {%  for i in exam %}
-                        <div class="boxassign">
-                            <div class="nameassign">{{ i.name }}</div>
-                        </div>
-                        <div class="boxassign2">
-                            {%  if request.user|can_manage:request.session.classroom %}
-                                <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExam' request.session.classroom i.id %}', '{{ i.name }}')" >Delete</button>
-                                <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExam' request.session.classroom i.id %}'">Edit</button>
-                                <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">View</button>
-                            {%  else %}
-                                <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">Open</button>
-                            {% endif %}
-                            <div class="detail">
-                                <p><strong>Available:</strong>   {{ i.available }}</p>
-                                <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
+                        <div data-active="{% if i.available <= current_time %}1{% else %}0{% endif %}" data-name="{{ i.name }}" id="{{ i.name }}">
+                            <div class="boxassign">
+                                <div class="nameassign">{{ i.name }}</div>
+                            </div>
+                            <div class="boxassign2">
+                                {%  if request.user|can_manage:request.session.classroom %}
+                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExam' request.session.classroom i.id %}', '{{ i.name }}')" >Delete</button>
+                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExam' request.session.classroom i.id %}'">Edit</button>
+                                    <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">View</button>
+                                {%  else %}
+                                    <button class="delete" onclick="toggle2(['exam_quizes','{{ i.name }}']);">Open</button>
+                                {% endif %}
+                                <div class="detail">
+                                    <p><strong>Available:</strong>   {{ i.available }}</p>
+                                    <p><strong>Deadline:</strong>   {{ i.deadline }}</p>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}
@@ -147,63 +149,68 @@
 
                 <div id="main-exam-quiz">
                     {% for i,j in exam|zip:exam_picked %}
-                    <div id="{{ i.name }}" name="ex@m_quiz" style="display:none;">
-                        {% your_exam request.user request.session.classroom j.picked as this_exam_quizes %}
-                        {% for exam_quiz in this_exam_quizes %}
-                            <div class="boxassign">
-                                <div class="nameassign">{{ exam_quiz.title }}</div>
-                            </div>
-                            <div class="boxassign2">
-                                <div class="detail">
-                                    {%  if request.user|can_manage:request.session.classroom %}
-                                        <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">View</button>
-                                    {%  else %}
-                                        <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">Open</button>
-                                    {% endif %}
-                                    {#<p><strong>Detail:</strong>  exam_quiz.detail </p>#}
-                                </div>
-                            </div>
+                        <div data-category="{{ i.category }}" data-name="{{ i.title }}" id="{{ i.title }}">
+                            <div id="{{ i.name }}" style="display:none;">
+                                {% your_exam request.user request.session.classroom j.picked as this_exam_quizes %}
+                                {% for exam_quiz in this_exam_quizes %}
+                                    <div class="boxassign">
+                                        <div class="nameassign">{{ exam_quiz.title }}</div>
+                                    </div>
+                                    <div class="boxassign2">
+                                        <div class="detail">
+                                            {%  if request.user|can_manage:request.session.classroom %}
+                                                <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">View</button>
+                                            {%  else %}
+                                                <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">Open</button>
+                                            {% endif %}
+                                            {#<p><strong>Detail:</strong>  exam_quiz.detail </p>#}
+                                        </div>
+                                    </div>
                                 {% endfor %}
-                    </div>
+                            </div>
+                        </div>
                     {% endfor %}
                 </div>
 
                 {% if request.user|can_manage:request.session.classroom %}
-                <div id="main-exam-quiz-pool" style="display:none;">
-                    {% for exam_quiz in exam_quiz_pool %}
-                            <div class="boxassign">
-                                <div class="nameassign">{{ exam_quiz.title }}</div>
+                    <div id="main-exam-quiz-pool" style="display:none;">
+                        {% for exam_quiz in exam_quiz_pool %}
+                            <div data-category="{{ i.category }}" data-name="{{ i.title }}" id="pool-{{ i.title }}">
+                                    <div class="boxassign">
+                                        <div class="nameassign">{{ exam_quiz.title }}</div>
+                                    </div>
+                                    <div class="boxassign2">
+                                        {%  if request.user|can_manage:request.session.classroom %}
+                                            {# <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom exam_quiz.id 1%}')" value="MOSS"> #}
+                                            <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ exam_quiz.title }}')" >Delete</button>
+                                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
+                                        {% endif %}
+                                        <div class="detail">
+                                            <p><strong>Category:</strong> {{ exam_quiz.category }}</p>
+                                        </div>
+                                    </div>
                             </div>
-                            <div class="boxassign2">
-                                {%  if request.user|can_manage:request.session.classroom %}
-                                    {# <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom exam_quiz.id 1%}')" value="MOSS"> #}
-                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ exam_quiz.title }}')" >Delete</button>
-                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
-                                {% endif %}
-                                <div class="detail">
-                                    <p><strong>Category:</strong> {{ exam_quiz.category }}</p>
-                                </div>
-                            </div>
-                                {% endfor %}
-                </div>
+                        {% endfor %}
+                    </div>
 
-                <div id="main-quiz-pool" style="display:none;">
-                    {% for exam_quiz in exam_quiz_pool %}
-                            <div class="boxassign">
-                                <div class="nameassign">{{ exam_quiz.title }}</div>
+                    <div id="main-quiz-pool" style="display:none;">
+                        {% for quiz in quiz_pool %}
+                            <div data-category="{{ quiz.category }}" data-name="{{ quiz.quizTitle }}" id="pool-{{ quiz.quizTitle }}">
+                                    <div class="boxassign">
+                                        <div class="nameassign">{{ quiz.quizTitle }}</div>
+                                    </div>
+                                    <div class="boxassign2">
+                                        {%  if request.user|can_manage:request.session.classroom %}
+                                            <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteAssign' request.session.classroom quiz.id %}', '{{ quiz.quizTitle }}')" >Delete</button>
+                                            <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditAssign' request.session.classroom quiz.id %}'">Edit</button>
+                                        {% endif %}
+                                        <div class="detail">
+                                            <p><strong>Category:</strong> {{ quiz.category }}</p>
+                                        </div>
+                                    </div>
                             </div>
-                            <div class="boxassign2">
-                                {%  if request.user|can_manage:request.session.classroom %}
-                                    {# <input type="button" class="delete" onclick="window.open('{% url 'Class_Management:Assign_Management:MOSS' request.session.classroom exam_quiz.id 1%}')" value="MOSS"> #}
-                                    <button class="delete" onclick="delQuiz('{% url 'Class_Management:Assign_Management:DeleteExamQuiz' request.session.classroom exam_quiz.id %}', '{{ exam_quiz.title }}')" >Delete</button>
-                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:EditExamQuiz' request.session.classroom exam_quiz.id %}'">Edit</button>
-                                {% endif %}
-                                <div class="detail">
-                                    <p><strong>Category:</strong> {{ exam_quiz.category }}</p>
-                                </div>
-                            </div>
-                                {% endfor %}
-                </div>
+                        {% endfor %}
+                    </div>
                 {% endif %}
             </div>
         </div>
