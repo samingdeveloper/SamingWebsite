@@ -34,13 +34,13 @@ class Upload(models.Model):
         return self.title
 
 class Category(models.Model):
-    name = models.CharField(primary_key=True, max_length=255, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
+    name = models.CharField(unique=True, max_length=255, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
     slug = models.SlugField(unique=True, blank=True, null=True, validators=[RegexValidator(regex='^[^,]*$', message='comma is disallowed.')])
     #classroom = models.ForeignKey('Class_Management.ClassRoom',on_delete=models.CASCADE)#,related_name="cate_classroom")
     #parent = models.ForeignKey('self',blank=True,null=True,related_name='children',on_delete=models.CASCADE)
     class Meta:
         #unique_together = ('slug','parent',)
-        verbose_name_plural = "categories"
+        verbose_name_plural = "Categories"
         ordering = ('name', )
     def __str__(self):
         return self.name
@@ -55,7 +55,7 @@ class Category(models.Model):
 
 class Exam_Data(models.Model):
     classroom = models.ForeignKey(ClassRoom,on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(unique=True, max_length=255)
     detail = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     available = models.DateTimeField()
@@ -67,7 +67,7 @@ class Exam_Data(models.Model):
         return self.name
 
 class Exam_Quiz(models.Model):
-    title = models.CharField(max_length=55, blank=True)
+    title = models.CharField(max_length=55, blank=True, unique=True)
     detail = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
@@ -77,12 +77,12 @@ class Exam_Quiz(models.Model):
     )
     mode = models.CharField(max_length=100, choices=mode_choices, default="Scoring")
     text_template_content = models.TextField(blank=True, null=True)
-    text_testcode_content = models.TextField()
+    text_testcode_content = models.TextField(blank=True, null=True)
     text_testcase_content = models.TextField()
-    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
+    #classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = 'Exam_Quizes'
-        unique_together = ('title', 'classroom')
+        #unique_together = ('title', 'classroom')
         ordering = ('title', )
     def __str__(self):
         return self.title

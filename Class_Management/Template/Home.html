@@ -126,9 +126,14 @@
 
                 <div id="main-exam-div" style="display:none;">
                     {%  for i in exam %}
-                        <div data-active="{% if i.available <= current_time %}1{% else %}0{% endif %}" data-name="{{ i.name }}" id="{{ i.name }}">
+                        <div data-active="{% if i.available <= current_time %}1{% else %}0{% endif %}" data-name="{{ i.name }}" >
                             <div class="boxassign">
-                                <div class="nameassign">{{ i.name }}</div>
+                                <div class="nameassign">
+                                    {% if i.available <= current_time %}<span class="status active">Active</span>
+                                    {% else %}<span class="status inactive">InActive</span> {# {% if request.user|can_manage:request.session.classroom %}<span class="status inactive">InActive</span>{% endif %} #}
+                                    {% endif %}
+                                    {{ i.name }}
+                                </div>
                             </div>
                             <div class="boxassign2">
                                 {%  if request.user|can_manage:request.session.classroom %}
@@ -149,25 +154,26 @@
 
                 <div id="main-exam-quiz">
                     {% for i,j in exam|zip:exam_picked %}
-                        <div data-category="{{ i.category }}" data-name="{{ i.title }}" id="{{ i.title }}">
-                            <div id="{{ i.name }}" style="display:none;">
-                                {% your_exam request.user request.session.classroom j.picked as this_exam_quizes %}
-                                {% for exam_quiz in this_exam_quizes %}
-                                    <div class="boxassign">
-                                        <div class="nameassign">{{ exam_quiz.title }}</div>
-                                    </div>
-                                    <div class="boxassign2">
-                                        <div class="detail">
-                                            {%  if request.user|can_manage:request.session.classroom %}
-                                                <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">View</button>
-                                            {%  else %}
-                                                <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">Open</button>
-                                            {% endif %}
-                                            {#<p><strong>Detail:</strong>  exam_quiz.detail </p>#}
+                        <div data-category="{{ j.category }}" data-name="{{ j.title }}" id="{{ i.name }}" style="display:none;">
+                            {% your_exam request.user request.session.classroom j.picked as this_exam_quizes %}
+                            {% for exam_quiz in this_exam_quizes %}
+                                <div data-category="{{ exam_quiz.category }}" data-name="{{ exam_quiz.title }}" id="{{ exam_quiz.title }}">
+                                        <div class="boxassign">
+                                            <div class="nameassign">{{ exam_quiz.title }}</div>
                                         </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                                        <div class="boxassign2">
+                                            <div class="detail">
+                                                {%  if request.user|can_manage:request.session.classroom %}
+                                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">View</button>
+                                                {%  else %}
+                                                    <button class="delete" onclick="location.href='{% url 'Class_Management:Assign_Management:UploadfileExam' request.session.classroom i.id exam_quiz.id %}'">Open</button>
+                                                {% endif %}
+                                                <p><strong>Category:</strong>  {{ exam_quiz.category }}</p>
+                                                {#<p><strong>Detail:</strong>  {{ exam_quiz.detail }}</p>#}
+                                            </div>
+                                        </div>
+                                </div>
+                            {% endfor %}
                         </div>
                     {% endfor %}
                 </div>
@@ -175,7 +181,7 @@
                 {% if request.user|can_manage:request.session.classroom %}
                     <div id="main-exam-quiz-pool" style="display:none;">
                         {% for exam_quiz in exam_quiz_pool %}
-                            <div data-category="{{ i.category }}" data-name="{{ i.title }}" id="pool-{{ i.title }}">
+                            <div data-category="{{ exam_quiz.category }}" data-name="{{ exam_quiz.title }}" id="pool-{{ exam_quiz.title }}">
                                     <div class="boxassign">
                                         <div class="nameassign">{{ exam_quiz.title }}</div>
                                     </div>
@@ -312,7 +318,7 @@
 
 
     <script>
-        function toggle(){
+        /*function toggle(){
             for (i=0; i<document.getElementsByName("ex@m_quiz").length; i++){
                 document.getElementsByName("ex@m_quiz")[i].style.display = "none";
             }
@@ -343,17 +349,25 @@
                 }
             {% endif %}
             console.log(document.getElementById("toggle").innerHTML);
-        }
+        }*/
+
+        let previous, next;
 
         function toggle2(arr){
             if (arr[0]=="exam_quizes"){
-                try {
+                /*try {
                     document.getElementById("exam_tooltiptext").style.display = "none"; document.getElementById("quiz_tooltiptext").style.display = "none";
                 } catch(err){
                     console.log(err);
-                }
-                document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "none";
-                document.getElementById(arr[1]).style.display = "block";
+                }*/
+                //document.getElementById("exam_div").style.display = "none"; document.getElementById("quiz_div").style.display = "none";
+                document.getElementById("main-exam-div").style.display = "none";
+                try { previous.style.display = "none"; } catch {}
+                try { next = document.getElementById(arr[1]); } catch {}
+                next.style.display = "block";
+                previous = next;
+                document.getElementById("main-exam-quiz").style.display = "block";
+                //document.getElementById(arr[1]).style.display = "block";
             }
         }
     </script>

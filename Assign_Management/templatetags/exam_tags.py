@@ -6,7 +6,7 @@ register = template.Library()
 
 @register.simple_tag
 def your_exam(user, classname, picked_list):
-    return Exam_Quiz.objects.filter(classroom__className=classname,title__in=picked_list)
+    return Exam_Quiz.objects.filter(title__in=picked_list) #classroom__className=classname,
 
 @register.simple_tag
 def u_exam_score(userId, classroom, exam_data_id=None, mode=None):

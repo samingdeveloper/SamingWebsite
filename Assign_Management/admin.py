@@ -35,8 +35,8 @@ class Exam_DataAdmin(admin.ModelAdmin):
     search_fields = ('name', 'classroom__className')
 
 class Exam_QuizAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'mode', 'classroom')
-    search_fields = ('title', 'category__name', 'mode', 'classroom__className')
+    list_display = ('title', 'category', 'mode')#, 'classroom')
+    search_fields = ('title', 'category__name', 'mode')#, 'classroom__className')
 
 class Exam_UploadAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'quiz', 'exam', 'score', 'uploadTime')

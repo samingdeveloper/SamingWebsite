@@ -67,8 +67,7 @@ def Home(request,classroom):
                                                  'user_group': user_group,
                                                  'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                  'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                 'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                 'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                      name__in=[classroom + "_Teacher",
                                                                classroom + "_TA"]).exists() else (),
                                                  })
@@ -91,8 +90,7 @@ def Home(request,classroom):
                                                      'user_group': user_group,
                                                      'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                      'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                                      })
@@ -108,8 +106,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                              name__in=[classroom + "_Teacher",
                                                                        classroom + "_TA"]).exists() else (),
                                              })
@@ -122,8 +119,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                              name__in=[classroom + "_Teacher",
                                                                        classroom + "_TA"]).exists() else (),
                                              })
@@ -193,8 +189,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                              })
@@ -208,8 +203,7 @@ def Home(request,classroom):
                                                      'user_group': user_group,
                                                      'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                      'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                                      })
@@ -224,8 +218,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                              })
@@ -239,8 +232,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                      name__in=[classroom + "_Teacher",
                                                                classroom + "_TA"]).exists() else (),
                                              })
@@ -254,8 +246,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                      name__in=[classroom + "_Teacher",
                                                                classroom + "_TA"]).exists() else (),
                                              })
@@ -273,8 +264,7 @@ def Home(request,classroom):
                                                  'user_group': user_group,
                                                  'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                  'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                 'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                 'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                      name__in=[classroom + "_Teacher",
                                                                classroom + "_TA"]).exists() else (),
                                                  })
@@ -297,8 +287,7 @@ def Home(request,classroom):
                                                      'user_group': user_group,
                                                      'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                      'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                                      })
@@ -314,8 +303,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                              name__in=[classroom + "_Teacher",
                                                                        classroom + "_TA"]).exists() else (),
                                              })
@@ -328,8 +316,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                             classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                              name__in=[classroom + "_Teacher",
                                                                        classroom + "_TA"]).exists() else (),
                                              })
@@ -398,8 +385,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                              })
@@ -413,8 +399,7 @@ def Home(request,classroom):
                                                      'user_group': user_group,
                                                      'quiz': Quiz.objects.filter(classroom__className=classroom),
                                                      'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                                      })
@@ -430,8 +415,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                         classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                          name__in=[classroom + "_Teacher",
                                                                    classroom + "_TA"]).exists() else (),
                                              })
@@ -445,8 +429,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(
-                                                     classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
                                                      name__in=[classroom + "_Teacher",
                                                                classroom + "_TA"]).exists() else (),
                                              })
@@ -460,7 +443,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
                                              })
         add_status = 3
         return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -470,7 +453,7 @@ def Home(request,classroom):
                                              'user_group': user_group,
                                              'quiz': Quiz.objects.filter(classroom__className=classroom),
                                              'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.filter(classroom__className=classroom) if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
+                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
                                              'quiz_pool': Quiz.objects.all(),
                                              'exam_picked': Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name'),
                                              'current_time': datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
@@ -490,11 +473,11 @@ def Home(request,classroom):
         if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
             quiz_set = ClassRoom.objects.get(className=classroom).quizes.all()#Quiz.objects.filter(classroom__className=classroom).order_by('quizTitle')
             exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')
-            exam_quiz_pool = Exam_Quiz.objects.filter(classroom__className=classroom).order_by('title')
+            exam_quiz_pool = Exam_Quiz.objects.all()
         else:
             quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now()))
             exam_set = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now())).order_by('name')
-            exam_quiz_pool = Exam_Quiz.objects.filter(classroom__className=classroom)
+            exam_quiz_pool = Exam_Quiz.objects.all()
         data = serializers.serialize('json',quiz_set)
         request.session["quiz"]=json.loads(data)
         context = {
@@ -890,7 +873,7 @@ def StudentExamQuizList(request,classroom,userId,exam_data_id):
         return HttpResponseRedirect('/ClassRoom/' + request.session["classroom"])
     else:
         context = {
-            'exam_quizes': Exam_Quiz.objects.filter(title__in=Exam_Tracker.objects.get(exam__pk=exam_data_id,user__userId=request.user).picked,classroom__className=classroom),
+            'exam_quizes': Exam_Quiz.objects.filter(title__in=Exam_Tracker.objects.get(exam__pk=exam_data_id,user__userId=request.user).picked),#,classroom__className=classroom),
             'userId': userId,
             'exam_data_id': exam_data_id
         }

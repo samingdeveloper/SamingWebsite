@@ -37,11 +37,16 @@ class TempFuncCollector{
                         console.log(li[i]);
                         a = li[i];//.getElementsByTagName("my-element")[0];
                         //console.log(a.value);
+                        if (target_elements[j] != "main-exam-div"){
+                            k = document.getElementById("category-filter").value === ''
+                            ? true && a.dataset.name.toUpperCase().indexOf(document.getElementById("name-filter").value.toUpperCase()) > -1
+                                : a.dataset.category.toUpperCase() === document.getElementById("category-filter").value.toUpperCase() &&
+                                    a.dataset.name.toUpperCase().indexOf(document.getElementById("name-filter").value.toUpperCase()) > -1;
+                        } else if (target_elements[j] === "main-exam-div"){
+                            k = a.dataset.name.toUpperCase().indexOf(document.getElementById("name-filter").value.toUpperCase()) > -1;
+                            console.log(k);
+                        }
 
-                        k = document.getElementById("category-filter").value === ''
-                        ? true && a.dataset.name.toUpperCase().indexOf(document.getElementById("name-filter").value.toUpperCase()) > -1
-                            : a.dataset.category.toUpperCase() === document.getElementById("category-filter").value.toUpperCase() &&
-                                a.dataset.name.toUpperCase().indexOf(document.getElementById("name-filter").value.toUpperCase()) > -1;
                         if (k) {
                             a.style.display = "block";
                         } else {
@@ -58,7 +63,7 @@ class TempFuncCollector{
 
     static filterGroup(type){
         let targetDisplay, target;
-        target = ["main-quiz-div", "main-exam-div", "main-exam-quiz-pool", "main-quiz-pool"];
+        target = ["main-quiz-div", "main-exam-div", "main-exam-quiz", "main-exam-quiz-pool", "main-quiz-pool"];
         for(let i in target){
             console.log(target[i]);
             targetDisplay = document.getElementById(target[i]);
