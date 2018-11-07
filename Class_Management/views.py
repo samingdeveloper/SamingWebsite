@@ -54,7 +54,28 @@ def Home(request,classroom):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/LogOut')
 
-    elif request.method == "POST" and action == 'add':
+    elif request.user.is_admin or request.user.groups.filter(
+            name__in=[classroom + "_Teacher", classroom + "_TA"]).exists():
+        quiz_set = ClassRoom.objects.get(
+            className=classroom).quizes.all()  # Quiz.objects.filter(classroom__className=classroom).order_by('quizTitle')
+        exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')
+        exam_quiz_pool = Exam_Quiz.objects.all()
+        quiz_pool_set =  Quiz.objects.all()
+        exam_picked =  Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name')
+        current_time = datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
+    else:
+        quiz_set = Quiz.objects.filter(classroom__className=classroom,
+                                       available__lte=timezone.localtime(timezone.now()),
+                                       deadline__gte=timezone.localtime(timezone.now()))
+        exam_set = Exam_Data.objects.filter(classroom__className=classroom,
+                                            available__lte=timezone.localtime(timezone.now()),
+                                            deadline__gte=timezone.localtime(timezone.now())).order_by('name')
+        exam_quiz_pool = ()
+        quiz_pool_set = ()
+        exam_picked = Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name')
+        current_time = datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
+
+    if request.method == "POST" and action == 'add':
         email = request.POST.get("firstemail","")
         status = classroom + '_' + request.POST["country"]
         if not ClassRoom.objects.get(className=classroom).user.filter(email=email).exists() and request.POST["country"] != "CSV" and request.POST["country"] != "Cate":
@@ -65,11 +86,12 @@ def Home(request,classroom):
                                                      className=classroom).creator.get_full_name,
                                                  'user_obj': User.objects.all(),
                                                  'user_group': user_group,
-                                                 'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                                 'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                 'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                     name__in=[classroom + "_Teacher",
-                                                               classroom + "_TA"]).exists() else (),
+                                                 'quiz': quiz_set,
+                                                 'exam': exam_set,
+                                                 'exam_quiz_pool': exam_quiz_pool,
+                                                 'quiz_pool': quiz_pool_set,
+                                                 'exam_picked': exam_picked,
+                                                 'current_time': current_time
                                                  })
         try:
             if request.POST["country"] == "Cate":
@@ -88,11 +110,12 @@ def Home(request,classroom):
                                                      'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                                      'user_obj': User.objects.all(),
                                                      'user_group': user_group,
-                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                                     'quiz': quiz_set,
+                                                     'exam': exam_set,
+                                                     'exam_quiz_pool': exam_quiz_pool,
+                                                     'quiz_pool': quiz_pool_set,
+                                                     'exam_picked': exam_picked,
+                                                     'current_time': current_time
                                                      })
             elif request.POST["country"] == "CSV":
                 add_status = 1
@@ -104,11 +127,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                             name__in=[classroom + "_Teacher",
-                                                                       classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
                 elif csv_file.multiple_chunks():
                     add_status = 2
@@ -117,11 +141,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                             name__in=[classroom + "_Teacher",
-                                                                       classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
                 csv_data = csv_file.read().decode("utf-8")
                 #print(csv_data)
@@ -187,11 +212,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
             elif not (request.user.is_admin or request.user.groups.filter(name=classroom + "_Teacher")):
                 add_status = 4
@@ -201,11 +227,12 @@ def Home(request,classroom):
                                                          className=classroom).creator.get_full_name,
                                                      'user_obj': User.objects.all(),
                                                      'user_group': user_group,
-                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                                     'quiz': quiz_set,
+                                                     'exam': exam_set,
+                                                     'exam_quiz_pool': exam_quiz_pool,
+                                                     'quiz_pool': quiz_pool_set,
+                                                     'exam_picked': exam_picked,
+                                                     'current_time': current_time
                                                      })
             elif request.POST["country"] == "Admin" and request.user.is_admin:
                 add_status = 1
@@ -216,11 +243,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
             add_status = 1
             g = Group.objects.get(name=status)
@@ -230,11 +258,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                     name__in=[classroom + "_Teacher",
-                                                               classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
         except Exception as e:
             print(e)
@@ -244,11 +273,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                     name__in=[classroom + "_Teacher",
-                                                               classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
 
     elif request.method == "POST" and action == 'delete':
@@ -262,11 +292,12 @@ def Home(request,classroom):
                                                      className=classroom).creator.get_full_name,
                                                  'user_obj': User.objects.all(),
                                                  'user_group': user_group,
-                                                 'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                                 'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                 'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                     name__in=[classroom + "_Teacher",
-                                                               classroom + "_TA"]).exists() else (),
+                                                 'quiz': quiz_set,
+                                                 'exam': exam_set,
+                                                 'exam_quiz_pool': exam_quiz_pool,
+                                                 'quiz_pool': quiz_pool_set,
+                                                 'exam_picked': exam_picked,
+                                                 'current_time': current_time
                                                  })
         try:
             if request.POST["country"] == "Cate":
@@ -285,11 +316,12 @@ def Home(request,classroom):
                                                      'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                                      'user_obj': User.objects.all(),
                                                      'user_group': user_group,
-                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                                     'quiz': quiz_set,
+                                                     'exam': exam_set,
+                                                     'exam_quiz_pool': exam_quiz_pool,
+                                                     'quiz_pool': quiz_pool_set,
+                                                     'exam_picked': exam_picked,
+                                                     'current_time': current_time
                                                      })
             elif request.POST["country"] == "CSV":
                 add_status = 3
@@ -301,11 +333,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                             name__in=[classroom + "_Teacher",
-                                                                       classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
                 elif csv_file.multiple_chunks():
                     add_status = 2
@@ -314,11 +347,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                             name__in=[classroom + "_Teacher",
-                                                                       classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
                 csv_data = csv_file.read().decode("utf-8")
                 lines = csv_data.split("\n")
@@ -383,11 +417,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
             elif not(request.user.is_admin or request.user.groups.filter(name=classroom + "_Teacher")):
                 add_status = 4
@@ -397,11 +432,12 @@ def Home(request,classroom):
                                                          className=classroom).creator.get_full_name,
                                                      'user_obj': User.objects.all(),
                                                      'user_group': user_group,
-                                                     'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                                     'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                                     'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                                     'quiz': quiz_set,
+                                                     'exam': exam_set,
+                                                     'exam_quiz_pool': exam_quiz_pool,
+                                                     'quiz_pool': quiz_pool_set,
+                                                     'exam_picked': exam_picked,
+                                                     'current_time': current_time
                                                      })
             elif request.POST["country"] == "Admin" and request.user.is_admin:
                 user_obj = User.objects.get(email=email)
@@ -413,11 +449,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                         name__in=[classroom + "_Teacher",
-                                                                   classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
             add_status = 3
             g = Group.objects.get(name=status)
@@ -427,11 +464,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(
-                                                     name__in=[classroom + "_Teacher",
-                                                               classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
         except Exception as e:
             #print(e)
@@ -441,9 +479,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
         add_status = 3
         return render(request, 'Home.html', {'add_status': add_status, 'user_group': user_group,
@@ -451,12 +492,12 @@ def Home(request,classroom):
                                              'classroom_creator': ClassRoom.objects.get(className=classroom).creator.get_full_name,
                                              'user_obj': User.objects.all(),
                                              'user_group': user_group,
-                                             'quiz': Quiz.objects.filter(classroom__className=classroom),
-                                             'exam': Exam_Data.objects.filter(classroom__className=classroom),
-                                             'exam_quiz_pool': Exam_Quiz.objects.all() if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists() else (),
-                                             'quiz_pool': Quiz.objects.all(),
-                                             'exam_picked': Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name'),
-                                             'current_time': datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
+                                             'quiz': quiz_set,
+                                             'exam': exam_set,
+                                             'exam_quiz_pool': exam_quiz_pool,
+                                             'quiz_pool': quiz_pool_set,
+                                             'exam_picked': exam_picked,
+                                             'current_time': current_time
                                              })
 
 
@@ -469,15 +510,16 @@ def Home(request,classroom):
                 QuizTracker.objects.create(userId=request.user,classroom=ClassRoom.objects.get(className=classroom))
             except Exception as E:
                 print(E)
-
-        if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
-            quiz_set = ClassRoom.objects.get(className=classroom).quizes.all()#Quiz.objects.filter(classroom__className=classroom).order_by('quizTitle')
-            exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')
-            exam_quiz_pool = Exam_Quiz.objects.all()
-        else:
-            quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now()))
-            exam_set = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now())).order_by('name')
-            exam_quiz_pool = Exam_Quiz.objects.all()
+        """
+            if request.user.is_admin or request.user.groups.filter(name__in=[classroom + "_Teacher",classroom + "_TA"]).exists():
+                quiz_set = ClassRoom.objects.get(className=classroom).quizes.all()#Quiz.objects.filter(classroom__className=classroom).order_by('quizTitle')
+                exam_set = Exam_Data.objects.filter(classroom__className=classroom).order_by('name')
+                exam_quiz_pool = Exam_Quiz.objects.all()
+            else:
+                quiz_set = Quiz.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now()))
+                exam_set = Exam_Data.objects.filter(classroom__className=classroom,available__lte=timezone.localtime(timezone.now()),deadline__gte=timezone.localtime(timezone.now())).order_by('name')
+                exam_quiz_pool = Exam_Quiz.objects.all()
+        """
         data = serializers.serialize('json',quiz_set)
         request.session["quiz"]=json.loads(data)
         context = {
@@ -489,9 +531,9 @@ def Home(request,classroom):
             'quiz':quiz_set,
             'exam':exam_set,
             'exam_quiz_pool':exam_quiz_pool,
-            'quiz_pool':Quiz.objects.all(),
-            'exam_picked':Exam_Tracker.objects.filter(exam__classroom__className=classroom, user=request.user).order_by('exam__name'),
-            'current_time':datetime.datetime.now(tz=pytz.timezone('Asia/Bangkok'))
+            'quiz_pool': quiz_pool_set,
+            'exam_picked': exam_picked,
+            'current_time': current_time
         }
         return render(request,'Home.html',context)
 
